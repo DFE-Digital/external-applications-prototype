@@ -1,6 +1,53 @@
+@import 'node_modules/dfe-frontend/packages/dfefrontend';
+
 //
 // For guidance on how to add CSS and SCSS see:
 // https://prototype-kit.service.gov.uk/docs/adding-css-javascript-and-images
 // 
 
 // Add extra styles here
+
+.govuk-width-container { @include govuk-width-container; }
+
+body,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+span,
+div,
+table,
+th,
+td,
+blockquote,
+li,
+tr,
+label {
+    font-family:
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Roboto,
+        Oxygen-Sans,
+        Ubuntu,
+        Cantarell,
+        'Helvetica Neue',
+        sans-serif !important;
+}
+h1.govuk-fieldset__heading {
+    line-height: inherit !important;
+}
+
+.prototype-index-card {
+    background-color: #d9f0ff; 
+    padding: 20px 30px 10px 30px; 
+    margin-bottom: 30px;
+    code {
+        padding: 0 5px;
+        color: #d13118;
+        background-color: #fff;
+    }
+}

@@ -3,4 +3,31 @@ For guidance on how to use layouts see:
 https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
 #}
 
+{# 1 #} 
+{% from 'node_modules/dfe-frontend/packages/components/header/macro.njk' import header %}
+
+{# 2 #}
 {% extends "govuk-prototype-kit/layouts/govuk-branded.njk" %}
+
+{% block header %}
+    {{ header({
+        "showNav": "false",
+        "showSearch": "false",
+        "showUserName": "false",
+        "userName": "",
+        "userNameURL": "",
+        "selectedNav": pageNav,
+        "logoPath": "public/images",
+        "logoAltText": "Department for Education",
+        "homeHref": "/",
+        "service": {
+        "name": "External Applications",
+        "serviceUrl": "/"
+        }
+    })}}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="/assets/javascripts/dfefrontend.js"></script>
+{% endblock %}
