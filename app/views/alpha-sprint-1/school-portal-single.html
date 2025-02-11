@@ -1,0 +1,18 @@
+{% extends "layouts/main.html" %}
+{% set currentSchool = data['currentSchool'] %}
+
+{% set pageName="Home" %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full govuk-!-margin-bottom-6">
+    <span class="govuk-body-s">School ID: {{currentSchool.schoolID}}</span>
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">
+      School portal for {{currentSchool.schoolTitle}}
+    </h1>
+    <p class="govuk-body-l">You will see basic information of your school and services you can use here.</p>
+  </div>
+</div>
+
+{% endblock %}
