@@ -1,0 +1,56 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Selected academies" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">
+      Selected academies
+    </h1>
+
+    <h2 class="govuk-heading-m">Stage 1 - Selected academies</h2>
+
+    <dl class="govuk-summary-list">
+      {% for academy in data['selected-academies'] %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Academy {{ loop.index }}
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body">{{ academy.name }}</p>
+            <p class="govuk-body govuk-!-margin-bottom-0">URN: {{ academy.urn }}</p>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="confirm-delete-academy?index={{ loop.index0 }}">
+              Delete<span class="govuk-visually-hidden"> academy {{ loop.index }}</span>
+            </a>
+          </dd>
+        </div>
+      {% endfor %}
+    </dl>
+
+    <form action="summary1-handler" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-button-group">
+        <a href="create-new-project-academy-search" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          Add more academies
+        </a>
+
+        {{ govukButton({
+          text: "Confirm"
+        }) }}
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

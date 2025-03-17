@@ -9,10 +9,47 @@
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-9">
       Your applications
     </h1>
-    <a class="govuk-button govuk-!-margin-bottom-9" href="create-new-project-outgoing-trust-search.html" role="button">Start new application</a> 
+    <a class="govuk-button govuk-!-margin-bottom-9" href="create-new-project-academy-search.html" role="button">Start new application</a> 
     <h2 class="govuk-heading-l govuk-!-margin-bottom-3">
       Applications in progress
     </h2>
+
+    {% if data['applications'] and data['applications'].length > 0 %}
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Reference number</th>
+            <th scope="col" class="govuk-table__header">Date submitted</th>
+            <th scope="col" class="govuk-table__header">Academies</th>
+            <th scope="col" class="govuk-table__header">Trust</th>
+            <th scope="col" class="govuk-table__header">Status</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for application in data['applications'] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ application.refNumber }}</td>
+              <td class="govuk-table__cell">{{ application.dateSubmitted }}</td>
+              <td class="govuk-table__cell">
+                {% for academy in application.academies %}
+                  {{ academy.name }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+              </td>
+              <td class="govuk-table__cell">
+                {% if application.trustDetails.type === 'New trust' %}
+                  {{ application.trustDetails.name }} (New trust)
+                {% else %}
+                  {{ application.trustDetails.details.name }}
+                {% endif %}
+              </td>
+              <td class="govuk-table__cell">{{ application.status }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="govuk-body">You have no applications in progress.</p>
+    {% endif %}
     
   </div>
 </div>
