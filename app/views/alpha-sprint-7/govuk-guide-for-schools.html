@@ -1,219 +1,442 @@
-{% extends "layouts/main.html" %}
+{% extends "alpha-sprint-7/layouts/govuk.html" %}
 
-{% set pageName="Home" %}
+{% set pageName="Convert to an academy: guide for schools" %}
+
+{% block beforeContent %}
+  <div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/">Home</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="#">Education, training and skills</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="#">Running and managing a school</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="#">Setting up or changing the status of a school</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="#">Set up or convert to an academy</a>
+      </li>
+    </ol>
+  </div>
+{% endblock %}
 
 {% block content %}
 
-<div id="wrapper" class="direction-ltr govuk-width-container">
+<style>
+  /* GOV.UK specific styles */
+  .gem-c-organisation-logo {
+    font-size: 18px;
+    line-height: 1.11111;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-weight: 400;
+    margin-bottom: 30px;
+    padding: 5px 0;
+    color: #0b0c0c;
+  }
 
-        
-  <div class="gem-c-contextual-breadcrumbs">
-      <div class="govuk-!-display-none-print">
-        
-  
-  
-  <nav data-module="ga4-link-tracker" aria-label="Breadcrumb" class="gem-c-breadcrumbs govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile" data-ga4-link-tracker-module-started="true">
-    <ol class="govuk-breadcrumbs__list">
-          <li class="govuk-breadcrumbs__list-item">
-            <a data-ga4-link="{&quot;event_name&quot;:&quot;navigation&quot;,&quot;type&quot;:&quot;breadcrumb&quot;,&quot;index_link&quot;:&quot;1&quot;,&quot;index_total&quot;:&quot;5&quot;}" class="govuk-breadcrumbs__link" href="/">Home</a>
-          </li>
-          <li class="govuk-breadcrumbs__list-item">
-            <a data-ga4-link="{&quot;event_name&quot;:&quot;navigation&quot;,&quot;type&quot;:&quot;breadcrumb&quot;,&quot;index_link&quot;:&quot;2&quot;,&quot;index_total&quot;:&quot;5&quot;}" class="govuk-breadcrumbs__link" href="/education">Education, training and skills</a>
-          </li>
-          <li class="govuk-breadcrumbs__list-item">
-            <a data-ga4-link="{&quot;event_name&quot;:&quot;navigation&quot;,&quot;type&quot;:&quot;breadcrumb&quot;,&quot;index_link&quot;:&quot;3&quot;,&quot;index_total&quot;:&quot;5&quot;}" class="govuk-breadcrumbs__link" href="/education/running-and-managing-a-school">Running and managing a school</a>
-          </li>
-          <li class="govuk-breadcrumbs__list-item">
-            <a data-ga4-link="{&quot;event_name&quot;:&quot;navigation&quot;,&quot;type&quot;:&quot;breadcrumb&quot;,&quot;index_link&quot;:&quot;4&quot;,&quot;index_total&quot;:&quot;5&quot;}" class="govuk-breadcrumbs__link" href="/education/setting-up-or-changing-the-status-of-a-school">Setting up or changing the status of a school</a>
-          </li>
-          <li class="govuk-breadcrumbs__list-item">
-            <a data-ga4-link="{&quot;event_name&quot;:&quot;navigation&quot;,&quot;type&quot;:&quot;breadcrumb&quot;,&quot;index_link&quot;:&quot;5&quot;,&quot;index_total&quot;:&quot;5&quot;}" class="govuk-breadcrumbs__link" href="/education/set-up-or-convert-to-an-academy">Set up or convert to an academy</a>
-          </li>
-    </ol>
-  </nav>
-      </div>
+  .gem-c-organisation-logo__container {
+    text-transform: none;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .gem-c-organisation-logo__crest {
+    border-left: 2px solid #1d70b8;
+    padding-left: 10px;
+    margin-right: 10px;
+  }
+
+  .gem-c-organisation-logo__name {
+    position: relative;
+    top: -2px;
+    font-size: 24px;
+  }
+
+  .manuals-header {
+    margin-top: -10px;
+    margin-left: -30px;
+    margin-right: -30px;
+    margin-bottom: 30px;
+    padding: 45px 30px;
+    background-color: #1d70b8;
+    color: #ffffff;
+  }
+
+  .gem-c-heading {
+    margin-bottom: 15px;
+  }
+
+  .gem-c-heading--inverse {
+    color: #ffffff;
+  }
+
+  .gem-c-heading__text {
+    margin: 0;
+    padding: 0;
+  }
+
+  .govuk-heading-l {
+    color: inherit;
+  }
+
+  .gem-c-metadata {
+    margin-bottom: 20px;
+  }
+
+  .gem-c-metadata--inverse {
+    color: #ffffff;
+  }
+
+  .gem-c-metadata__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .gem-c-metadata__term,
+  .gem-c-metadata__definition {
+    display: inline-block;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .gem-c-metadata__term {
+    min-width: 120px;
+  }
+
+  .gem-c-metadata__definition {
+    margin: 0 0 10px;
+  }
+
+  .gem-c-metadata__definition:last-child {
+    margin-bottom: 0;
+  }
+
+  .gem-c-metadata__definition a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .gem-c-metadata__definition a:hover {
+    text-decoration: underline;
+  }
+
+  .gem-c-metadata__definition a:focus {
+    color: #0b0c0c;
+    background-color: #ffdd00;
+    box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c;
+    text-decoration: none;
+    outline: 3px solid transparent;
+  }
+
+  .gem-c-devolved-nations {
+    padding: 10px 0;
+    border-bottom: 1px solid #b1b4b6;
+    margin-bottom: 30px;
+  }
+
+  .gem-c-devolved-nations .govuk-heading-s {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.25;
+    color: #505a5f;
+    margin-bottom: 0;
+  }
+
+  .gem-c-document-list {
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .gem-c-document-list__item {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #b1b4b6;
+    list-style: none;
+  }
+
+  .gem-c-document-list__item:last-child {
+    border-bottom: none;
+  }
+
+  .gem-c-document-list__item-title {
+    font-family: "GDS Transport", arial, sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 1.3157894737;
+    margin: 0 0 5px;
+    padding: 0;
+  }
+
+  .gem-c-document-list__item-title a {
+    text-decoration: none;
+  }
+
+  .gem-c-document-list__item-title a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: max(1px, .0625rem);
+    text-underline-offset: 0.1em;
+  }
+
+  .gem-c-document-list__item-title a:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #ffdd00;
+    box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c;
+    text-decoration: none;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .gem-c-document-list__item-description {
+    color: #505a5f;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+
+  .gem-c-lead-paragraph {
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 24px;
+    line-height: 1.25;
+    margin-bottom: 30px;
+  }
+
+  .gem-c-print-link {
+    display: none;
+  }
+
+  @media print {
+    .gem-c-print-link {
+      display: block;
+    }
+  }
+
+  .gem-c-search {
+    position: relative;
+    margin-bottom: 30px;
+    padding: 0;
+  }
+
+  .gem-c-search--on-govuk-blue {
+    margin-bottom: 0;
+  }
+
+  .gem-c-search__label {
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.25;
+    color: #ffffff;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .gem-c-search__item-wrapper {
+    display: table;
+    width: 100%;
+    background: #ffffff;
+  }
+
+  .js-search-input-wrapper {
+    display: table-cell;
+    position: relative;
+    vertical-align: top;
+  }
+
+  .gem-c-search__item {
+    border: 0;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 19px;
+    line-height: 1.25;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 6px;
+    display: block;
+    height: 40px;
+  }
+
+  .gem-c-search__submit-wrapper {
+    display: table-cell;
+    width: 1%;
+    vertical-align: top;
+  }
+
+  .gem-c-search__submit {
+    border: 0;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    background-color: #1d70b8;
+    color: #ffffff;
+    font-size: 0;
+  }
+
+  .gem-c-search__submit:hover {
+    background-color: #003078;
+  }
+
+  .gem-c-search__submit:focus {
+    outline: 3px solid #ffdd00;
+    outline-offset: 0;
+  }
+
+  .gem-c-search__icon {
+    width: 40px;
+    height: 40px;
+    display: block;
+    margin: 0 auto;
+  }
+</style>
+
+<div class="publication-external">
+  <div class="gem-c-organisation-logo">
+    <a class="gem-c-organisation-logo__container" href="#">
+      <span class="gem-c-organisation-logo__crest">
+        <span class="gem-c-organisation-logo__name">Department<br>for Education</span>
+      </span>
+    </a>
   </div>
-  
-      
-  
-        
-  <header aria-labelledby="manual-title" class="govuk-grid-row manuals-header govuk-!-margin-bottom-4">
+</div>
+
+<header class="manuals-header">
+  <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-  
-      
-  <div id="manual-title" class="gem-c-heading  gem-c-heading--inverse govuk-!-margin-bottom-3">
-  
-    <h1 class="gem-c-heading__text govuk-heading-l">
-      Transfer academies to another trust: guidance for applicants
-  </h1>
-  </div>
-  
-      <div data-module="metadata" class="gem-c-metadata gem-c-metadata--inverse" data-metadata-module-started="true">
-    <dl class="gem-c-metadata__list">
-        <dt class="gem-c-metadata__term">From:</dt>
-        <dd class="gem-c-metadata__definition" data-module="gem-toggle" data-gem-toggle-module-started="true">
-          <a class="govuk-link" href="/government/organisations/department-for-education">Department for Education</a>
-  
-        </dd>
-        <dt class="gem-c-metadata__term">Published</dt>
-        <dd class="gem-c-metadata__definition">26 November 2015</dd>
-            <dt class="gem-c-metadata__term">Updated:</dt>
-            <dd class="gem-c-metadata__definition" data-module="gem-toggle ga4-link-tracker" data-ga4-track-links-only="" data-ga4-link="{&quot;event_name&quot;:&quot;navigation&quot;,&quot;type&quot;:&quot;content history&quot;,&quot;section&quot;:&quot;Top&quot;}" data-gem-toggle-module-started="true" data-ga4-link-tracker-module-started="true">
-              31 January 2025 - <a href="/guidance/convert-to-an-academy-information-for-schools/updates">See all updates</a>
-  
-            </dd>
-    </dl>
-  </div>
-  
+      <div class="gem-c-heading gem-c-heading--inverse">
+        <h1 class="gem-c-heading__text govuk-heading-l">
+          Convert to an academy: guide for schools
+        </h1>
+      </div>
+
+      <div class="gem-c-metadata gem-c-metadata--inverse">
+        <dl class="gem-c-metadata__list">
+          <dt class="gem-c-metadata__term">From:</dt>
+          <dd class="gem-c-metadata__definition">
+            <a href="#">Department for Education</a>
+          </dd>
+          <dt class="gem-c-metadata__term">Published</dt>
+          <dd class="gem-c-metadata__definition">26 November 2015</dd>
+          <dt class="gem-c-metadata__term">Updated:</dt>
+          <dd class="gem-c-metadata__definition">
+            31 January 2025 - <a href="#">See all updates</a>
+          </dd>
+        </dl>
+      </div>
+
       <div class="in-manual-search">
-        <form action="/search/all" data-module="ga4-form-tracker" data-ga4-form-no-answer-undefined="" data-ga4-form-include-text="" data-ga4-form="{&quot;event_name&quot;:&quot;search&quot;,&quot;type&quot;:&quot;content&quot;,&quot;section&quot;:&quot;Convert to an academy: guide for schools &quot;,&quot;action&quot;:&quot;search&quot;,&quot;url&quot;:&quot;/search/all&quot;}" data-ga4-form-tracker-module-started="true">
-          <input type="hidden" name="manual[]" value="/guidance/convert-to-an-academy-information-for-schools">
-          <div data-module="gem-toggle-input-class-on-focus" class="gem-c-search govuk-!-display-none-print gem-c-search--on-govuk-blue govuk-!-margin-bottom-6" data-gem-toggle-input-class-on-focus-module-started="true">
-      <label for="search-main-b9bb9600" class="gem-c-search__label">Search this manual</label>
-    <div class="gem-c-search__item-wrapper">
-      <div class="js-search-input-wrapper">
-        <input enterkeyhint="search" class="gem-c-search__item gem-c-search__input js-class-toggle" id="search-main-b9bb9600" name="q" title="Search" type="search" value="">
-      </div>
-      <div class="gem-c-search__item gem-c-search__submit-wrapper">
-        <button class="gem-c-search__submit" type="submit" enterkeyhint="search">
-          Search
-          
-  <svg class="gem-c-search__icon" width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-    <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
-    <line x1="17.8668" y1="17.3587" x2="26.4475" y2="25.9393" stroke="currentColor" stroke-width="3"></line>
-  </svg>
-  </button>    </div>
-    </div>
-  </div>
-  </form>    </div>
-    </div>
-  </header>
-  
-  
-      <main role="main" id="content" class="manual govuk-main-wrapper" lang="en">
-        <span id="Top"></span>
-          <div id="manuals-frontend" class="manuals-frontend-body">
-  
-      
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-    
-  
-  
-      <div class="manual-body">
-          
-  <div class="gem-c-heading govuk-!-margin-bottom-4">
-  
-    <h2 class="gem-c-heading__text gem-c-heading--font-size-27">
-      Summary
-  </h2>
-  </div>
-            <p class="gem-c-lead-paragraph">
-              How to transfer an academy from one academy trust to another. 
-  </p>
-          <div data-module="govspeak" class="gem-c-govspeak govuk-govspeak govuk-!-margin-bottom-0" data-govspeak-module-started="true">
-      
-            <p>If you are the chair of trustees of a single or multi-academy trust (SAT or MAT), you must complete the following steps.</p>
-  
-  
-  </div>
-        
-  <div class="gem-c-heading govuk-!-margin-bottom-4">
-  
-    <h2 class="gem-c-heading__text gem-c-heading--font-size-27">
-      Contents
-  </h2>
-  </div>
-  
-        
-        <ul data-module="ga4-link-tracker" data-ga4-track-links-only="" data-ga4-link="{&quot;event_name&quot;:&quot;navigation&quot;,&quot;type&quot;:&quot;document list&quot;}" class="gem-c-document-list govuk-!-margin-bottom-5" data-ga4-link-tracker-module-started="true">
-        <li class="gem-c-document-list__item  ">
-  
-          <div class="gem-c-document-list__item-title">          <a class="  govuk-link gem-c-force-print-link-styles " href="/guidance/convert-to-an-academy-information-for-schools/1-before-you-apply">1. Do due diligence</a>
-  </div>
-  
-            <p class="gem-c-document-list__item-description gem-c-document-list__item-description--full-size">Research other academy trusts to understand if they would be a good fit for your academies.</p>
-  
-  
-  
-        </li>
-        <li class="gem-c-document-list__item  ">
-  
-          <div class="gem-c-document-list__item-title">          <a class="  govuk-link gem-c-force-print-link-styles " href="/guidance/convert-to-an-academy-information-for-schools/2-apply-to-convert">2. Contact your trust relationship manager (TRM)</a>
-  </div>
-  
-            <p class="gem-c-document-list__item-description gem-c-document-list__item-description--full-size">Your TRM will help you choose the right trust, and explain what the transfers process involves.</p>
-  
-  
-  
-        </li>
-        <li class="gem-c-document-list__item  ">
-  
-          <div class="gem-c-document-list__item-title">          <a class="  govuk-link gem-c-force-print-link-styles " href="/guidance/convert-to-an-academy-information-for-schools/3-set-up-or-join-an-academy-trust">3. Discuss with your board of trustees</a>
-  </div>
-  
-            <p class="gem-c-document-list__item-description gem-c-document-list__item-description--full-size">You must get approval from your board of trustees before submitting an application. </p>
-  
-  
-  
-        </li>
-        <li class="gem-c-document-list__item  ">
-  
-          <div class="gem-c-document-list__item-title">          <a class="  govuk-link gem-c-force-print-link-styles " href="/guidance/convert-to-an-academy-information-for-schools/4-transfer-responsibilities-to-the-academy-trust">4. Gather evidence</a>
-  </div>
-  
-            <p class="gem-c-document-list__item-description gem-c-document-list__item-description--full-size">You will need evidence including academic performance, finance data and reasons for joining the trust.</p>
-  
-  
-  
-        </li>
-        <li class="gem-c-document-list__item  ">
-  
-          <div class="gem-c-document-list__item-title">          <a class="  govuk-link gem-c-force-print-link-styles " href="/guidance/convert-to-an-academy-information-for-schools/5-prepare-to-reopen-as-an-academy">5. Submit your application to the Department for Education</a>
-  </div>
-  
-            <p class="gem-c-document-list__item-description gem-c-document-list__item-description--full-size">Submit your academy transfer request, along with your supporting evidence.</p>
-  
-  
-  
-        </li>
-        <li class="gem-c-document-list__item  ">
-  
-          <div class="gem-c-document-list__item-title">          <a class="  govuk-link gem-c-force-print-link-styles " href="/guidance/convert-to-an-academy-information-for-schools/6-reopen-as-an-academy">6. Wait for a decision</a>
-  </div>
-  
-            <p class="gem-c-document-list__item-description gem-c-document-list__item-description--full-size">Your application will be reviewed by an advisory board, before a regional director makes a formal decision.</p>
-  
-  
-  
-        </li>
-        <li class="gem-c-document-list__item  ">
-  
-          <div class="gem-c-document-list__item-title">          <a class="  govuk-link gem-c-force-print-link-styles " href="/guidance/convert-to-an-academy-information-for-schools/6-reopen-as-an-academy">7 Help complete the transfer</a>
-  </div>
-  
-            <p class="gem-c-document-list__item-description gem-c-document-list__item-description--full-size">You'll need to address several things in the delivery phase before the transfer is complete.</p>
-  
-  
-  
-        </li>
-  </ul>
-  
-  
-        <div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-bottom-3">
-      <button class="govuk-link govuk-body-s gem-c-print-link__button" data-module="print-link" data-print-link-module-started="true">Print this page</button>
-  </div>
+        <form action="/search/all">
+          <div class="gem-c-search govuk-!-display-none-print gem-c-search--on-govuk-blue">
+            <label for="search-main" class="gem-c-search__label">Search this manual</label>
+            <div class="gem-c-search__item-wrapper">
+              <div class="js-search-input-wrapper">
+                <input type="search" name="q" id="search-main" class="gem-c-search__item gem-c-search__input" title="Search" enterkeyhint="search">
+              </div>
+              <div class="gem-c-search__submit-wrapper">
+                <button class="gem-c-search__submit" type="submit">
+                  Search
+                  <svg class="gem-c-search__icon" width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+                    <line x1="17.8668" y1="17.3587" x2="26.4475" y2="25.9393" stroke="currentColor" stroke-width="3"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
-  
-      </main>
+  </div>
+</header>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <section class="gem-c-devolved-nations">
+      <h2 class="govuk-heading-s govuk-!-margin-bottom-0">
+        Applies to England
+      </h2>
+    </section>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-l">Summary</h2>
+    <p class="gem-c-lead-paragraph">
+      How to transfer an academy from one academy trust to another.
+    </p>
+
+    <p class="govuk-body">If you are the chair of trustees of a single or multi-academy trust (SAT or MAT), you must complete the following steps.</p>
+
+    <h2 class="govuk-heading-l">Contents</h2>
+
+    <ul class="gem-c-document-list">
+      <li class="gem-c-document-list__item">
+        <div class="gem-c-document-list__item-title">
+          <a class="govuk-link" href="#1-before-you-apply">1. Do due diligence</a>
+        </div>
+        <p class="gem-c-document-list__item-description">Research other academy trusts to understand if they would be a good fit for your academies.</p>
+      </li>
+      <li class="gem-c-document-list__item">
+        <div class="gem-c-document-list__item-title">
+          <a class="govuk-link" href="#2-apply-to-convert">2. Contact your trust relationship manager (TRM)</a>
+        </div>
+        <p class="gem-c-document-list__item-description">Your TRM will help you choose the right trust, and explain what the transfers process involves.</p>
+      </li>
+      <li class="gem-c-document-list__item">
+        <div class="gem-c-document-list__item-title">
+          <a class="govuk-link" href="#3-set-up-or-join">3. Discuss with your board of trustees</a>
+        </div>
+        <p class="gem-c-document-list__item-description">You must get approval from your board of trustees before submitting an application.</p>
+      </li>
+      <li class="gem-c-document-list__item">
+        <div class="gem-c-document-list__item-title">
+          <a class="govuk-link" href="#4-gather-evidence">4. Gather evidence</a>
+        </div>
+        <p class="gem-c-document-list__item-description">You will need evidence including academic performance, finance data and reasons for joining the trust.</p>
+      </li>
+      <li class="gem-c-document-list__item">
+        <div class="gem-c-document-list__item-title">
+          <a class="govuk-link" href="#5-submit-application">5. Submit your application to the Department for Education</a>
+        </div>
+        <p class="gem-c-document-list__item-description">Submit your academy transfer request, along with your supporting evidence.</p>
+      </li>
+      <li class="gem-c-document-list__item">
+        <div class="gem-c-document-list__item-title">
+          <a class="govuk-link" href="#6-wait-for-decision">6. Wait for a decision</a>
+        </div>
+        <p class="gem-c-document-list__item-description">Your application will be reviewed by an advisory board, before a regional director makes a formal decision.</p>
+      </li>
+      <li class="gem-c-document-list__item">
+        <div class="gem-c-document-list__item-title">
+          <a class="govuk-link" href="#7-complete-transfer">7. Help complete the transfer</a>
+        </div>
+        <p class="gem-c-document-list__item-description">You'll need to address several things in the delivery phase before the transfer is complete.</p>
+      </li>
+    </ul>
+
+    <div class="gem-c-print-link">
+      <button class="govuk-link govuk-body-s">Print this page</button>
     </div>
+  </div>
+</div>
+
 {% endblock %}
