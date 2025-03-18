@@ -17,24 +17,30 @@
       Selected academies
     </h1>
 
-    <dl class="govuk-summary-list">
-      {% for academy in data['selected-academies'] %}
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Academy {{ loop.index }}
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <p class="govuk-body">{{ academy.name }}</p>
-            <p class="govuk-body govuk-!-margin-bottom-0">URN: {{ academy.urn }}</p>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="confirm-delete-academy?index={{ loop.index0 }}">
-              Remove<span class="govuk-visually-hidden"> academy {{ loop.index }}</span>
-            </a>
-          </dd>
-        </div>
-      {% endfor %}
-    </dl>
+    {% if not data['selected-academies'] or data['selected-academies'].length === 0 %}
+      <div class="govuk-inset-text">
+        No academies have been selected. Use the 'Add academy' button below to select academies.
+      </div>
+    {% else %}
+      <dl class="govuk-summary-list">
+        {% for academy in data['selected-academies'] %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Academy {{ loop.index }}
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <p class="govuk-body">{{ academy.name }}</p>
+              <p class="govuk-body govuk-!-margin-bottom-0">URN: {{ academy.urn }}</p>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="confirm-delete-academy?index={{ loop.index0 }}">
+                Remove<span class="govuk-visually-hidden"> academy {{ loop.index }}</span>
+              </a>
+            </dd>
+          </div>
+        {% endfor %}
+      </dl>
+    {% endif %}
 
     <form action="summary1-handler" method="post">
       <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
