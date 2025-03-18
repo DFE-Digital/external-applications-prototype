@@ -17,8 +17,6 @@
       Selected academies
     </h1>
 
-    <h2 class="govuk-heading-m">Stage 1 - Selected academies</h2>
-
     <dl class="govuk-summary-list">
       {% for academy in data['selected-academies'] %}
         <div class="govuk-summary-list__row">
@@ -31,7 +29,7 @@
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="confirm-delete-academy?index={{ loop.index0 }}">
-              Delete<span class="govuk-visually-hidden"> academy {{ loop.index }}</span>
+              Remove<span class="govuk-visually-hidden"> academy {{ loop.index }}</span>
             </a>
           </dd>
         </div>
@@ -42,7 +40,7 @@
       <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
       <div class="govuk-button-group">
         <a href="create-new-project-academy-search" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-          Add more academies
+          Add academy
         </a>
 
         {{ govukButton({
