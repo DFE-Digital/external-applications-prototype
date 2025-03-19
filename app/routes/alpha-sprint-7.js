@@ -10,7 +10,6 @@ module.exports = function (router) {
     // Handle academy confirmation
     router.post('/' + version + '/add-more-academies-handler', function (req, res) {
         const confirmAcademy = req.session.data['confirm-academy'];
-        const fromCheckAnswers = req.session.data['from-check-answers'];
         
         if (confirmAcademy === 'yes') {
             // Get the selected academy details
@@ -27,8 +26,14 @@ module.exports = function (router) {
                 name: name,
                 urn: urn
             });
+
+            // Clear any existing errors since we now have an academy
+            delete req.session.data.errors;
         }
 
+        // Ensure from-check-answers is false when adding academies
+        req.session.data['from-check-answers'] = false;
+        
         // Always go to summary1 first
         return res.redirect('summary1');
     });
@@ -36,6 +41,14 @@ module.exports = function (router) {
     // Handle summary1 confirmation
     router.post('/' + version + '/summary1-handler', function (req, res) {
         const fromCheckAnswers = req.session.data['from-check-answers'];
+        
+        // Check if any academies are selected
+        if (!req.session.data['selected-academies'] || req.session.data['selected-academies'].length === 0) {
+            // Render summary1 with error
+            return res.render(version + '/summary1', {
+                error: true
+            });
+        }
         
         // If user came from check answers, go back there
         if (fromCheckAnswers === 'true') {

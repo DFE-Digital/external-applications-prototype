@@ -13,7 +13,24 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">
+    {% if error %}
+      <div class="govuk-error-summary" data-module="govuk-error-summary">
+        <div role="alert">
+          <h2 class="govuk-error-summary__title">
+            There is a problem
+          </h2>
+          <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+              <li>
+                <a href="#selected-academies">You must select at least one academy before confirming</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-3" id="selected-academies">
       Selected academies
     </h1>
 
