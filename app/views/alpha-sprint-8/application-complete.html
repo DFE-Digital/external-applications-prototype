@@ -1,0 +1,48 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Application complete" %}
+
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {{ govukPanel({
+      titleText: "Application submitted",
+      html: "Your reference number<br><strong>" + refNumber + "</strong>"
+    }) }}
+
+    <h2 class="govuk-heading-m">What happens next</h2>
+
+    <p class="govuk-body">
+      We've sent you a confirmation email with your reference number.
+    </p>
+
+    <p class="govuk-body">
+      We will review your application and a Regional Director will make a decision on it. You should receive a decision within 6 weeks.
+    </p>
+
+    <p class="govuk-body"> 
+      We will contact you if we need any more information about the transfer.
+
+    <h2 class="govuk-heading-m">Contact us</h2>
+
+    <p class="govuk-body">
+      If you have any questions about your application, contact the academies team:
+    </p>
+
+    <ul class="govuk-list">
+      <li>Email: <a class="govuk-link" href="mailto:academies.enquiry@education.gov.uk">academies.enquiry@education.gov.uk</a></li>
+      <li>Telephone: 0800 000 000</li>
+      <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+    </ul>
+
+    <p class="govuk-body">
+      <a href="dashboard" class="govuk-link">Return to academy transfers dashboard</a>
+    </p>
+
+  </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,118 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Check your answers" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+{% if data['selected-trust'] %}
+  {% set selectedTrust = data['selected-trust'] | safe %}
+  {% set selectedTrust = selectedTrust | replace('"', "'") %}
+{% endif %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds-from-desktop">
+
+    <h1 class="govuk-heading-xl">Check your answers</h1>
+
+    <h2 class="govuk-heading-m">Stage 1 - Selected academies</h2>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Selected academies
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {% for academy in data['selected-academies'] %}
+            <p class="govuk-body">{{ academy.name }}</p>
+            <p class="govuk-body govuk-!-margin-bottom-4">URN: {{ academy.urn }}</p>
+          {% endfor %}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="summary1?from-check-answers=true">
+            Change<span class="govuk-visually-hidden"> selected academies</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+
+    <h2 class="govuk-heading-m">Stage 2 - Incoming trust</h2>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          New trust being formed
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ "Yes" if data['new-trust'] === 'yes' else "No" }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="new-trust-question?from-check-answers=true">
+            Change<span class="govuk-visually-hidden"> new trust answer</span>
+          </a>
+        </dd>
+      </div>
+
+      {% if data['new-trust'] === 'yes' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Proposed trust name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['proposed-trust-name'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="proposed-trust-name?from-check-answers=true">
+            Change<span class="govuk-visually-hidden"> trust name</span>
+          </a>
+        </dd>
+      </div>
+      {% else %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Preferred trust identified
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ "Yes" if data['preferred-trust'] === 'yes' else "No" }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="preferred-trust-question?from-check-answers=true">
+            Change<span class="govuk-visually-hidden"> preferred trust answer</span>
+          </a>
+        </dd>
+      </div>
+
+      {% if data['preferred-trust'] === 'yes' and data['selected-trust'] %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Selected trust
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <p class="govuk-body">{{ data.selectedTrust.name }}</p>
+          <p class="govuk-body">Trust reference number: {{ data.selectedTrust.ref }}</p>
+          <p class="govuk-body govuk-!-margin-bottom-0">Companies house number: {{ data.selectedTrust.companies }}</p>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="incoming-trust-search?from-check-answers=true">
+            Change<span class="govuk-visually-hidden"> selected trust</span>
+          </a>
+        </dd>
+      </div>
+      {% endif %}
+      {% endif %}
+    </dl>
+
+    <form action="application-complete" method="post" novalidate>
+      {{ govukButton({
+        text: "Submit application"
+      }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %} 

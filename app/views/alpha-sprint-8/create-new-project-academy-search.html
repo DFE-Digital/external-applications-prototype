@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Search for an academy" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form class="form" action="create-new-project-academy-search-results" method="post">
+        <input hidden type="text" name="returnToSummary" value="no"/>
+
+        {{ govukInput({
+          label: {
+            html: '<span class="govuk-caption-l">Creating a new academy transfer project</span>
+            Which academy do you want to add to this transfer application?',
+            classes: "govuk-label--xl",
+            isPageHeading: true
+          },
+          hint: {
+            text: "Search by name, UKPRN or Companies House number"
+          },
+          id: "create-new-project-academy-name",
+          name: "create-new-project-academy-name",
+          value: data["create-new-project-academy-name"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %}
