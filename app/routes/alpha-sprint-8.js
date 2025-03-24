@@ -34,18 +34,18 @@ module.exports = function (router) {
         // Ensure from-check-answers is false when adding academies
         req.session.data['from-check-answers'] = false;
         
-        // Always go to summary1 first
-        return res.redirect('summary1');
+        // Always go to selected-academies first
+        return res.redirect('selected-academies');
     });
 
-    // Handle summary1 confirmation
-    router.post('/' + version + '/summary1-handler', function (req, res) {
+    // Handle selected academies confirmation
+    router.post('/' + version + '/selected-academies-handler', function (req, res) {
         const fromCheckAnswers = req.session.data['from-check-answers'];
         
         // Check if any academies are selected
         if (!req.session.data['selected-academies'] || req.session.data['selected-academies'].length === 0) {
-            // Render summary1 with error
-            return res.render(version + '/summary1', {
+            // Render selected-academies with error
+            return res.render(version + '/selected-academies', {
                 error: true
             });
         }
@@ -143,11 +143,30 @@ module.exports = function (router) {
         const academyIndex = req.session.data['academy-index'];
 
         if (confirmDelete === 'yes' && req.session.data['selected-academies']) {
+            // Get academy name before removing it
+            const academyName = req.session.data['selected-academies'][academyIndex].name;
             // Remove the academy at the specified index
             req.session.data['selected-academies'].splice(academyIndex, 1);
+            // Store success message in session
+            req.session.data['academy-removed'] = academyName;
+            // Redirect to GET handler
+            return res.redirect('selected-academies');
         }
 
-        res.redirect('summary1');
+        res.redirect('selected-academies');
+    });
+
+    // GET handler for selected-academies page
+    router.get('/' + version + '/selected-academies', function (req, res) {
+        // Check if we have a success message
+        const removedAcademy = req.session.data['academy-removed'];
+        // Clear it from session immediately
+        delete req.session.data['academy-removed'];
+        
+        res.render(version + '/selected-academies', {
+            success: !!removedAcademy,
+            removedAcademy: removedAcademy
+        });
     });
 
     router.get('/' + version + '/s-p', function (req, res) {

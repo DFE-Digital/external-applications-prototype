@@ -1,5 +1,7 @@
 {% extends "layouts/main.html" %}
 
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
 {% set pageName="Selected academies" %}
 
 {% block beforeContent %}
@@ -13,6 +15,19 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    {% if success %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ removedAcademy }} has been removed
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+
     {% if error %}
       <div class="govuk-error-summary" data-module="govuk-error-summary">
         <div role="alert">
@@ -59,7 +74,7 @@
       </dl>
     {% endif %}
 
-    <form action="summary1-handler" method="post">
+    <form action="selected-academies-handler" method="post">
       <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
       <div class="govuk-button-group">
         <a href="create-new-project-academy-search" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
