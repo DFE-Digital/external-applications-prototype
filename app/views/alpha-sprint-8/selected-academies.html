@@ -2,7 +2,7 @@
 
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
-{% set pageName="Selected academies" %}
+{% set pageName="Academies to transfer" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -46,7 +46,7 @@
     {% endif %}
 
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-3" id="selected-academies">
-      Selected academies
+      Academies to transfer
     </h1>
 
     {% if not data['selected-academies'] or data['selected-academies'].length === 0 %}
