@@ -11,20 +11,21 @@
 
 {% block content %}
 
-{% set academy = data['selected-academy'].split('|||') %}
-{% set academyName = academy[0] %}
-{% set academyUrn = academy[1] %}
-
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
     <form class="form" action="add-more-academies-handler" method="post">
+      {% set selectedAcademy = data['selected-academy'].split('|||') %}
+      {% set academyName = selectedAcademy[0] %}
+      {% set academyUrn = selectedAcademy[1] %}
+      {% set academyPostcode = selectedAcademy[2] %}
+
       {{ govukRadios({
         idPrefix: "confirm-academy",
         name: "confirm-academy",
         fieldset: {
           legend: {
-            html: '<span class="govuk-caption-l">Stage 1 - academies to transfer</span>
+            html: '<span class="govuk-caption-l">Creating a new academy transfer project</span>
             Is this the correct academy?',
             classes: "govuk-fieldset__legend--xl",
             isPageHeading: true
@@ -34,6 +35,7 @@
           html: '<div class="govuk-inset-text">
             <h2 class="govuk-heading-m">' + academyName + '</h2>
             <p class="govuk-body">URN: ' + academyUrn + '</p>
+            <p class="govuk-body">Postcode: ' + academyUrn + '</p>
           </div>'
         },
         items: [

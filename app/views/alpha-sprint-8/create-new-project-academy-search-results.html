@@ -15,6 +15,9 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
     <form class="form" action="academy-confirmation" method="post">
+      <!-- Debug output -->
+      <pre>{{ data.academies | dump }}</pre>
+
       {{ govukRadios({
         idPrefix: "selected-academy",
         name: "selected-academy",
@@ -29,78 +32,7 @@
         hint: {
           text: "The following academies match your search"
         },
-        items: [
-          {
-            value: "St George's Primary School|||123456",
-            text: "St George's Primary School",
-            hint: {
-              text: "URN: 123456"
-            }
-          },
-          {
-            value: "Hammersmith Primary School|||123457",
-            text: "Hammersmith Primary School",
-            hint: {
-              text: "URN: 123457"
-            }
-          },
-          {
-            value: "Riverside Primary Academy|||123458",
-            text: "Riverside Primary Academy",
-            hint: {
-              text: "URN: 123458"
-            }
-          },
-          {
-            value: "Oak Tree Primary School|||123459",
-            text: "Oak Tree Primary School",
-            hint: {
-              text: "URN: 123459"
-            }
-          },
-          {
-            value: "Meadowbrook Primary Academy|||123460",
-            text: "Meadowbrook Primary Academy",
-            hint: {
-              text: "URN: 123460"
-            }
-          },
-          {
-            value: "Sunnydale Primary School|||123461",
-            text: "Sunnydale Primary School",
-            hint: {
-              text: "URN: 123461"
-            }
-          },
-          {
-            value: "Greenfield Primary Academy|||123462",
-            text: "Greenfield Primary Academy",
-            hint: {
-              text: "URN: 123462"
-            }
-          },
-          {
-            value: "Valley Primary School|||123463",
-            text: "Valley Primary School",
-            hint: {
-              text: "URN: 123463"
-            }
-          },
-          {
-            value: "Hillside Primary Academy|||123464",
-            text: "Hillside Primary Academy",
-            hint: {
-              text: "URN: 123464"
-            }
-          },
-          {
-            value: "Brookside Primary School|||123465",
-            text: "Brookside Primary School",
-            hint: {
-              text: "URN: 123465"
-            }
-          }
-        ]
+        items: radioItems
       }) }}
 
       {{ govukButton({

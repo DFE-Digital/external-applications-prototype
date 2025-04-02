@@ -1,11 +1,36 @@
 // Add your routes here - above the module.exports line
 var versionMiddleware = require("./versionMiddleware")
+const data = require('../data/data-alpha-sprint-8');
 
 module.exports = function (router) {
 
     var version = "alpha-sprint-8";
 
     versionMiddleware(router, version);
+
+    // Handle academy search results page
+    router.get('/' + version + '/create-new-project-academy-search-results', function (req, res) {
+        const radioItems = data.academies.map(academy => ({
+            value: academy.name + "|||" + academy.urn,
+            text: academy.name,
+            hint: {
+                text: `URN: ${academy.urn}`
+            }
+        }));
+
+        res.render(version + '/create-new-project-academy-search-results', {
+            radioItems: radioItems
+        });
+    });
+
+    // Handle academy selection
+    router.post('/' + version + '/academy-confirmation', function (req, res) {
+        // Store the selected academy in session
+        req.session.data['selected-academy'] = req.body['selected-academy'];
+        res.render(version + '/academy-confirmation', {
+            data: req.session.data
+        });
+    });
 
     // Handle academy confirmation
     router.post('/' + version + '/add-more-academies-handler', function (req, res) {
@@ -165,7 +190,8 @@ module.exports = function (router) {
         
         res.render(version + '/selected-academies', {
             success: !!removedAcademy,
-            removedAcademy: removedAcademy
+            removedAcademy: removedAcademy,
+            data: req.session.data
         });
     });
 
