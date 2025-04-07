@@ -1,12 +1,12 @@
 module.exports = {
     'academies': [
         {
-            name: "St George's Primary School",
+            name: "St George's Primary Academy",
             urn: "123456",
             postcode: "SW1A 1AA"
         },
         {
-            name: "Hammersmith Primary School",
+            name: "Hammersmith Primary Academy",
             urn: "123457",
             postcode: "W6 7BS"
         },
@@ -16,7 +16,7 @@ module.exports = {
             postcode: "SE1 7PB"
         },
         {
-            name: "Oak Tree Primary School",
+            name: "Oak Tree Primary Academy",
             urn: "123459",
             postcode: "E1 6AN"
         },
@@ -26,7 +26,7 @@ module.exports = {
             postcode: "N1 9GU"
         },
         {
-            name: "Sunnydale Primary School",
+            name: "Sunnydale Primary Academy",
             urn: "123461",
             postcode: "NW1 4RY"
         },
@@ -36,7 +36,7 @@ module.exports = {
             postcode: "EC1A 1BB"
         },
         {
-            name: "Valley Primary School",
+            name: "Valley Primary Academy",
             urn: "123463",
             postcode: "SW19 5AE"
         },
@@ -46,7 +46,7 @@ module.exports = {
             postcode: "W1D 3AF"
         },
         {
-            name: "Brookside Primary School",
+            name: "Brookside Primary Academy",
             urn: "123465",
             postcode: "SE10 8EW"
         }
