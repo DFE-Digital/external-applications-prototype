@@ -107,6 +107,51 @@
       {% endif %}
     </dl>
 
+    <h2 class="govuk-heading-m">Stage 3 - finance</h2>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          How will the trust be financed and how do you intend to finance the growth of the trust over the next 3 years (if applicable)?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['create-new-project-academy-finance-how-to-finance-trust'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="create-new-project-stage-3-finance-how-to-finance-trust?from-check-answers=true">
+            Change<span class="govuk-visually-hidden"> how will the trust be financed</span>
+          </a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          What is the approach to managing schools you are intending to take on which currently have deficits (if applicable)?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['create-new-project-academy-finance-approach'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="create-new-project-stage-3-finance-approach?from-check-answers=true">
+            Change<span class="govuk-visually-hidden"> what is the approach</span>
+          </a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          What steps will you take to ensure your financial model is sustainable?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['create-new-project-academy-finance-steps'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="create-new-project-stage-3-finance-steps?from-check-answers=true">
+            Change<span class="govuk-visually-hidden"> what steps will you take</span>
+          </a>
+        </dd>
+      </div>
+
+    </dl>
+
     <form action="application-complete" method="post" novalidate>
       {{ govukButton({
         text: "Submit application"

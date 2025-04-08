@@ -14,7 +14,9 @@
   <div class="govuk-grid-column-two-thirds">
 
     <form class="form" action="preferred-trust-handler" method="post">
+            <!--
       <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      -->
       {{ govukRadios({
         idPrefix: "preferred-trust",
         name: "preferred-trust",

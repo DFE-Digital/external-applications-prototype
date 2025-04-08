@@ -15,7 +15,9 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
     <form class="form" action="proposed-trust-name-handler" method="post">
+      <!--
       <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      -->
       {{ govukInput({
         label: {
           html: '<span class="govuk-caption-l">Stage 2 - incoming trust</span>

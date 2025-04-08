@@ -1,4 +1,3 @@
-
 module.exports = function (router, version) {
     const versionData = require('../data/data-' + version);
     router.use('/' + version + '/*', (req, res, next) => {

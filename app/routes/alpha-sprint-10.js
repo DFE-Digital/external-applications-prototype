@@ -8,6 +8,17 @@ module.exports = function (router) {
 
     versionMiddleware(router, version);
 
+    // Initialize from-check-answers to false for normal flow
+    router.use('/' + version + '/*', (req, res, next) => {
+        // Only set from-check-answers to true if it comes from a query parameter
+        if (req.query['from-check-answers'] === 'true') {
+            req.session.data['from-check-answers'] = true;
+        } else if (req.session.data['from-check-answers'] === undefined) {
+            req.session.data['from-check-answers'] = false;
+        }
+        next();
+    });
+
     // Handle academy search results page
     router.get('/' + version + '/create-new-project-academy-search-results', function (req, res) {
         const radioItems = data.academies.map(academy => ({
@@ -105,7 +116,9 @@ module.exports = function (router) {
         if (hasPreferredTrust === 'yes') {
             res.redirect('incoming-trust-search');
         } else {
-            res.redirect('check-your-answers');
+            // Set from-check-answers to false for normal flow
+            req.session.data['from-check-answers'] = false;
+            res.redirect('create-new-project-stage-3-finance-how-to-finance-trust');
         }
     });
 
@@ -143,9 +156,15 @@ module.exports = function (router) {
     // Handle incoming trust confirmation
     router.post('/' + version + '/incoming-trust-confirmation-handler', function (req, res) {
         const confirmTrust = req.session.data['confirm-trust'];
+        const fromCheckAnswers = req.session.data['from-check-answers'];
         
         if (confirmTrust === 'yes') {
-            res.redirect('check-your-answers');
+            // If user came from check answers, go back there
+            if (fromCheckAnswers === 'true') {
+                return res.redirect('check-your-answers');
+            }
+            // Otherwise continue with normal flow
+            res.redirect('create-new-project-stage-3-finance-how-to-finance-trust');
         } else {
             res.redirect('incoming-trust-search');
         }
@@ -153,7 +172,21 @@ module.exports = function (router) {
 
     // Handle proposed trust name submission
     router.post('/' + version + '/proposed-trust-name-handler', function (req, res) {
-        res.redirect('check-your-answers');
+        const fromCheckAnswers = req.session.data['from-check-answers'];
+        
+        // Store the proposed trust name
+        req.session.data['proposed-trust-name'] = req.body['proposed-trust-name'];
+        
+        /*
+        // If user came from check answers, go back there
+        if (fromCheckAnswers === 'true') {
+            return res.redirect('check-your-answers');
+        }
+        */
+
+        // Ensure from-check-answers stays false for normal flow
+        res.redirect('create-new-project-stage-3-finance-how-to-finance-trust');
+
     });
 
     // Handle the confirm delete page parameters
@@ -230,5 +263,36 @@ module.exports = function (router) {
         });
     });
 
+    // Handle finance trust page
+    router.post('/' + version + '/create-new-project-stage-3-finance-how-to-finance-trust-handler', function (req, res) {
+        const fromCheckAnswers = req.session.data['from-check-answers'];
+        
+        // Store the answer
+        req.session.data['how-to-finance-trust'] = req.body['how-to-finance-trust'];
+        
+        // If user came from check answers, go back there
+        if (req.session.data['from-check-answers'] == 'true') {
+            return res.redirect('check-your-answers');
+        }
+        
+        // Otherwise continue with normal flow
+        res.redirect('create-new-project-stage-3-finance-approach');
+    });
+
+    // Handle finance approach page
+    router.post('/' + version + '/create-new-project-stage-3-finance-how-to-finance-approach-handler', function (req, res) {
+        const fromCheckAnswers = req.session.data['from-check-answers'];
+        
+        // Store the answer
+        req.session.data['how-to-finance-approach'] = req.body['how-to-finance-approach'];
+        
+        // If user came from check answers, go back there
+        if (req.session.data['from-check-answers'] == 'true') {
+            return res.redirect('check-your-answers');
+        }
+        
+        // Otherwise continue with normal flow
+        res.redirect('create-new-project-stage-3-finance-steps');
+    });
 }
 
