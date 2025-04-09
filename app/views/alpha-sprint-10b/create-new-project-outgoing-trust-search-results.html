@@ -1,0 +1,64 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="OutgoingTrustSearch" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    {% if data['returnToSummary'] == 'yes' %}
+      <form class="form" action="summary1" method="post">
+    {% else %}
+      <form class="form" action="selected-academies" method="post">
+    {% endif %}
+        <input hidden type="text" name="returnToSummary" value="no"/>
+
+        {{ govukRadios({
+          idPrefix: "create-new-project-outgoing-trust-search-results",
+          name: "create-new-project-outgoing-trust-search-results",
+          fieldset: {
+            legend: {
+              html: '<span class="govuk-caption-l">Stage 1 - academies to transfer</span>
+            Select the outgoing trust',
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--xl govuk-!-margin-bottom-6"
+            }
+          },
+          items: [
+            {
+              value: "Activate Learning Education Trust (10060613)",
+              checked: checked("create-new-project-outgoing-trust-search-results", "Activate Learning Education Trust (10060613)"),
+              text: "Activate Learning Education Trust (10060613)",
+              hint: {
+                text: "Company House number: 08707909"
+              }
+            },
+            {
+              value: "St Edmundsbury And Ipswich Diocesan Multi-Academy Trust (10060972)",
+              checked: checked("create-new-project-outgoing-trust-search-results", "St Edmundsbury And Ipswich Diocesan Multi-Academy Trust (10060972)"),
+              text: "St Edmundsbury And Ipswich Diocesan Multi-Academy Trust (10060972)",
+              hint: {
+                text: "Companies House number: 09499496"
+              }
+            }
+          ]
+        }) }} 
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %}
