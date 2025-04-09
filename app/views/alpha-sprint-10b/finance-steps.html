@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="What will be your approach" %}
+{% set pageName="What steps will you take" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -14,20 +14,20 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
-    <form action="create-new-project-stage-3-finance-how-to-finance-approach-handler" method="post">
+    <form class="form" action="finance-summary" method="post">
 
 
         {{ govukCharacterCount({
           label: {
-            html: '<span class="govuk-caption-l">Stage 3 - finance</span>
-            What will be your approach to managing schools you are intending to take on which currently have deficits (if applicable)?',
+            html: '<span class="govuk-caption-l">Finance</span>
+            What steps will you take to ensure your financial model is sustainable?',
             classes: "govuk-label--l",
             isPageHeading: true
           },
           maxlength: 4000,
-          id: "create-new-project-academy-finance-approach",
-          name: "create-new-project-academy-finance-approach",
-          value: data["create-new-project-academy-finance-approach"]
+          id: "create-new-project-academy-finance-steps",
+          name: "create-new-project-academy-finance-steps",
+          value: data["create-new-project-academy-finance-steps"]
         }) }}
 
         {{ govukButton({
