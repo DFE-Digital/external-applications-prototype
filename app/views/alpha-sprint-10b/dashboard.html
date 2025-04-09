@@ -1,0 +1,57 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Home" %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full govuk-!-margin-bottom-6">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-9">
+      Your applications
+    </h1>
+    <form action="start-new-application" method="post">
+      <button class="govuk-button govuk-!-margin-bottom-9" type="submit">Start new application</button>
+    </form>
+    <h2 class="govuk-heading-l govuk-!-margin-bottom-3">
+      Applications in progress
+    </h2>
+
+    {% if data['applications'] and data['applications'].length > 0 %}
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Reference number</th>
+            <th scope="col" class="govuk-table__header">Date started</th>
+            <th scope="col" class="govuk-table__header">Status</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for application in data['applications'] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ application.refNumber }}</td>
+              <td class="govuk-table__cell">{{ application.dateStarted }}</td>
+              <td class="govuk-table__cell">
+                <strong class="govuk-tag govuk-tag--blue">
+                  {{ application.status }}
+                </strong>
+              </td>
+              <td class="govuk-table__cell">
+                {% if application.status === 'Submitted' %}
+                  <a href="check-your-answers" class="govuk-link">View application</a>
+                {% else %}
+                  <a href="application-task-list" class="govuk-link">Continue application</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="govuk-body">You have no applications in progress.</p>
+    {% endif %}
+    
+  </div>
+</div>
+
+{% endblock %}
