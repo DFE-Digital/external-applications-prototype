@@ -274,7 +274,7 @@ module.exports = function (router) {
         const application = {
             refNumber: refNumber,
             dateStarted: now.toLocaleDateString('en-GB'),
-            status: 'Not submitted yet'
+            status: 'Not submitted'
         };
 
         // Initialize applications array if it doesn't exist

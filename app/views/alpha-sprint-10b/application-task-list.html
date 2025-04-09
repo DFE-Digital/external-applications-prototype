@@ -6,7 +6,7 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
-    <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Return to the dashboard</a>
+    <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Back to dashboard</a>
 
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
       Your transfer application 
@@ -18,12 +18,12 @@
       </p>
     </div>
 
-    <h2 class="govuk-heading-m">Basic information</h2>
+    <h2 class="govuk-heading-m">About the academies and trusts</h2>
     <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="academies-to-transfer-summary" aria-describedby="basic-information-academies-status">
-            Academies to transfer
+            Academy details
           </a>
         </div>
         <div class="govuk-task-list__status" id="basic-information-academies-status">
@@ -41,7 +41,7 @@
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="incoming-trust-summary" aria-describedby="basic-information-incoming-trust-status">
-            Incoming trust
+            Trust details
           </a>
         </div>
         <div class="govuk-task-list__status" id="basic-information-incoming-trust-status">
@@ -56,24 +56,10 @@
           {% endif %}
         </div>
       </li>
-    </ul>
-
-    <h2 class="govuk-heading-m govuk-!-margin-top-5">Prepare application</h2>
-    <ul class="govuk-task-list">
-      <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-1-status">
-            Finance
-          </a>
-        </div>
-        <div class="govuk-task-list__status" id="prepare-application-1-status">
-          Completed
-        </div>
-      </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-2-status">
-            Members of the MAT
+            Members
           </a>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-2-status">
@@ -85,7 +71,7 @@
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-3-status">
-            Trustees of the MAT
+            Trustees
           </a>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-3-status">
@@ -94,26 +80,12 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-4-status">
-            Governance and structure
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-1-status">
+            Finance
           </a>
         </div>
-        <div class="govuk-task-list__status" id="prepare-application-4-status">
-          <strong class="govuk-tag govuk-tag--blue">
-            Incomplete
-          </strong>
-        </div>
-      </li>
-      <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-5-status">
-            Rationale
-          </a>
-        </div>
-        <div class="govuk-task-list__status" id="prepare-application-5-status">
-          <strong class="govuk-tag govuk-tag--blue">
-            Incomplete
-          </strong>
+        <div class="govuk-task-list__status" id="prepare-application-1-status">
+          Completed
         </div>
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
@@ -128,34 +100,57 @@
           </strong>
         </div>
       </li>
-      <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-7-status">
-            Declaration from the academy trust chair
-          </a>
-        </div>
-        <div class="govuk-task-list__status" id="prepare-application-7-status">
-          <strong class="govuk-tag govuk-tag--blue">
-            Incomplete
-          </strong>
-        </div>
-      </li>
-      <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-8-status">
-            Contact information
-          </a>
-        </div>
-        <div class="govuk-task-list__status" id="prepare-application-8-status">
-          <strong class="govuk-tag govuk-tag--blue">
-            Incomplete
-          </strong>
-        </div>
-      </li>
     </ul>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-5">Rationale and governance</h2>
+
+  <ul class="govuk-task-list">
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-5-status">
+          Rationale
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="prepare-application-5-status">
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      </div>
+    </li>
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-4-status">
+          Governance and structure
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="prepare-application-4-status">
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      </div>
+    </li>
+  </ul>
+
+  <h2 class="govuk-heading-m">Declaration</h2>
+
+  <ul class="govuk-task-list">
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-7-status">
+          Declaration from academy trust chair
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="prepare-application-4-status">
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      </div>
+    </li>
+  </ul>
+
     <div class="govuk-button-group">
       <form action="check-your-answers" method="post">
-        <button class="govuk-button" type="submit">Preview the application before submitting</button>
+        <button class="govuk-button" type="submit">Preview application</button>
       </form>
     </div>
     
