@@ -22,11 +22,13 @@
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Academies to transfer</h2>
-        <div class="govuk-summary-card__actions">
-          <a class="govuk-link" href="academies-to-transfer">
-            Change<span class="govuk-visually-hidden"> academies to transfer</span>
-          </a>
-        </div>
+        {% if not data['applications'] or data['applications'].length === 0 or data['applications'][0].status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="academies-to-transfer">
+              Change<span class="govuk-visually-hidden"> academies to transfer</span>
+            </a>
+          </div>
+        {% endif %}
       </div>
       <div class="govuk-summary-card__content">
         {% if not data['academies-to-transfer'] or data['academies-to-transfer'].length === 0 %}
@@ -54,56 +56,64 @@
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Incoming trust</h2>
-        <div class="govuk-summary-card__actions">
-          <a class="govuk-link" href="incoming-trust-summary">
-            Change<span class="govuk-visually-hidden"> incoming trust</span>
-          </a>
-        </div>
+        {% if not data['applications'] or data['applications'].length === 0 or data['applications'][0].status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="incoming-trust-summary">
+              Change<span class="govuk-visually-hidden"> incoming trust</span>
+            </a>
+          </div>
+        {% endif %}
       </div>
       <div class="govuk-summary-card__content">
-        <dl class="govuk-summary-list">
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              New trust being formed
-            </dt>
-            <dd class="govuk-summary-list__value">
-              {{ "Yes" if data['new-trust'] === 'yes' else "No" }}
-            </dd>
+        {% if not data['new-trust'] %}
+          <div class="govuk-inset-text">
+            No incoming trust information has been added.
           </div>
+        {% else %}
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                New trust being formed
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ "Yes" if data['new-trust'] === 'yes' else "No" }}
+              </dd>
+            </div>
 
-          {% if data['new-trust'] === 'yes' %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              Proposed trust name
-            </dt>
-            <dd class="govuk-summary-list__value">
-              {{ data['proposed-trust-name'] }}
-            </dd>
-          </div>
-          {% else %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              Preferred trust identified
-            </dt>
-            <dd class="govuk-summary-list__value">
-              {{ "Yes" if data['preferred-trust'] === 'yes' else "No" }}
-            </dd>
-          </div>
+            {% if data['new-trust'] === 'yes' %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Proposed trust name
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['proposed-trust-name'] }}
+              </dd>
+            </div>
+            {% else %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Preferred trust identified
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ "Yes" if data['preferred-trust'] === 'yes' else "No" }}
+              </dd>
+            </div>
 
-          {% if data['preferred-trust'] === 'yes' and data['selected-trust'] %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              Selected trust
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <p class="govuk-body">{{ data.selectedTrust.name }}</p>
-              <p class="govuk-body">Trust reference number: {{ data.selectedTrust.ref }}</p>
-              <p class="govuk-body govuk-!-margin-bottom-0">Companies house number: {{ data.selectedTrust.companies }}</p>
-            </dd>
-          </div>
-          {% endif %}
-          {% endif %}
-        </dl>
+            {% if data['preferred-trust'] === 'yes' and data['selected-trust'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Selected trust
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body">{{ data.selectedTrust.name }}</p>
+                <p class="govuk-body">Trust reference number: {{ data.selectedTrust.ref }}</p>
+                <p class="govuk-body govuk-!-margin-bottom-0">Companies house number: {{ data.selectedTrust.companies }}</p>
+              </dd>
+            </div>
+            {% endif %}
+            {% endif %}
+          </dl>
+        {% endif %}
       </div>
     </div>
 
