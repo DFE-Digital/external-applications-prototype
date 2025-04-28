@@ -8,26 +8,3 @@ https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
 
 {# 2 #}
 {% extends "govuk-prototype-kit/layouts/govuk-branded.njk" %}
-
-{% block header %}
-    {{ header({
-        "showNav": "false",
-        "showSearch": "false",
-        "showUserName": "false",
-        "userName": "",
-        "userNameURL": "",
-        "selectedNav": pageNav,
-        "logoPath": "public/images",
-        "logoAltText": "Department for Education",
-        "homeHref": "/",
-        "service": {
-        "name": "Transfer academies to another academy trust",
-        "serviceUrl": "/"
-        }
-    })}}
-{% endblock %}
-
-{% block scripts %}
-  {{ super() }}
-  <script src="/assets/javascripts/dfefrontend.js"></script>
-{% endblock %}

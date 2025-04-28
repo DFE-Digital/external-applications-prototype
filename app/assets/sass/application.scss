@@ -1,4 +1,6 @@
+/*
 @import 'node_modules/dfe-frontend/packages/dfefrontend';
+*/
 
 //
 // For guidance on how to add CSS and SCSS see:
@@ -6,40 +8,6 @@
 // 
 
 // Add extra styles here
-
-.govuk-width-container { @include govuk-width-container; }
-
-body,
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-a,
-span,
-div,
-table,
-th,
-td,
-blockquote,
-li,
-tr,
-label {
-    font-family:
-        BlinkMacSystemFont,
-        'Segoe UI',
-        Roboto,
-        Oxygen-Sans,
-        Ubuntu,
-        Cantarell,
-        'Helvetica Neue',
-        sans-serif !important;
-}
-h1.govuk-fieldset__heading {
-    line-height: inherit !important;
-}
 
 .prototype-index-card {
     background-color: #d9f0ff; 
