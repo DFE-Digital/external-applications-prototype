@@ -1,0 +1,38 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Search for incoming trust" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form class="form" action="incoming-trust-search-results" method="post">
+      {{ govukInput({
+        label: {
+          html: '<span class="govuk-caption-l">Incoming trust</span>
+          What is the incoming trust name?',
+          classes: "govuk-label--xl",
+          isPageHeading: true
+        },
+        hint: {
+          text: "Search by name, trust reference number or companies house number"
+        },
+        id: "incoming-trust-search",
+        name: "incoming-trust-search"
+      }) }}
+
+      {{ govukButton({
+        text: "Search"
+      }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %} 

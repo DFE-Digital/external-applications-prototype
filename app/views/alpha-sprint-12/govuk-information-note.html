@@ -1,0 +1,405 @@
+{% extends "alpha-sprint-7/layouts/govuk.html" %}
+
+{% set pageName="Information note for academy trusts about academy transfer" %}
+
+{% block beforeContent %}
+  <div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+          <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/">Home</a>
+          </li>
+          <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="#">Education, training and skills</a>
+          </li>
+          <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="#">Running and managing a school</a>
+          </li>
+          <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="#">Setting up or changing the status of a school</a>
+          </li>
+    </ol>
+  </div>
+{% endblock %}
+
+{% block content %}
+
+<style>
+  /* GOV.UK specific styles */
+  .gem-c-organisation-logo {
+    font-size: 18px;
+    line-height: 1.11111;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-weight: 400;
+    margin-bottom: 30px;
+    padding: 5px 0;
+    color: #0b0c0c;
+  }
+
+  .gem-c-organisation-logo__container {
+    text-transform: none;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .gem-c-organisation-logo__crest {
+    border-left: 2px solid #1d70b8;
+    padding-left: 10px;
+    margin-right: 10px;
+  }
+
+  .gem-c-organisation-logo__name {
+    position: relative;
+    top: -2px;
+    font-size: 24px;
+  }
+
+  .gem-c-inverse-header {
+    padding: 0;
+    background-color: #1d70b8;
+    color: #ffffff;
+    margin-bottom: 40px;
+    margin-top: -10px;
+    margin-left: -30px;
+    margin-right: -30px;
+    padding: 45px 30px;
+  }
+
+  .gem-c-inverse-header .govuk-caption-xl {
+    color: #ffffff;
+    margin-bottom: 15px;
+  }
+
+  .gem-c-inverse-header .govuk-heading-xl {
+    color: #ffffff;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  .gem-c-inverse-header__subtext {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 19px;
+    line-height: 1.25;
+    margin: 15px 0 0;
+    color: #ffffff;
+  }
+
+  .gem-c-inverse-header__content {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .gem-c-govspeak {
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  .gem-c-contents-list {
+    position: sticky;
+    top: 20px;
+    margin: 0;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #b1b4b6;
+  }
+
+  .gem-c-contents-list__title {
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .gem-c-contents-list__list {
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.25;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  .gem-c-contents-list__list-item {
+    padding-top: 10px;
+    line-height: 1.3;
+    list-style-type: none;
+  }
+
+  .gem-c-contents-list__link {
+    text-decoration: none;
+  }
+
+  .gem-c-contents-list__link:hover,
+  .gem-c-contents-list__link:active {
+    text-decoration: underline;
+  }
+
+  .gem-c-contents-list__link:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #ffdd00;
+    box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c;
+    text-decoration: none;
+  }
+
+  .call-to-action {
+    margin: 2em 0;
+    padding: 2em;
+    background-color: #f3f2f1;
+  }
+
+  .govuk-heading-xl {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  .govuk-caption-xl {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+    font-size: 27px;
+    line-height: 1.11111;
+    display: block;
+    margin-bottom: 5px;
+    color: #505a5f;
+  }
+
+  .govuk-inset-text {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.25;
+    color: #0b0c0c;
+    padding: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    clear: both;
+    border-left: 10px solid #b1b4b6;
+  }
+
+  abbr {
+    text-decoration: none;
+    cursor: help;
+  }
+
+  .footnotes {
+    border-top: 1px solid #b1b4b6;
+    margin-top: 30px;
+    padding-top: 10px;
+  }
+
+  .footnotes ol {
+    padding-left: 20px;
+  }
+
+  .footnotes li {
+    margin-bottom: 10px;
+  }
+
+  .gem-c-devolved-nations {
+    padding: 10px 0;
+    border-bottom: 1px solid #b1b4b6;
+    margin-bottom: 30px;
+  }
+
+  .gem-c-devolved-nations .govuk-heading-s {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.25;
+    color: #505a5f;
+    margin-bottom: 0;
+  }
+</style>
+  
+    <div class="publication-external">
+  <div class="gem-c-organisation-logo">
+    <a class="gem-c-organisation-logo__container" href="#">
+      <span class="gem-c-organisation-logo__crest">
+        <span class="gem-c-organisation-logo__name">Department<br>for Education</span>
+      </span>
+  </a>
+  </div>
+    </div>
+  
+<header class="gem-c-inverse-header">
+  <div class="gem-c-inverse-header__content">
+    <span class="govuk-caption-xl">Guidance</span>
+    <h1 class="govuk-heading-xl">Information note for academy trusts about academy transfer</h1>
+    <p class="gem-c-inverse-header__subtext">Updated 22 December 2022</p>
+  </div>
+  </header>
+  
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <section class="gem-c-devolved-nations">
+      <h2 class="govuk-heading-s govuk-!-margin-bottom-0">
+        Applies to England
+  </h2>
+  </section>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-quarter">
+    <nav class="gem-c-contents-list" aria-label="Contents">
+              <h2 class="gem-c-contents-list__title">Contents</h2>
+              <ol class="gem-c-contents-list__list">
+        <li class="gem-c-contents-list__list-item">
+          <a class="gem-c-contents-list__link" href="#academy-transfer">Academy transfer</a>
+                  </li>
+        <li class="gem-c-contents-list__list-item">
+          <a class="gem-c-contents-list__link" href="#transfer-process">Transfer process</a>
+                  </li>
+        <li class="gem-c-contents-list__list-item">
+          <a class="gem-c-contents-list__link" href="#regional-director-rd-approval">Regional director (RD) approval</a>
+                  </li>
+        <li class="gem-c-contents-list__list-item">
+          <a class="gem-c-contents-list__link" href="#due-diligence">Due diligence</a>
+                  </li>
+        <li class="gem-c-contents-list__list-item">
+          <a class="gem-c-contents-list__link" href="#delivery">Delivery</a>
+                  </li>
+              </ol>
+            </nav>
+        </div>
+        
+  <div class="govuk-grid-column-three-quarters">
+    
+  <div class="call-to-action">
+    <p>This note is designed to provide information for academy trusts involved in an academy transfer or trust closure. It does not constitute legal advice and trusts should seek independent legal advice where needed.</p>
+  </div>
+  
+    <h2 class="govuk-heading-l" id="academy-transfer">Academy transfer</h2>
+    <p class="govuk-body">An academy transfer is when an academy moves from its current trust ('the outgoing trust') to another trust ('the incoming trust'). A transfer can only happen with the agreement of the regional director (<abbr title="regional director">RD</abbr>) acting on behalf of the Secretary of State for Education. There is a range of reasons for academy transfer:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>transfer initiated by the outgoing trust – most academies that transfer between trusts do so based on a decision by the outgoing trust<sup id="fnref:1"><a href="#fn:1" class="govuk-link">[footnote 1]</a></sup>. This might be to ensure stronger school-to-school support or economies of scale, for example a single academy trust (<abbr title="single academy trust">SAT</abbr>) joining a multi-academy trust (<abbr title="multi-academy trust">MAT</abbr>). It might also be for strategic reasons, for example academies moving to MATs that are closer geographically</li>
+      <li>intervention – a small number of academies transfer each year due to intervention following, for example, an Ofsted Inadequate judgement<sup id="fnref:2"><a href="#fn:2" class="govuk-link">[footnote 2]</a></sup>. In such cases, or where there are financial, governance or safeguarding failures, <abbr title="regional directors">RDs</abbr> and the Education and Skills Funding Agency (<abbr title="Education and Skills Funding Agency">ESFA</abbr>) have the power to terminate funding agreements and transfer the academy into a new trust</li>
+    <li>trust closure – in the rare event that a trust closes, academies in the closing trust must be transferred to a new trust as part of the closure. Academies within a closing trust must be transferred even if they themselves are not otherwise eligible for intervention</li>
+  </ul>
+
+  <div class="govuk-inset-text">
+      Trusts can complete an online application to request academy transfers to another trust: <a href="https://external-applications-0c3afd1bd5f8.herokuapp.com/alpha-sprint-7/landing-page-version-1" class="govuk-link">transfer academies to another trust</a>.
+  </div>
+  
+  <p>Academy transfer remains rare. In the financial year 2021 to 2022, only 176 of the 9,900 academies moved trust. This is just 1.8% of all academies. Of these, only 14% of academies that moved trust that year were due to intervention (<a href="https://www.gov.uk/government/statistics/academy-transfers-and-funding-2021-to-2022" class="govuk-link">source: Academy transfers and funding 2021 to 2022 statistics</a>).</p>
+  
+    <p><abbr title="regional directors">RDs</abbr> will act swiftly and robustly where there is failure in an academy. <abbr title="regional directors">RDs</abbr> will assess each academy's circumstances, and the capacity of the trust, in order to decide whether an academy transfer is appropriate to bring about the necessary level of improvement and ensure the highest quality education for pupils.</p>
+  
+    <h2 class="govuk-heading-l" id="transfer-process">Transfer process</h2>
+  
+  <p>Academy transfers are approved by <abbr title="regional directors">RDs</abbr>. Prior to approval, the case will be discussed at the regional <a href="https://www.gov.uk/government/collections/advisory-boards" class="govuk-link">advisory board</a> which is an advisory body comprising members with local knowledge, expertise and experience, who are responsible for advising and challenging <abbr title="regional directors">RDs</abbr> on academy-related decisions. Following a discussion of the case at an advisory board, the <abbr title="regional director">RD</abbr> will usually decide whether to approve the incoming trust at the meeting but the <abbr title="regional director">RD</abbr> may do so after it.</p>
+  
+  <p>From the point the <abbr title="regional director">RD</abbr> approves a transfer in principle, the aspiration is for the transfer process to be completed within 6 months in straightforward cases. More complex cases may take longer. Delivery officers in the Department for Education (<abbr title="Department for Education">DfE</abbr>) are responsible for driving the process forward and supporting trusts to meet their obligations. Trusts should expect to work closely and openly with both the department and each other until the process is completed.</p>
+  
+    <h2 class="govuk-heading-l" id="regional-director-rd-approval">Regional director (<abbr title="regional director">RD</abbr>) approval</h2>
+  
+  <p>For the majority of transfers initiated by the outgoing trust, for example where there is one identified incoming trust and no sponsorship issues, <abbr title="regional director">RD</abbr> approval will typically be straightforward.</p>
+  
+  <p>In intervention cases, the department will consider potential incoming trusts. <abbr title="regional directors">RDs</abbr> reach a decision about the preferred incoming trust by considering a number of factors, including a strong track record of school improvement, governance and finance, and evidence of how the trust would support the academy in question and capacity to do so. In some cases an expression of interest process may be used. Again, this would depend on the circumstances of the individual case. The case would then be discussed at an advisory board prior to <abbr title="regional director">RD</abbr> approval.</p>
+  
+  <p>The proposed transfer and the name of the incoming trust will be announced in the advisory board agenda.</p>
+  
+  <p>Following <abbr title="regional director">RD</abbr> approval of the incoming trust, the incoming trust is expected to engage stakeholders. <abbr title="Department for Education">DfE</abbr> delivery officers can advise on how to do this.</p>
+  
+  <p>Both the outgoing and incoming trusts will be sent their respective trust agreements (sample agreements are attached at annexes A and B) by the <abbr title="Department for Education">DfE</abbr> delivery officer. These documents outline what trusts are expected to do throughout the academy transfer process. After signing and returning their trust agreements, trusts are then responsible for working together to manage the commercial and legal implications of the transfer, to a timeline agreed with the department. Final approval to transfer will be given by the department once these elements have been finalised and trusts will sign various documents to complete the transfer.</p>
+  
+  <p>Where the incoming trust will provide school improvement support to the transferring academy before the transfer, it is advisable that an agreement is prepared ahead of any such support so that both parties are clear about the expectations of the scope of the school improvement work and how any payments will be made. A recommended service level agreement is attached at annex C. This should be adapted to meet the particular needs of the transfer.</p>
+  
+    <h2 class="govuk-heading-l" id="due-diligence">Due diligence</h2>
+  
+    <p>Due diligence should be undertaken by the incoming trust to understand the academy's position. The outgoing trust must cooperate and provide all the information requested. The extent of due diligence is determined by the incoming trust. This may vary on a case by case basis, but it will usually include assessment of education provision, pupil population, finances, staffing, governance and the school buildings and estate. The incoming trust must fully assure itself that sufficient due diligence has been carried out, confirming to the department that due diligence has been completed and that the trust is aware of any ongoing issues ahead of transferring.</p>
+  
+  <p>Best practice <a href="https://www.gov.uk/government/publications/due-diligence-in-academies-and-maintained-schools" class="govuk-link">guidance on undertaking due diligence is available</a>. For intervention cases the expectation is due diligence should take around 1 month.</p>
+  
+    <p>Grant funding for transfers is by exception and is normally provided only in intervention cases. In such cases, the department will then agree an appropriate level of funding for the incoming trust to facilitate an efficient transfer<sup id="fnref:3"><a href="#fn:3" class="govuk-link">[footnote 3]</a></sup>.</p>
+  
+  <p>Trusts should be aware of the financial liabilities involved in the academy transfer process. The <a href="https://www.gov.uk/government/publications/academy-transfers-information-for-academy-trusts" class="govuk-link">information note for trusts on finances and liabilities</a> sets out the risks in more detail. It is important that trusts give due attention to this note to fully understand the potential impact on their transfer and understand the guidelines in which they must operate.</p>
+  
+  <p>The incoming trust must then sign and return the negotiating offer closure letter (a sample is attached at annex D) once all funding has been agreed. The purpose of this letter is to summarise in one place all the funding the trust will receive and to agree a transfer date. It will be sent in addition to the individual grant offers which set out the conditions of each grant.</p>
+  
+    <h2 class="govuk-heading-l" id="delivery">Delivery</h2>
+  
+    <p>Trusts should address several things in the delivery phase (after the <abbr title="regional director">RD</abbr>'s decision) before completing the transfer. These include the incoming trust engaging stakeholders and producing legal documents.</p>
+  
+  <p>Stakeholder engagement is an opportunity for:</p>
+  
+    <ul class="govuk-list govuk-list--bullet">
+    <li>the incoming and outgoing trusts to explain more about the transfer, listen to questions and address any issues</li>
+    <li>the incoming trust to meet with parents, teachers and the local community and set out its plans for the school. If relevant, this should include how the plans will support the school to improve</li>
+  </ul>
+  
+  <p>Trusts need to produce legal documents for review and clearance by the <abbr title="Department for Education">DfE</abbr> delivery officer. The outgoing and incoming trusts  need to agree and sign these. The delivery officer will set deadlines on a case by case basis. Trusts need to meet these deadlines  for the transfer to happen on the planned date.</p>
+  
+    <h3 class="govuk-heading-m" id="working-with-solicitors">Working with solicitors</h3>
+  
+  <p>Trusts are responsible for ensuring these actions take place but may wish to ask solicitors to prepare the documents on their behalf. If this is the case, trusts should ensure they understand the process and timelines and relay this to their solicitors. Trusts should provide their delivery officer with regular progress updates and ask if they are unsure about timelines or have any further questions.</p>
+  
+  <p>The key documents and actions that make up the delivery phase are:</p>
+  
+    <h3 class="govuk-heading-m" id="funding-agreement">Funding agreement</h3>
+  
+    <p>The funding agreement (<abbr title="funding agreement">FA</abbr>) provides the framework for an academy or free school to operate in. In the case of academy transfers, our preferred route for the legal transfer is novation and variation to move from the existing funding agreement documents to the new model versions. The deed of novation and variation enable the academy's existing <abbr title="funding agreement">FA</abbr> to transfer from the outgoing to incoming trust.</p>
+  
+  <p>All academies that transfer must use the latest version of the model <abbr title="funding agreement">FA</abbr>.  Where the incoming trust has a master funding agreement earlier than the latest model version, the delivery officer will ask the trust to adopt the latest model as part of the transfer process.</p>
+  
+  <p>See the latest model master and supplemental funding agreement documents on the <a href="https://www.gov.uk/government/collections/convert-to-an-academy-documents-for-schools" class="govuk-link">convert to academy: documents for schools</a> page.</p>
+  
+  <p>The deed of novation and variation will need to be drafted by the incoming trust and agreed with the outgoing trust and the department, as both trusts and the department will need to sign this document to finalise the transfer. Draft documents should be sent to the delivery officer to clear before being signed.</p>
+  
+    <h3 class="govuk-heading-m" id="commercial-transfer-agreement">Commercial transfer agreement</h3>
+  
+  <p>The commercial transfer agreement (<abbr title="commercial transfer agreement">CTA</abbr>) is used to transfer assets and liabilities (including contracts and staff) from one academy trust to another. It needs to be agreed by both the incoming and outgoing trusts. A final draft of the agreement should be shared with the delivery officer before being signed by both trusts. Trusts should contact their <abbr title="Department for Education">DfE</abbr> delivery officer for a copy of the <abbr title="commercial transfer agreement">CTA</abbr> used in transfer cases.</p>
+  
+    <h3 class="govuk-heading-m" id="transfer-of-undertakings-protection-of-employment-regulations-2006">Transfer of Undertakings (Protection of Employment) Regulations 2006</h3>
+  
+    <p>Transfer of Undertakings (Protection of Employment) Regulations 2006 (<abbr title="Transfer of Undertakings (Protection of Employment) Regulations 2006">TUPE</abbr>) allows staff to automatically transfer their terms and conditions from the outgoing to incoming trust. The incoming trust will need to work with the outgoing trust on the <abbr title="Transfer of Undertakings (Protection of Employment) Regulations 2006">TUPE</abbr> consultation. Trusts will need to confirm to the department that the <abbr title="Transfer of Undertakings (Protection of Employment) Regulations 2006">TUPE</abbr> consultation has taken place and staff have been <abbr title="Transfer of Undertakings (Protection of Employment) Regulations 2006">TUPE</abbr>'d across to the new trust.</p>
+  
+    <h3 class="govuk-heading-m" id="private-finance-initiative-pfi-contract">Private finance initiative (<abbr title="private finance initiative">PFI</abbr>) contract</h3>
+  
+  <p>Where there is a <abbr title="private finance initiative">PFI</abbr> contract in place, this will need to be transferred to the incoming trust. These should be novated to the new trust on the existing terms.</p>
+  
+    <h3 class="govuk-heading-m" id="land-transfer">Land transfer</h3>
+  
+    <p>Before an academy can transfer, the outgoing trust will need to seek the Secretary of State's consent to dispose of the land or lease to allow it to move to the new trust. To do this, the outgoing trust will need to complete <a href="https://www.gov.uk/guidance/submit-a-school-land-transaction-proposal#application-forms-for-school-land-transactions" class="govuk-link">form M - academy land transfers</a>.</p>
+  
+    <h3 class="govuk-heading-m" id="payment-information--bank-details">Payment information – bank details</h3>
+  
+    <p>To ensure that funding is paid to the incoming trust on time, accurately and securely, the department needs confirmation of the incoming trust's bank details. The form to <a href="https://www.gov.uk/government/publications/academy-bank-details-form" class="govuk-link">provide information about your banking and payments to <abbr title="Department for Education">DfE</abbr></a> should be used to do this.</p>
+  
+  <p>If the department does not receive the completed form before the deadline (as set by the delivery officer), it will result in a delay to the incoming trust receiving funding.</p>
+  
+    <h3 class="govuk-heading-m" id="insurance">Insurance</h3>
+  
+    <p>The trusts must confirm that the benefit of any insurance policies has been passed to the incoming trust. This includes confirming that the insurer was properly notified of any risk exposure. If not already members, trusts may want to consider the department's <a href="https://www.gov.uk/guidance/academies-risk-protection-arrangement-rpa" class="govuk-link">risk protection arrangement (<abbr title="risk protection arrangement">RPA</abbr>)</a> instead of commercial insurance.</p>
+  
+    <h3 class="govuk-heading-m" id="general-annual-grant-gag-payment">General annual grant (<abbr title="general annual grant">GAG</abbr>) payment</h3>
+  
+  <p>Trusts need to be aware that in the planned month of the trust transfer, they will receive the <abbr title="general annual grant">GAG</abbr> payment on the sixth working day of the month unless other arrangements have been made.</p>
+  
+    <div class="footnotes">
+    <ol>
+      <li id="fn:1">
+          <p>Voluntary transfers are also known as 'approved transfers' or 'transfer by mutual agreement'.<a href="#fnref:1" class="govuk-link">↩</a></p>
+      </li>
+      <li id="fn:2">
+          <p>These transfers are also known as 'intervention transfers' or 'enforced transfers'.<a href="#fnref:2" class="govuk-link">↩</a></p>
+      </li>
+      <li id="fn:3">
+        <p>Information about indicative grant funding levels can be found within the technical section of <a rel="external" href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/726556/Academy_Transfers_and_Funding_2017_to_2018_Text.pdf" class="govuk-link">Academy transfers and funding in England (PDF, 488KB)</a>.&nbsp;<a href="#fnref:3" class="govuk-link" role="doc-backlink" aria-label="go to where this is referenced">↩</a></p>
+      </li>
+    </ol>
+  </div>
+    </div>
+  </div>
+  
+{% endblock %}
