@@ -50,5 +50,41 @@ module.exports = {
             urn: "123465",
             postcode: "SE10 8EW"
         }
+    ],
+    'applications': [
+        {
+            'reference': "240315-ABC34",
+            'dateStarted': "15/03/2024",
+            'status': "Not submitted",
+            'leadApplicant': "Zara Laney",
+            'taskOwners': {
+                'academies': {
+                    name: "Zara Laney"
+                },
+                'incomingTrust': {
+                    name: "Alex Ferguson"
+                },
+                'finance': {
+                    name: ""
+                }
+            }
+        },
+        {
+            'reference': "240315-XYZ45",
+            'dateStarted': "15/03/2024",
+            'status': "Not submitted",
+            'leadApplicant': "John Smith",
+            'taskOwners': {
+                'academies': {
+                    name: "Sarah Johnson"
+                },
+                'incomingTrust': {
+                    name: "Michael Brown"
+                },
+                'finance': {
+                    name: ""
+                }
+            }
+        }
     ]
 }

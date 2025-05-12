@@ -234,6 +234,25 @@ module.exports = function (router) {
         });
     });
 
+    // GET handler for application task list 2
+    router.get('/' + version + '/application-task-list-2', function (req, res) {
+        const ref = req.query.ref;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        if (application) {
+            // Store the current application data in session
+            req.session.data['application'] = {
+                reference: application.reference,
+                leadApplicant: application.leadApplicant
+            };
+            req.session.data['taskOwners'] = application.taskOwners;
+        }
+        
+        res.render(version + '/application-task-list-2', {
+            data: req.session.data
+        });
+    });
+
     // GET handler for new trust question
     router.get('/' + version + '/incoming-trust-new-trust-question', function (req, res) {
         res.render(version + '/incoming-trust-new-trust-question', {
@@ -259,31 +278,64 @@ module.exports = function (router) {
 
     // Handle starting a new application
     router.post('/' + version + '/start-new-application', function (req, res) {
-        // Generate a reference number (format: YYMMDD-XXXXX)
-        const now = new Date();
-        const year = now.getFullYear().toString().slice(-2);
-        const month = (now.getMonth() + 1).toString().padStart(2, '0');
-        const day = now.getDate().toString().padStart(2, '0');
-        const random = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const refNumber = `${year}${month}${day}-${random}`;
+        // Get the next application from the data file
+        const nextApplication = data.applications[req.session.data['applications'] ? req.session.data['applications'].length : 0];
         
-        // Store the reference number in session
-        req.session.data['application-reference'] = refNumber;
-        
-        // Create application record
-        const application = {
-            refNumber: refNumber,
-            dateStarted: now.toLocaleDateString('en-GB'),
-            status: 'Not submitted'
-        };
+        if (!nextApplication) {
+            // If no more applications in data file, generate a new one
+            const now = new Date();
+            const year = now.getFullYear().toString().slice(-2);
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const random = Math.random().toString(36).substring(2, 7).toUpperCase();
+            const refNumber = `${year}${month}${day}-${random}`;
+            
+            // Create application record
+            const application = {
+                refNumber: refNumber,
+                dateStarted: now.toLocaleDateString('en-GB'),
+                status: 'Not submitted',
+                leadApplicant: 'New Applicant',
+                taskOwners: {
+                    academies: { name: 'Not assigned' },
+                    incomingTrust: { name: 'Not assigned' },
+                    finance: { name: 'Not assigned' }
+                }
+            };
 
-        // Initialize applications array if it doesn't exist
-        if (!req.session.data['applications']) {
-            req.session.data['applications'] = [];
+            // Initialize applications array if it doesn't exist
+            if (!req.session.data['applications']) {
+                req.session.data['applications'] = [];
+            }
+
+            // Add the new application
+            req.session.data['applications'].unshift(application);
+            
+            // Store the current application data
+            req.session.data['application-reference'] = refNumber;
+            req.session.data['taskOwners'] = application.taskOwners;
+        } else {
+            // Use the predefined application from data file
+            const application = {
+                refNumber: nextApplication.reference,
+                dateStarted: new Date().toLocaleDateString('en-GB'),
+                status: 'Not submitted',
+                leadApplicant: nextApplication.leadApplicant,
+                taskOwners: nextApplication.taskOwners
+            };
+
+            // Initialize applications array if it doesn't exist
+            if (!req.session.data['applications']) {
+                req.session.data['applications'] = [];
+            }
+
+            // Add the new application
+            req.session.data['applications'].unshift(application);
+            
+            // Store the current application data
+            req.session.data['application-reference'] = nextApplication.reference;
+            req.session.data['taskOwners'] = nextApplication.taskOwners;
         }
-
-        // Add the new application
-        req.session.data['applications'].unshift(application);
         
         // Clear any existing application data
         req.session.data['academies-to-transfer'] = [];
@@ -295,6 +347,15 @@ module.exports = function (router) {
         req.session.data['incoming-trust-status'] = false;
         
         res.redirect('application-task-list');
+    });
+
+    // GET handler for dashboard-2
+    router.get('/' + version + '/dashboard-2', function (req, res) {
+        // Load applications data into session
+        req.session.data['applications'] = data.applications;
+        res.render(version + '/dashboard-2', {
+            data: req.session.data
+        });
     });
 }
 

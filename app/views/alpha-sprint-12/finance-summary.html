@@ -18,6 +18,12 @@
       Finance summary
     </h1>
 
+    <div class="govuk-inset-text">
+      <p>
+        <strong>{% if data.taskOwners.finance.name %} Assigned to: {{ data.taskOwners.finance.name }}{% else %}Not assigned yet{% endif %}</strong> <a class="govuk-link" href="#">Change</a>
+      </p>
+    </div>
+
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">

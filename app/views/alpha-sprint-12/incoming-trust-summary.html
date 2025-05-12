@@ -18,6 +18,12 @@
       Incoming trust
     </h1>
 
+    <div class="govuk-inset-text">
+      <p>
+        <strong>{% if data.taskOwners.incomingTrust.name %}Assigned to: {{ data.taskOwners.incomingTrust.name }}{% else %}Not assigned yet{% endif %}</strong> <a class="govuk-link" href="#">Change</a>
+      </p>
+    </div>
+
     {% if not data['new-trust'] or data['new-trust'].length === 0 %}
     <div class="govuk-inset-text">
       No incoming trust information has been added. Use the 'Add incoming trust information' button below to add information.
@@ -90,8 +96,6 @@
       {% endif %}
     </dl>
     {% endif %}
-
-    
 
     <form action="application-task-list" method="post">
       <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">

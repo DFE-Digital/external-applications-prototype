@@ -8,6 +8,24 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
     <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Back to dashboard</a>
 
+    <!-- Notification banner
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+          Success
+        </h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <h3 class="govuk-notification-banner__heading">
+          Contributor invite sent
+        </h3>
+        <p class="govuk-body">
+          Contributor invite is sent to <strong>ady.horan@education.gov.uk</strong> and <strong>kimberley.frame@education.gov.uk</strong>.
+        </p>
+      </div>
+    </div>
+     -->  
+
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
       Your application 
     </h1>
@@ -15,6 +33,9 @@
     <div class="govuk-inset-text govuk-!-margin-bottom-9">
       <p>
         Application reference: <strong>{{ data['application-reference'] }}</strong>
+      </p>
+      <p>
+        Lead applicant: <strong>Zara Laney</strong>
       </p>
     </div>
 
@@ -25,6 +46,9 @@
           <a class="govuk-link govuk-task-list__link" href="academies-to-transfer-summary" aria-describedby="basic-information-academies-status">
             Academies to transfer
           </a>
+          <div id="task-1-hint" class="govuk-task-list__hint">
+            <span class="hint-name"><strong>Assigned to: {{ data.taskOwners.academies.name }}</strong></span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="basic-information-academies-status">
           {% if data['academies-to-transfer-status'] %}
@@ -43,6 +67,9 @@
           <a class="govuk-link govuk-task-list__link" href="incoming-trust-summary" aria-describedby="basic-information-incoming-trust-status">
             Incoming trust
           </a>
+          <div id="task-2-hint" class="govuk-task-list__hint">
+            <span class="hint-name"><strong>Assigned to: {{ data.taskOwners.incomingTrust.name }}</strong></span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="basic-information-incoming-trust-status">
           {% if data['incoming-trust-status'] %}
@@ -61,6 +88,9 @@
           <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-2-status">
             Members
           </a>
+          <div id="task-3-hint" class="govuk-task-list__hint">
+            <span class="hint-name"><strong>Not assigned yet</strong></span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-2-status">
           <strong class="govuk-tag govuk-tag--blue">
@@ -73,6 +103,9 @@
           <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-3-status">
             Trustees
           </a>
+          <div id="task-4-hint" class="govuk-task-list__hint">
+            <span class="hint-name"><strong>Not assigned yet</strong></span>
+            </div>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-3-status">
           <strong class="govuk-tag govuk-tag--blue">
@@ -85,6 +118,9 @@
           <a class="govuk-link govuk-task-list__link" href="finance-summary" aria-describedby="prepare-application-1-status">
             Finance
           </a>
+          <div id="task-5-hint" class="govuk-task-list__hint">
+            <span class="hint-name"><strong>Not assigned yet</strong></span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-1-status">
           {% if data['finance-status'] %}
@@ -103,6 +139,9 @@
           <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-6-status">
             Consent and consultations
           </a>
+          <div id="task-6-hint" class="govuk-task-list__hint">
+            <span class="hint-name"><strong>Not assigned yet</strong></span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-6-status">
           <strong class="govuk-tag govuk-tag--blue">
@@ -120,6 +159,9 @@
         <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-5-status">
           Rationale
         </a>
+        <div id="task-7-hint" class="govuk-task-list__hint">
+          <span class="hint-name"><strong>Not assigned yet</strong></span>
+        </div>
       </div>
       <div class="govuk-task-list__status" id="prepare-application-5-status">
         <strong class="govuk-tag govuk-tag--blue">
@@ -132,6 +174,9 @@
         <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-4-status">
           Governance and structure
         </a>
+        <div id="task-8-hint" class="govuk-task-list__hint">
+          <span class="hint-name"><strong>Not assigned yet</strong></span>
+        </div>
       </div>
       <div class="govuk-task-list__status" id="prepare-application-4-status">
         <strong class="govuk-tag govuk-tag--blue">
@@ -149,6 +194,9 @@
         <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-7-status">
           Declaration from academy trust chair
         </a>
+        <div id="task-9-hint" class="govuk-task-list__hint">
+          <span class="hint-name"><strong>Not assigned yet</strong></span>
+        </div>
       </div>
       <div class="govuk-task-list__status" id="prepare-application-4-status">
         <strong class="govuk-tag govuk-tag--blue">
