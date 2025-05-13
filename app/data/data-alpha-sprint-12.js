@@ -58,15 +58,9 @@ module.exports = {
             'status': "Not submitted",
             'leadApplicant': "Zara Laney",
             'taskOwners': {
-                'academies': {
-                    name: "Zara Laney"
-                },
-                'incomingTrust': {
-                    name: "Alex Jones"
-                },
-                'finance': {
-                    name: ""
-                }
+                'academies': "zara.laney@education.gov.uk",
+                'incomingTrust': "alex.jones@education.gov.uk",
+                'finance': ""
             },
             'contributors': [
                 {
@@ -85,15 +79,9 @@ module.exports = {
             'status': "Not submitted",
             'leadApplicant': "John Smith",
             'taskOwners': {
-                'academies': {
-                    name: "Sarah Johnson"
-                },
-                'incomingTrust': {
-                    name: "Michael Brown"
-                },
-                'finance': {
-                    name: ""
-                }
+                'academies': "sarah.johnson@education.gov.uk",
+                'incomingTrust': "michael.brown@education.gov.uk",
+                'finance': ""
             },
             'contributors': [
                 {
@@ -107,6 +95,13 @@ module.exports = {
                 {
                     name: "Michael Brown",
                     email: "michael.brown@education.gov.uk"
+                }
+            ],
+            'academies-to-transfer': [
+                {
+                    name: "Hammersmith Primary Academy",
+                    urn: "123457",
+                    postcode: "W6 7BS"
                 }
             ]
         }

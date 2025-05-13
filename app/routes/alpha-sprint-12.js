@@ -278,64 +278,38 @@ module.exports = function (router) {
 
     // Handle starting a new application
     router.post('/' + version + '/start-new-application', function (req, res) {
-        // Get the next application from the data file
-        const nextApplication = data.applications[req.session.data['applications'] ? req.session.data['applications'].length : 0];
+        // Generate a new application reference
+        const now = new Date();
+        const year = now.getFullYear().toString().slice(-2);
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const random = Math.random().toString(36).substring(2, 7).toUpperCase();
+        const refNumber = `${year}${month}${day}-${random}`;
         
-        if (!nextApplication) {
-            // If no more applications in data file, generate a new one
-            const now = new Date();
-            const year = now.getFullYear().toString().slice(-2);
-            const month = (now.getMonth() + 1).toString().padStart(2, '0');
-            const day = now.getDate().toString().padStart(2, '0');
-            const random = Math.random().toString(36).substring(2, 7).toUpperCase();
-            const refNumber = `${year}${month}${day}-${random}`;
-            
-            // Create application record
-            const application = {
-                refNumber: refNumber,
-                dateStarted: now.toLocaleDateString('en-GB'),
-                status: 'Not submitted',
-                leadApplicant: 'New Applicant',
-                taskOwners: {
-                    academies: { name: 'Not assigned' },
-                    incomingTrust: { name: 'Not assigned' },
-                    finance: { name: 'Not assigned' }
-                }
-            };
-
-            // Initialize applications array if it doesn't exist
-            if (!req.session.data['applications']) {
-                req.session.data['applications'] = [];
+        // Create application record with empty task owners
+        const application = {
+            refNumber: refNumber,
+            dateStarted: now.toLocaleDateString('en-GB'),
+            status: 'Not submitted',
+            leadApplicant: 'New Applicant',
+            taskOwners: {
+                academies: [],
+                incomingTrust: [],
+                finance: []
             }
+        };
 
-            // Add the new application
-            req.session.data['applications'].unshift(application);
-            
-            // Store the current application data
-            req.session.data['application-reference'] = refNumber;
-            req.session.data['taskOwners'] = application.taskOwners;
-        } else {
-            // Use the predefined application from data file
-            const application = {
-                refNumber: nextApplication.reference,
-                dateStarted: new Date().toLocaleDateString('en-GB'),
-                status: 'Not submitted',
-                leadApplicant: nextApplication.leadApplicant,
-                taskOwners: nextApplication.taskOwners
-            };
-
-            // Initialize applications array if it doesn't exist
-            if (!req.session.data['applications']) {
-                req.session.data['applications'] = [];
-            }
-
-            // Add the new application
-            req.session.data['applications'].unshift(application);
-            
-            // Store the current application data
-            req.session.data['application-reference'] = nextApplication.reference;
-            req.session.data['taskOwners'] = nextApplication.taskOwners;
+        // Initialize applications array if it doesn't exist
+        if (!req.session.data['applications']) {
+            req.session.data['applications'] = [];
         }
+
+        // Add the new application
+        req.session.data['applications'].unshift(application);
+        
+        // Store the current application data
+        req.session.data['application-reference'] = refNumber;
+        req.session.data['taskOwners'] = application.taskOwners;
         
         // Clear any existing application data
         req.session.data['academies-to-transfer'] = [];
@@ -345,6 +319,14 @@ module.exports = function (router) {
         req.session.data['proposed-trust-name'] = null;
         req.session.data['academies-to-transfer-status'] = false;
         req.session.data['incoming-trust-status'] = false;
+
+        // If this is application 240315-XYZ45, use the pre-populated data
+        if (refNumber === '240315-XYZ45') {
+            const predefinedApplication = data.applications.find(app => app.reference === '240315-XYZ45');
+            if (predefinedApplication && predefinedApplication['academies-to-transfer']) {
+                req.session.data['academies-to-transfer'] = predefinedApplication['academies-to-transfer'];
+            }
+        }
         
         res.redirect('application-task-list');
     });
@@ -406,6 +388,154 @@ module.exports = function (router) {
         
         // Redirect back to contributors home
         res.redirect('contributors-home');
+    });
+
+    // Handle task owner update
+    router.post('/' + version + '/task-owner-update-handler', function (req, res) {
+        const task = req.query.task;
+        const selectedOwners = req.body['task-owner'];
+        
+        // Get the current application
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        if (application) {
+            // Initialize taskOwners if it doesn't exist
+            if (!application.taskOwners) {
+                application.taskOwners = {};
+            }
+            
+            // Store the selected owners as an array
+            application.taskOwners[task] = Array.isArray(selectedOwners) ? selectedOwners : [selectedOwners];
+            
+            // Update session data
+            req.session.data.taskOwners = application.taskOwners;
+        }
+        
+        // Redirect back to the previous page
+        res.redirect('javascript:window.history.back()');
+    });
+
+    // GET handler for task owner update page
+    router.get('/' + version + '/task-owner-update', function (req, res) {
+        const task = req.query.task;
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Get current task owners' emails
+        let currentTaskOwnerEmails = [];
+        if (application && application.taskOwners && application.taskOwners[task]) {
+            currentTaskOwnerEmails = Array.isArray(application.taskOwners[task]) 
+                ? application.taskOwners[task] 
+                : [application.taskOwners[task]];
+        }
+        
+        // Prepare checkbox items from contributors
+        const checkboxItems = [];
+        if (application && application.contributors) {
+            checkboxItems.push(...application.contributors.map(contributor => ({
+                value: contributor.email,
+                text: contributor.name,
+                hint: {
+                    text: contributor.email
+                },
+                checked: currentTaskOwnerEmails.includes(contributor.email)
+            })));
+        }
+        
+        res.render(version + '/task-owner-update', {
+            data: req.session.data,
+            task: task,
+            checkboxItems: checkboxItems
+        });
+    });
+
+    // Helper function to process task owners
+    function processTaskOwners(taskOwners, contributors) {
+        if (!taskOwners) return 'Not assigned yet';
+        
+        const owners = Array.isArray(taskOwners) ? taskOwners : [taskOwners];
+        if (owners.length === 0) return 'Not assigned yet';
+        
+        return owners.map(owner => {
+            const contributor = contributors.find(c => c.email === owner);
+            return contributor ? contributor.name : owner;
+        }).join(', ');
+    }
+
+    // GET handler for academies to transfer summary
+    router.get('/' + version + '/academies-to-transfer-summary', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Process task owners
+        const taskOwnerDisplay = processTaskOwners(
+            application?.taskOwners?.academies,
+            application?.contributors || []
+        );
+        
+        res.render(version + '/academies-to-transfer-summary', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // GET handler for incoming trust summary
+    router.get('/' + version + '/incoming-trust-summary', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Process task owners
+        const taskOwnerDisplay = processTaskOwners(
+            application?.taskOwners?.incomingTrust,
+            application?.contributors || []
+        );
+        
+        res.render(version + '/incoming-trust-summary', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // GET handler for finance summary
+    router.get('/' + version + '/finance-summary', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Process task owners
+        const taskOwnerDisplay = processTaskOwners(
+            application?.taskOwners?.finance,
+            application?.contributors || []
+        );
+        
+        res.render(version + '/finance-summary', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
     });
 }
 

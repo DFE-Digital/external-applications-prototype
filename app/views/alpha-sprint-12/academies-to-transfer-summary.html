@@ -51,7 +51,7 @@
 
     <div class="govuk-inset-text">
       <p>
-        <strong>{% if data.taskOwners.academies.name %}Assigned to: {{ data.taskOwners.academies.name }}{% else %}Not assigned yet{% endif %}</strong> <a class="govuk-link" href="#">Change</a>
+        <strong>Assigned to: {{ taskOwnerDisplay }}</strong> <a class="govuk-link" href="task-owner-update?task=academies">Change</a>
       </p>
     </div>
 
