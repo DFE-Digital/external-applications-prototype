@@ -291,12 +291,18 @@ module.exports = function (router) {
             refNumber: refNumber,
             dateStarted: now.toLocaleDateString('en-GB'),
             status: 'Not submitted',
-            leadApplicant: 'New Applicant',
+            leadApplicant: 'Zara Laney',
             taskOwners: {
                 academies: [],
                 incomingTrust: [],
                 finance: []
-            }
+            },
+            contributors: [
+                {
+                    name: "Zara Laney",
+                    email: "zara.laney@education.gov.uk"
+                }
+            ]
         };
 
         // Initialize applications array if it doesn't exist
@@ -310,6 +316,7 @@ module.exports = function (router) {
         // Store the current application data
         req.session.data['application-reference'] = refNumber;
         req.session.data['taskOwners'] = application.taskOwners;
+        req.session.data['contributors'] = application.contributors;
         
         // Clear any existing application data
         req.session.data['academies-to-transfer'] = [];
@@ -319,14 +326,6 @@ module.exports = function (router) {
         req.session.data['proposed-trust-name'] = null;
         req.session.data['academies-to-transfer-status'] = false;
         req.session.data['incoming-trust-status'] = false;
-
-        // If this is application 240315-XYZ45, use the pre-populated data
-        if (refNumber === '240315-XYZ45') {
-            const predefinedApplication = data.applications.find(app => app.reference === '240315-XYZ45');
-            if (predefinedApplication && predefinedApplication['academies-to-transfer']) {
-                req.session.data['academies-to-transfer'] = predefinedApplication['academies-to-transfer'];
-            }
-        }
         
         res.redirect('application-task-list');
     });
@@ -342,11 +341,23 @@ module.exports = function (router) {
 
     // GET handler for contributors-home
     router.get('/' + version + '/contributors-home', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
         if (application) {
-            // Store the contributors data in session
+            // Update session data to match the data file
+            req.session.data.application = {
+                reference: application.reference,
+                contributors: application.contributors || []
+            };
             req.session.data['contributors'] = application.contributors || [];
         }
         
@@ -377,12 +388,17 @@ module.exports = function (router) {
             }
             
             // Add the new contributor
-            application.contributors.push({
+            const newContributor = {
                 email: email,
                 name: email.split('@')[0].replace('.', ' ').replace(/([A-Z])/g, ' $1').trim() // Generate name from email
-            });
+            };
+            application.contributors.push(newContributor);
             
-            // Update the session data
+            // Update the session data to match the data file
+            req.session.data.application = {
+                reference: application.reference,
+                contributors: application.contributors
+            };
             req.session.data['contributors'] = application.contributors;
         }
         
@@ -421,6 +437,16 @@ module.exports = function (router) {
         const task = req.query.task;
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
+        
+        // Update session data with application data from data file
+        if (application) {
+            req.session.data.application = {
+                reference: application.reference,
+                contributors: application.contributors || []
+            };
+            req.session.data.taskOwners = application.taskOwners || {};
+            req.session.data['contributors'] = application.contributors || [];
+        }
         
         // Get current task owners' emails
         let currentTaskOwnerEmails = [];
@@ -481,6 +507,14 @@ module.exports = function (router) {
             application?.taskOwners?.academies,
             application?.contributors || []
         );
+
+        // If the application has pre-populated academies in the data file, look up their full details
+        if (application && application['academies-to-transfer']) {
+            req.session.data['academies-to-transfer'] = application['academies-to-transfer'].map(urn => {
+                const academy = data.academies.find(a => a.urn === urn);
+                return academy || { urn }; // Return full academy details if found, or just URN if not found
+            });
+        }
         
         res.render(version + '/academies-to-transfer-summary', {
             data: req.session.data,

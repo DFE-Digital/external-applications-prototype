@@ -97,13 +97,7 @@ module.exports = {
                     email: "michael.brown@education.gov.uk"
                 }
             ],
-            'academies-to-transfer': [
-                {
-                    name: "Hammersmith Primary Academy",
-                    urn: "123457",
-                    postcode: "W6 7BS"
-                }
-            ]
+            'academies-to-transfer': ["123457"]
         }
     ]
 }
