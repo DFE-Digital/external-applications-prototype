@@ -357,5 +357,55 @@ module.exports = function (router) {
             data: req.session.data
         });
     });
+
+    // GET handler for contributors-home
+    router.get('/' + version + '/contributors-home', function (req, res) {
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        if (application) {
+            // Store the contributors data in session
+            req.session.data['contributors'] = application.contributors || [];
+        }
+        
+        res.render(version + '/contributors-home', {
+            data: req.session.data
+        });
+    });
+
+    // GET handler for contributor invite page
+    router.get('/' + version + '/contributor-invite', function (req, res) {
+        res.render(version + '/contributor-invite', {
+            data: req.session.data
+        });
+    });
+
+    // POST handler for contributor invite form
+    router.post('/' + version + '/contributor-invite-handler', function (req, res) {
+        const email = req.body['contributor-email'];
+        const ref = req.session.data.application.reference;
+        
+        // Find the application in the data file
+        const application = data.applications.find(app => app.reference === ref);
+        
+        if (application) {
+            // Initialize contributors array if it doesn't exist
+            if (!application.contributors) {
+                application.contributors = [];
+            }
+            
+            // Add the new contributor
+            application.contributors.push({
+                email: email,
+                name: email.split('@')[0].replace('.', ' ').replace(/([A-Z])/g, ' $1').trim() // Generate name from email
+            });
+            
+            // Update the session data
+            req.session.data['contributors'] = application.contributors;
+        }
+        
+        // Redirect back to contributors home
+        res.redirect('contributors-home');
+    });
 }
 

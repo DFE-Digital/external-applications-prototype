@@ -62,12 +62,22 @@ module.exports = {
                     name: "Zara Laney"
                 },
                 'incomingTrust': {
-                    name: "Alex Ferguson"
+                    name: "Alex Jones"
                 },
                 'finance': {
                     name: ""
                 }
-            }
+            },
+            'contributors': [
+                {
+                    name: "Zara Laney",
+                    email: "zara.laney@education.gov.uk"
+                },
+                {
+                    name: "Alex Jones",
+                    email: "alex.jones@education.gov.uk"
+                }
+            ]
         },
         {
             'reference': "240315-XYZ45",
@@ -84,7 +94,21 @@ module.exports = {
                 'finance': {
                     name: ""
                 }
-            }
+            },
+            'contributors': [
+                {
+                    name: "John Smith",
+                    email: "john.smith@education.gov.uk"
+                },
+                {
+                    name: "Sarah Johnson",
+                    email: "sarah.johnson@education.gov.uk"
+                },
+                {
+                    name: "Michael Brown",
+                    email: "michael.brown@education.gov.uk"
+                }
+            ]
         }
     ]
 }
