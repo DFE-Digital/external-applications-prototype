@@ -18,36 +18,6 @@
     </h2>
 
     {% if data['new-application-started'] %}
-    <table class="govuk-table">
-      <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Reference number</th>
-          <th scope="col" class="govuk-table__header">Date started</th>
-          <th scope="col" class="govuk-table__header">Status</th>
-          <th scope="col" class="govuk-table__header">Action</th>
-        </tr>
-      </thead>
-      <tbody class="govuk-table__body">
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">240315-ABC34</td>
-          <td class="govuk-table__cell">15/03/2025</td>
-          <td class="govuk-table__cell">
-            <strong class="govuk-tag govuk-tag--blue">
-              Not submitted
-            </strong>
-          </td>
-          <td class="govuk-table__cell">
-            <a href="application-task-list?ref=240315-ABC34" class="govuk-link">Continue application</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    {% else %}
-      <p class="govuk-body">You have no applications in progress.</p>
-    {% endif %}
-
-    <!--
-    {% if data['applications'] and data['applications'].length > 0 %}
       <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
@@ -58,30 +28,25 @@
           </tr>
         </thead>
         <tbody class="govuk-table__body">
-          {% for application in data['applications'] %}
+          {% if newApplication %}
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell">{{ application.refNumber }}</td>
-              <td class="govuk-table__cell">{{ application.dateStarted }}</td>
+              <td class="govuk-table__cell">{{ newApplication.reference }}</td>
+              <td class="govuk-table__cell">{{ newApplication.dateStarted }}</td>
               <td class="govuk-table__cell">
                 <strong class="govuk-tag govuk-tag--blue">
-                  {{ application.status }}
+                  {{ newApplication.status }}
                 </strong>
               </td>
               <td class="govuk-table__cell">
-                {% if application.status === 'Submitted' %}
-                  <a href="check-your-answers" class="govuk-link">View application</a>
-                {% else %}
-                  <a href="application-task-list" class="govuk-link">Continue application</a>
-                {% endif %}
+                <a href="application-task-list?ref={{ newApplication.reference }}" class="govuk-link">Continue application</a>
               </td>
             </tr>
-          {% endfor %}
+          {% endif %}
         </tbody>
       </table>
     {% else %}
       <p class="govuk-body">You have no applications in progress.</p>
     {% endif %}
-    -->
     
   </div>
 </div>

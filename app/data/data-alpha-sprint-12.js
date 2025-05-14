@@ -55,7 +55,7 @@ module.exports = {
         {
             'reference': "240315-ABC34",
             'dateStarted': "15/03/2025",
-            'status': "Not submitted",
+            'status': "Not submitted yet",
             'leadApplicant': "Zara Laney",
             'taskOwners': {
                 'academies': "",
@@ -65,32 +65,32 @@ module.exports = {
             'contributors': [
                 {
                     name: "Zara Laney",
-                    email: "zara.laney@education.gov.uk"
+                    email: "zara.laney@test.org"
                 }
             ]
         },
         {
             'reference': "240315-XYZ45",
             'dateStarted': "15/03/2025",
-            'status': "Not submitted",
+            'status': "Not submitted yet",
             'leadApplicant': "Zara Laney",
             'taskOwners': {
-                'academies': ["zara.laney@education.gov.uk"],
-                'incomingTrust': ["john.smith@education.gov.uk"],
-                'finance': ["sarah.johnson@education.gov.uk"]
+                'academies': ["zara.laney@test.org"],
+                'incomingTrust': ["john.smith@test.org"],
+                'finance': ["sarah.johnson@test.org"]
             },
             'contributors': [
                 {
                     name: "Zara Laney",
-                    email: "zara.laney@education.gov.uk"
+                    email: "zara.laney@test.org"
                 },
                 {
                     name: "John Smith",
-                    email: "john.smith@education.gov.uk"
+                    email: "john.smith@test.org"
                 },
                 {
                     name: "Sarah Johnson",
-                    email: "sarah.johnson@education.gov.uk"
+                    email: "sarah.johnson@test.org"
                 }
             ],
             'academies-to-transfer': ["123456"],

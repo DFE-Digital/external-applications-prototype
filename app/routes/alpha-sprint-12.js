@@ -188,24 +188,23 @@ module.exports = function (router) {
 
     // Handle application submission
     router.post('/' + version + '/application-complete', function (req, res) {
-        // Find the most recent application (which is the one we're working on)
-        const applications = req.session.data['applications'] || [];
-        const currentApplication = applications[0]; // Most recent application is at index 0
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
         
-        if (currentApplication) {
-            // Update the existing application
-            currentApplication.status = 'Submitted';
-            currentApplication.dateSubmitted = new Date().toLocaleDateString('en-GB');
+        if (application) {
+            // Update the application status
+            application.status = "Submitted";
+            application.dateSubmitted = new Date().toLocaleDateString('en-GB');
             
             // Update the application details
-            currentApplication.academies = req.session.data['academies-to-transfer'] || [];
-            currentApplication.trustDetails = req.session.data['new-trust'] === 'yes' 
+            application.academies = req.session.data['academies-to-transfer'] || [];
+            application.trustDetails = req.session.data['new-trust'] === 'yes' 
                 ? { type: 'New trust', name: req.session.data['proposed-trust-name'] }
                 : { type: 'Existing trust', details: req.session.data.selectedTrust };
         }
         
         res.render(version + '/application-complete', {
-            refNumber: currentApplication.refNumber
+            refNumber: ref
         });
     });
 
@@ -246,9 +245,27 @@ module.exports = function (router) {
             req.session.data['finance-status'] = application['finance-status'] || false;
         }
         
+        // Process task owners for each task
+        const processTaskOwnerDisplay = (taskKey) => {
+            let display = 'Not assigned yet';
+            if (application?.taskOwners?.[taskKey]) {
+                const owners = Array.isArray(application.taskOwners[taskKey]) 
+                    ? application.taskOwners[taskKey] 
+                    : [application.taskOwners[taskKey]];
+                
+                if (owners.length > 0 && !owners.includes('_unchecked')) {
+                    display = 'Assigned to: ' + owners.map(owner => {
+                        const contributor = application.contributors.find(c => c.email === owner);
+                        return contributor ? contributor.name : owner;
+                    }).join(', ');
+                }
+            }
+            return display;
+        };
+        
         res.render(version + '/application-task-list', {
             data: req.session.data,
-            processTaskOwners: processTaskOwners
+            processTaskOwners: processTaskOwnerDisplay
         });
     });
 
@@ -331,12 +348,20 @@ module.exports = function (router) {
     });
     */
 
-    // GET handler for dashboard-2
-    router.get('/' + version + '/dashboard-2', function (req, res) {
+    // GET handler for dashboard
+    router.get('/' + version + '/dashboard', function (req, res) {
         // Load applications data into session
         req.session.data['applications'] = data.applications;
-        res.render(version + '/dashboard-2', {
-            data: req.session.data
+        
+        // Find the new application if new-application-started is true
+        let newApplication = null;
+        if (req.session.data['new-application-started']) {
+            newApplication = data.applications.find(app => app.reference === '240315-ABC34');
+        }
+        
+        res.render(version + '/dashboard', {
+            data: req.session.data,
+            newApplication: newApplication
         });
     });
 
@@ -533,10 +558,19 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         // Process task owners
-        const taskOwnerDisplay = processTaskOwners(
-            application?.taskOwners?.academies,
-            application?.contributors || []
-        );
+        let taskOwnerDisplay = 'Not assigned yet';
+        if (application?.taskOwners?.academies) {
+            const owners = Array.isArray(application.taskOwners.academies) 
+                ? application.taskOwners.academies 
+                : [application.taskOwners.academies];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = application.contributors.find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
 
         // If the application has pre-populated academies in the data file, look up their full details
         if (application && application['academies-to-transfer']) {
@@ -566,10 +600,19 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         // Process task owners
-        const taskOwnerDisplay = processTaskOwners(
-            application?.taskOwners?.incomingTrust,
-            application?.contributors || []
-        );
+        let taskOwnerDisplay = 'Not assigned yet';
+        if (application?.taskOwners?.incomingTrust) {
+            const owners = Array.isArray(application.taskOwners.incomingTrust) 
+                ? application.taskOwners.incomingTrust 
+                : [application.taskOwners.incomingTrust];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = application.contributors.find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
         
         res.render(version + '/incoming-trust-summary', {
             data: req.session.data,
@@ -591,10 +634,19 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         // Process task owners
-        const taskOwnerDisplay = processTaskOwners(
-            application?.taskOwners?.finance,
-            application?.contributors || []
-        );
+        let taskOwnerDisplay = 'Not assigned yet';
+        if (application?.taskOwners?.finance) {
+            const owners = Array.isArray(application.taskOwners.finance) 
+                ? application.taskOwners.finance 
+                : [application.taskOwners.finance];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = application.contributors.find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
         
         res.render(version + '/finance-summary', {
             data: req.session.data,
