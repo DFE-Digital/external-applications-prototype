@@ -32,10 +32,10 @@
 
     <div class="govuk-inset-text govuk-!-margin-bottom-9">
       <p>
-        Application reference: <strong>{{ data['application-reference'] }}</strong>
+        Application reference: <strong>{{ data.application.reference }}</strong>
       </p>
       <p>
-        Lead applicant: <strong>Zara Laney</strong>
+        Lead applicant: <strong>{{ data.application.leadApplicant }}</strong>
       </p>
     </div>
 
@@ -47,7 +47,13 @@
             Academies to transfer
           </a>
           <div id="task-1-hint" class="govuk-task-list__hint">
-            <span class="hint-name"><strong>Not assigned yet</strong></span>
+            <span class="hint-name">
+              {% if data.taskOwners and data.taskOwners.academies %}
+                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.academies, data.contributors) }}</strong>
+              {% else %}
+                <strong>Not assigned yet</strong>
+              {% endif %}
+            </span>
           </div>
         </div>
         <div class="govuk-task-list__status" id="basic-information-academies-status">
@@ -68,7 +74,13 @@
             Incoming trust
           </a>
           <div id="task-2-hint" class="govuk-task-list__hint">
-            <span class="hint-name"><strong>Not assigned yet</strong></span>
+            <span class="hint-name">
+              {% if data.taskOwners and data.taskOwners.incomingTrust %}
+                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.incomingTrust, data.contributors) }}</strong>
+              {% else %}
+                <strong>Not assigned yet</strong>
+              {% endif %}
+            </span>
           </div>
         </div>
         <div class="govuk-task-list__status" id="basic-information-incoming-trust-status">
@@ -89,7 +101,13 @@
             Members
           </a>
           <div id="task-3-hint" class="govuk-task-list__hint">
-            <span class="hint-name"><strong>Not assigned yet</strong></span>
+            <span class="hint-name">
+              {% if data.taskOwners and data.taskOwners.members %}
+                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.members, data.contributors) }}</strong>
+              {% else %}
+                <strong>Not assigned yet</strong>
+              {% endif %}
+            </span>
           </div>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-2-status">
@@ -104,8 +122,14 @@
             Trustees
           </a>
           <div id="task-4-hint" class="govuk-task-list__hint">
-            <span class="hint-name"><strong>Not assigned yet</strong></span>
-            </div>
+            <span class="hint-name">
+              {% if data.taskOwners and data.taskOwners.trustees %}
+                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.trustees, data.contributors) }}</strong>
+              {% else %}
+                <strong>Not assigned yet</strong>
+              {% endif %}
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-3-status">
           <strong class="govuk-tag govuk-tag--blue">
@@ -119,7 +143,13 @@
             Finance
           </a>
           <div id="task-5-hint" class="govuk-task-list__hint">
-            <span class="hint-name"><strong>Not assigned yet</strong></span>
+            <span class="hint-name">
+              {% if data.taskOwners and data.taskOwners.finance %}
+                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.finance, data.contributors) }}</strong>
+              {% else %}
+                <strong>Not assigned yet</strong>
+              {% endif %}
+            </span>
           </div>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-1-status">
@@ -140,7 +170,13 @@
             Consent and consultations
           </a>
           <div id="task-6-hint" class="govuk-task-list__hint">
-            <span class="hint-name"><strong>Not assigned yet</strong></span>
+            <span class="hint-name">
+              {% if data.taskOwners and data.taskOwners.consent %}
+                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.consent, data.contributors) }}</strong>
+              {% else %}
+                <strong>Not assigned yet</strong>
+              {% endif %}
+            </span>
           </div>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-6-status">
@@ -160,7 +196,13 @@
             Rationale
           </a>
           <div id="task-7-hint" class="govuk-task-list__hint">
-            <span class="hint-name"><strong>Not assigned yet</strong></span>
+            <span class="hint-name">
+              {% if data.taskOwners and data.taskOwners.rationale %}
+                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.rationale, data.contributors) }}</strong>
+              {% else %}
+                <strong>Not assigned yet</strong>
+              {% endif %}
+            </span>
           </div>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-5-status">
@@ -175,7 +217,13 @@
             Governance and structure
           </a>
           <div id="task-8-hint" class="govuk-task-list__hint">
-            <span class="hint-name"><strong>Not assigned yet</strong></span>
+            <span class="hint-name">
+              {% if data.taskOwners and data.taskOwners.governance %}
+                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.governance, data.contributors) }}</strong>
+              {% else %}
+                <strong>Not assigned yet</strong>
+              {% endif %}
+            </span>
           </div>
         </div>
         <div class="govuk-task-list__status" id="prepare-application-4-status">
@@ -195,10 +243,16 @@
             Declaration from academy trust chair
           </a>
           <div id="task-9-hint" class="govuk-task-list__hint">
-            <span class="hint-name"><strong>Not assigned yet</strong></span>
+            <span class="hint-name">
+              {% if data.taskOwners and data.taskOwners.declaration %}
+                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.declaration, data.contributors) }}</strong>
+              {% else %}
+                <strong>Not assigned yet</strong>
+              {% endif %}
+            </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="prepare-application-4-status">
+        <div class="govuk-task-list__status" id="prepare-application-7-status">
           <strong class="govuk-tag govuk-tag--blue">
             Incomplete
           </strong>

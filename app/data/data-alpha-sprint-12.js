@@ -58,18 +58,14 @@ module.exports = {
             'status': "Not submitted",
             'leadApplicant': "Zara Laney",
             'taskOwners': {
-                'academies': "zara.laney@education.gov.uk",
-                'incomingTrust': "alex.jones@education.gov.uk",
+                'academies': "",
+                'incomingTrust': "",
                 'finance': ""
             },
             'contributors': [
                 {
                     name: "Zara Laney",
                     email: "zara.laney@education.gov.uk"
-                },
-                {
-                    name: "Alex Jones",
-                    email: "alex.jones@education.gov.uk"
                 }
             ]
         },

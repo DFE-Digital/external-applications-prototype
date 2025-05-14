@@ -229,27 +229,23 @@ module.exports = function (router) {
 
     // GET handler for application task list
     router.get('/' + version + '/application-task-list', function (req, res) {
-        res.render(version + '/application-task-list', {
-            data: req.session.data
-        });
-    });
-
-    // GET handler for application task list 2
-    router.get('/' + version + '/application-task-list-2', function (req, res) {
         const ref = req.query.ref;
         const application = data.applications.find(app => app.reference === ref);
         
         if (application) {
             // Store the current application data in session
-            req.session.data['application'] = {
+            req.session.data.application = {
                 reference: application.reference,
-                leadApplicant: application.leadApplicant
+                leadApplicant: application.leadApplicant,
+                contributors: application.contributors || []
             };
-            req.session.data['taskOwners'] = application.taskOwners;
+            req.session.data.taskOwners = application.taskOwners || {};
+            req.session.data['contributors'] = application.contributors || [];
         }
         
-        res.render(version + '/application-task-list-2', {
-            data: req.session.data
+        res.render(version + '/application-task-list', {
+            data: req.session.data,
+            processTaskOwners: processTaskOwners
         });
     });
 
@@ -275,8 +271,9 @@ module.exports = function (router) {
         // Go to application task list
         return res.redirect('application-task-list');
     });
-
+    
     // Handle starting a new application
+    /*
     router.post('/' + version + '/start-new-application', function (req, res) {
         // Generate a new application reference
         const now = new Date();
@@ -329,6 +326,7 @@ module.exports = function (router) {
         
         res.redirect('application-task-list');
     });
+    */
 
     // GET handler for dashboard-2
     router.get('/' + version + '/dashboard-2', function (req, res) {

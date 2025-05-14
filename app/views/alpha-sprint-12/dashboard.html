@@ -10,13 +10,43 @@
       Your applications
     </h1>
     <p class="govuk-body">Please start a new application only if you are the lead applicant of the project.</p>
-    <form action="start-new-application" method="post">
+    <form action="application-task-list?ref=240315-ABC34&new-application-started=true" method="post">
       <button class="govuk-button govuk-!-margin-bottom-9" type="submit">Start new application</button>
     </form>
     <h2 class="govuk-heading-l govuk-!-margin-bottom-3">
       Applications in progress
     </h2>
 
+    {% if data['new-application-started'] %}
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Reference number</th>
+          <th scope="col" class="govuk-table__header">Date started</th>
+          <th scope="col" class="govuk-table__header">Status</th>
+          <th scope="col" class="govuk-table__header">Action</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">240315-ABC34</td>
+          <td class="govuk-table__cell">15/03/2024</td>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag govuk-tag--blue">
+              Not submitted
+            </strong>
+          </td>
+          <td class="govuk-table__cell">
+            <a href="application-task-list?ref=240315-ABC34" class="govuk-link">Continue application</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    {% else %}
+      <p class="govuk-body">You have no applications in progress.</p>
+    {% endif %}
+
+    <!--
     {% if data['applications'] and data['applications'].length > 0 %}
       <table class="govuk-table">
         <thead class="govuk-table__head">
@@ -51,6 +81,7 @@
     {% else %}
       <p class="govuk-body">You have no applications in progress.</p>
     {% endif %}
+    -->
     
   </div>
 </div>
