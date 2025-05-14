@@ -241,6 +241,9 @@ module.exports = function (router) {
             };
             req.session.data.taskOwners = application.taskOwners || {};
             req.session.data['contributors'] = application.contributors || [];
+            req.session.data['academies-to-transfer-status'] = application['academies-to-transfer-status'] || false;
+            req.session.data['incoming-trust-status'] = application['incoming-trust-status'] || false;
+            req.session.data['finance-status'] = application['finance-status'] || false;
         }
         
         res.render(version + '/application-task-list', {

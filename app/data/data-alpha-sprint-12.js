@@ -54,7 +54,7 @@ module.exports = {
     'applications': [
         {
             'reference': "240315-ABC34",
-            'dateStarted': "15/03/2024",
+            'dateStarted': "15/03/2025",
             'status': "Not submitted",
             'leadApplicant': "Zara Laney",
             'taskOwners': {
@@ -71,15 +71,19 @@ module.exports = {
         },
         {
             'reference': "240315-XYZ45",
-            'dateStarted': "15/03/2024",
+            'dateStarted': "15/03/2025",
             'status': "Not submitted",
-            'leadApplicant': "John Smith",
+            'leadApplicant': "Zara Laney",
             'taskOwners': {
-                'academies': "sarah.johnson@education.gov.uk",
-                'incomingTrust': "michael.brown@education.gov.uk",
-                'finance': ""
+                'academies': ["zara.laney@education.gov.uk"],
+                'incomingTrust': ["john.smith@education.gov.uk"],
+                'finance': ["sarah.johnson@education.gov.uk"]
             },
             'contributors': [
+                {
+                    name: "Zara Laney",
+                    email: "zara.laney@education.gov.uk"
+                },
                 {
                     name: "John Smith",
                     email: "john.smith@education.gov.uk"
@@ -87,13 +91,12 @@ module.exports = {
                 {
                     name: "Sarah Johnson",
                     email: "sarah.johnson@education.gov.uk"
-                },
-                {
-                    name: "Michael Brown",
-                    email: "michael.brown@education.gov.uk"
                 }
             ],
-            'academies-to-transfer': ["123457", "123459"]
+            'academies-to-transfer': ["123456"],
+            'academies-to-transfer-status': true,
+            'incoming-trust-status': false,
+            'finance-status': false
         }
     ]
 }
