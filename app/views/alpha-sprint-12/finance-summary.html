@@ -4,8 +4,9 @@
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back",
-    href: "javascript:window.history.back()"
+    text: "Back to the application form",
+    href: "application-task-list?ref=" + data.application.reference,
+    classes: "govuk-!-margin-top-6"
   }) }}
 {% endblock %}
 

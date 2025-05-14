@@ -408,9 +408,9 @@ module.exports = function (router) {
     router.post('/' + version + '/task-owner-update-handler', function (req, res) {
         const task = req.query.task;
         const selectedOwners = req.body['task-owner'];
-        
-        // Get the current application
         const ref = req.session.data.application.reference;
+        
+        // Find the application in the data file
         const application = data.applications.find(app => app.reference === ref);
         
         if (application) {
@@ -419,15 +419,36 @@ module.exports = function (router) {
                 application.taskOwners = {};
             }
             
-            // Store the selected owners as an array
-            application.taskOwners[task] = Array.isArray(selectedOwners) ? selectedOwners : [selectedOwners];
+            // Store the selected owners as an array, filtering out any undefined or null values
+            if (selectedOwners) {
+                application.taskOwners[task] = Array.isArray(selectedOwners) 
+                    ? selectedOwners.filter(owner => owner && owner !== '_unchecked')
+                    : [selectedOwners];
+            } else {
+                application.taskOwners[task] = [];
+            }
             
-            // Update session data
+            // Update session data to match the data file
             req.session.data.taskOwners = application.taskOwners;
         }
         
-        // Redirect back to the previous page
-        res.redirect('javascript:window.history.back()');
+        // Redirect to the appropriate summary page based on the task
+        let redirectUrl;
+        switch (task) {
+            case 'academies':
+                redirectUrl = 'academies-to-transfer-summary';
+                break;
+            case 'incomingTrust':
+                redirectUrl = 'incoming-trust-summary';
+                break;
+            case 'finance':
+                redirectUrl = 'finance-summary';
+                break;
+            default:
+                redirectUrl = 'application-task-list?ref=' + ref;
+        }
+        
+        res.redirect('/' + version + '/' + redirectUrl);
     });
 
     // GET handler for task owner update page
@@ -466,11 +487,19 @@ module.exports = function (router) {
                 checked: currentTaskOwnerEmails.includes(contributor.email)
             })));
         }
+
+        // Get current task owners' names for display
+        const currentTaskOwners = processTaskOwners(
+            application?.taskOwners?.[task],
+            application?.contributors || []
+        );
         
         res.render(version + '/task-owner-update', {
             data: req.session.data,
             task: task,
-            checkboxItems: checkboxItems
+            checkboxItems: checkboxItems,
+            currentTaskOwners: currentTaskOwners,
+            currentTaskOwnerEmails: currentTaskOwnerEmails
         });
     });
 

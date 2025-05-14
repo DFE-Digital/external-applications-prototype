@@ -2,13 +2,14 @@
 
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageName="Update task owner" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back",
-    href: "javascript:window.history.back()"
+    href: "application-task-list?ref=" + data.application.reference
   }) }}
 {% endblock %}
 
@@ -28,7 +29,7 @@
       Update task owner
     </h1>
 
-    <form action="task-owner-update-handler" method="post">
+    <form action="task-owner-update-handler?task={{ task }}" method="post">
       {{ govukCheckboxes({
         name: "task-owner",
         fieldset: {
@@ -37,7 +38,8 @@
             classes: "govuk-fieldset__legend--m"
           }
         },
-        items: checkboxItems
+        items: checkboxItems,
+        values: currentTaskOwnerEmails
       }) }}
 
       {{ govukButton({

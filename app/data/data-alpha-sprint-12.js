@@ -93,7 +93,7 @@ module.exports = {
                     email: "michael.brown@education.gov.uk"
                 }
             ],
-            'academies-to-transfer': ["123457"]
+            'academies-to-transfer': ["123457", "123459"]
         }
     ]
 }
