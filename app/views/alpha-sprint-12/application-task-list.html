@@ -48,11 +48,7 @@
           </a>
           <div id="task-1-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              {% if data.taskOwners and data.taskOwners.academies %}
-                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.academies, data.contributors) }}</strong>
-              {% else %}
-                <strong>Not assigned yet</strong>
-              {% endif %}
+              <strong>{{ processTaskOwners('academies-to-transfer') }}</strong>
             </span>
           </div>
         </div>
@@ -75,11 +71,7 @@
           </a>
           <div id="task-2-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              {% if data.taskOwners and data.taskOwners.incomingTrust %}
-                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.incomingTrust, data.contributors) }}</strong>
-              {% else %}
-                <strong>Not assigned yet</strong>
-              {% endif %}
+              <strong>{{ processTaskOwners('incoming-trust') }}</strong>
             </span>
           </div>
         </div>
@@ -144,11 +136,7 @@
           </a>
           <div id="task-5-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              {% if data.taskOwners and data.taskOwners.finance %}
-                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.finance, data.contributors) }}</strong>
-              {% else %}
-                <strong>Not assigned yet</strong>
-              {% endif %}
+              <strong>{{ processTaskOwners('finance') }}</strong>
             </span>
           </div>
         </div>

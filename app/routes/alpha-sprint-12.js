@@ -247,24 +247,36 @@ module.exports = function (router) {
         
         // Process task owners for each task
         const processTaskOwnerDisplay = (taskKey) => {
-            let display = 'Not assigned yet';
-            if (application?.taskOwners?.[taskKey]) {
-                const owners = Array.isArray(application.taskOwners[taskKey]) 
-                    ? application.taskOwners[taskKey] 
-                    : [application.taskOwners[taskKey]];
-                
-                if (owners.length > 0 && !owners.includes('_unchecked')) {
-                    display = 'Assigned to: ' + owners.map(owner => {
-                        const contributor = application.contributors.find(c => c.email === owner);
-                        return contributor ? contributor.name : owner;
-                    }).join(', ');
-                }
+            // Map task keys to their corresponding task owner fields
+            const taskOwnerMap = {
+                'academies-to-transfer': 'academies',
+                'incoming-trust': 'incomingTrust',
+                'finance': 'finance'
+            };
+            
+            const taskOwnerField = taskOwnerMap[taskKey];
+            const taskOwners = application?.taskOwners?.[taskOwnerField];
+            
+            if (!taskOwners) {
+                return 'Not assigned yet';
             }
-            return display;
+            
+            const owners = Array.isArray(taskOwners) ? taskOwners : [taskOwners];
+            if (owners.length === 0 || owners.includes('_unchecked')) {
+                return 'Not assigned yet';
+            }
+            
+            const ownerNames = owners.map(owner => {
+                const contributor = application.contributors.find(c => c.email === owner);
+                return contributor ? contributor.name : owner;
+            });
+            
+            return 'Assigned to: ' + ownerNames.join(', ');
         };
         
         res.render(version + '/application-task-list', {
             data: req.session.data,
+            application: application,
             processTaskOwners: processTaskOwnerDisplay
         });
     });

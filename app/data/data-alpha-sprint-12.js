@@ -93,7 +93,7 @@ module.exports = {
                     email: "sarah.johnson@test.org"
                 }
             ],
-            'academies-to-transfer': ["123456"],
+            'academies-to-transfer': ["123456", "123457"],
             'academies-to-transfer-status': true,
             'incoming-trust-status': false,
             'finance-status': false
