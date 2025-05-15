@@ -391,12 +391,16 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         if (application) {
-            // Update session data to match the data file
+            // Only initialize contributors from data file if they don't exist in session
+            if (!req.session.data['contributors']) {
+                req.session.data['contributors'] = [...(application.contributors || [])];
+            }
+            
+            // Update application reference in session
             req.session.data.application = {
                 reference: application.reference,
-                contributors: application.contributors || []
+                contributors: req.session.data['contributors']
             };
-            req.session.data['contributors'] = application.contributors || [];
         }
         
         res.render(version + '/contributors-home', {
@@ -420,24 +424,24 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         if (application) {
-            // Initialize contributors array if it doesn't exist
-            if (!application.contributors) {
-                application.contributors = [];
+            // Initialize contributors array in session if it doesn't exist
+            if (!req.session.data['contributors']) {
+                // Start with the pre-existing contributors from the data file
+                req.session.data['contributors'] = [...(application.contributors || [])];
             }
             
-            // Add the new contributor
+            // Add the new contributor to session data only
             const newContributor = {
                 email: email,
                 name: email.split('@')[0].replace('.', ' ').replace(/([A-Z])/g, ' $1').trim() // Generate name from email
             };
-            application.contributors.push(newContributor);
+            req.session.data['contributors'].push(newContributor);
             
-            // Update the session data to match the data file
+            // Update the application data in session
             req.session.data.application = {
                 reference: application.reference,
-                contributors: application.contributors
+                contributors: req.session.data['contributors']
             };
-            req.session.data['contributors'] = application.contributors;
         }
         
         // Redirect back to contributors home
@@ -499,12 +503,17 @@ module.exports = function (router) {
         
         // Update session data with application data from data file
         if (application) {
+            // Only initialize contributors from data file if they don't exist in session
+            if (!req.session.data['contributors']) {
+                req.session.data['contributors'] = [...(application.contributors || [])];
+            }
+            
+            // Update application reference in session
             req.session.data.application = {
                 reference: application.reference,
-                contributors: application.contributors || []
+                contributors: req.session.data['contributors']
             };
             req.session.data.taskOwners = application.taskOwners || {};
-            req.session.data['contributors'] = application.contributors || [];
         }
         
         // Get current task owners' emails
@@ -517,8 +526,8 @@ module.exports = function (router) {
         
         // Prepare checkbox items from contributors
         const checkboxItems = [];
-        if (application && application.contributors) {
-            checkboxItems.push(...application.contributors.map(contributor => ({
+        if (req.session.data['contributors']) {
+            checkboxItems.push(...req.session.data['contributors'].map(contributor => ({
                 value: contributor.email,
                 text: contributor.name,
                 hint: {
@@ -531,7 +540,7 @@ module.exports = function (router) {
         // Get current task owners' names for display
         const currentTaskOwners = processTaskOwners(
             application?.taskOwners?.[task],
-            application?.contributors || []
+            req.session.data['contributors'] || []
         );
         
         res.render(version + '/task-owner-update', {
