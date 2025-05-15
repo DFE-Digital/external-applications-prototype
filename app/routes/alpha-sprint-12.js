@@ -232,17 +232,35 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         if (application) {
-            // Store the current application data in session
-            req.session.data.application = {
-                reference: application.reference,
-                leadApplicant: application.leadApplicant,
-                contributors: application.contributors || []
-            };
-            req.session.data.taskOwners = application.taskOwners || {};
-            req.session.data['contributors'] = application.contributors || [];
-            req.session.data['academies-to-transfer-status'] = application['academies-to-transfer-status'] || false;
-            req.session.data['incoming-trust-status'] = application['incoming-trust-status'] || false;
-            req.session.data['finance-status'] = application['finance-status'] || false;
+            // Only initialize application data if it doesn't exist in session
+            if (!req.session.data.application) {
+                req.session.data.application = {
+                    reference: application.reference,
+                    leadApplicant: application.leadApplicant,
+                    contributors: application.contributors || []
+                };
+            }
+            
+            // Only initialize task owners if they don't exist in session
+            if (!req.session.data.taskOwners) {
+                req.session.data.taskOwners = application.taskOwners || {};
+            }
+            
+            // Only initialize contributors if they don't exist in session
+            if (!req.session.data['contributors']) {
+                req.session.data['contributors'] = application.contributors || [];
+            }
+            
+            // Only initialize status flags if they don't exist in session
+            if (req.session.data['academies-to-transfer-status'] === undefined) {
+                req.session.data['academies-to-transfer-status'] = application['academies-to-transfer-status'] || false;
+            }
+            if (req.session.data['incoming-trust-status'] === undefined) {
+                req.session.data['incoming-trust-status'] = application['incoming-trust-status'] || false;
+            }
+            if (req.session.data['finance-status'] === undefined) {
+                req.session.data['finance-status'] = application['finance-status'] || false;
+            }
         }
         
         // Process task owners for each task
@@ -255,7 +273,7 @@ module.exports = function (router) {
             };
             
             const taskOwnerField = taskOwnerMap[taskKey];
-            const taskOwners = application?.taskOwners?.[taskOwnerField];
+            const taskOwners = req.session.data.taskOwners?.[taskOwnerField];
             
             if (!taskOwners) {
                 return 'Not assigned yet';
@@ -267,7 +285,7 @@ module.exports = function (router) {
             }
             
             const ownerNames = owners.map(owner => {
-                const contributor = application.contributors.find(c => c.email === owner);
+                const contributor = req.session.data['contributors'].find(c => c.email === owner);
                 return contributor ? contributor.name : owner;
             });
             
@@ -396,9 +414,10 @@ module.exports = function (router) {
                 req.session.data['contributors'] = [...(application.contributors || [])];
             }
             
-            // Update application reference in session
+            // Update application reference and lead applicant in session
             req.session.data.application = {
                 reference: application.reference,
+                leadApplicant: application.leadApplicant,
                 contributors: req.session.data['contributors']
             };
         }
@@ -452,28 +471,19 @@ module.exports = function (router) {
     router.post('/' + version + '/task-owner-update-handler', function (req, res) {
         const task = req.query.task;
         const selectedOwners = req.body['task-owner'];
-        const ref = req.session.data.application.reference;
         
-        // Find the application in the data file
-        const application = data.applications.find(app => app.reference === ref);
+        // Initialize taskOwners in session if it doesn't exist
+        if (!req.session.data.taskOwners) {
+            req.session.data.taskOwners = {};
+        }
         
-        if (application) {
-            // Initialize taskOwners if it doesn't exist
-            if (!application.taskOwners) {
-                application.taskOwners = {};
-            }
-            
-            // Store the selected owners as an array, filtering out any undefined or null values
-            if (selectedOwners) {
-                application.taskOwners[task] = Array.isArray(selectedOwners) 
-                    ? selectedOwners.filter(owner => owner && owner !== '_unchecked')
-                    : [selectedOwners];
-            } else {
-                application.taskOwners[task] = [];
-            }
-            
-            // Update session data to match the data file
-            req.session.data.taskOwners = application.taskOwners;
+        // Store the selected owners as an array, filtering out any undefined or null values
+        if (selectedOwners) {
+            req.session.data.taskOwners[task] = Array.isArray(selectedOwners) 
+                ? selectedOwners.filter(owner => owner && owner !== '_unchecked')
+                : [selectedOwners];
+        } else {
+            req.session.data.taskOwners[task] = [];
         }
         
         // Redirect to the appropriate summary page based on the task
@@ -489,7 +499,7 @@ module.exports = function (router) {
                 redirectUrl = 'finance-summary';
                 break;
             default:
-                redirectUrl = 'application-task-list?ref=' + ref;
+                redirectUrl = 'application-task-list?ref=' + req.session.data.application.reference;
         }
         
         res.redirect('/' + version + '/' + redirectUrl);
@@ -501,30 +511,15 @@ module.exports = function (router) {
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
-        // Update session data with application data from data file
-        if (application) {
-            // Only initialize contributors from data file if they don't exist in session
-            if (!req.session.data['contributors']) {
-                req.session.data['contributors'] = [...(application.contributors || [])];
-            }
-            
-            // Update application reference in session
-            req.session.data.application = {
-                reference: application.reference,
-                contributors: req.session.data['contributors']
-            };
-            req.session.data.taskOwners = application.taskOwners || {};
-        }
-        
         // Get current task owners' emails
         let currentTaskOwnerEmails = [];
-        if (application && application.taskOwners && application.taskOwners[task]) {
-            currentTaskOwnerEmails = Array.isArray(application.taskOwners[task]) 
-                ? application.taskOwners[task] 
-                : [application.taskOwners[task]];
+        if (req.session.data.taskOwners && req.session.data.taskOwners[task]) {
+            currentTaskOwnerEmails = Array.isArray(req.session.data.taskOwners[task]) 
+                ? req.session.data.taskOwners[task] 
+                : [req.session.data.taskOwners[task]];
         }
         
-        // Prepare checkbox items from contributors
+        // Prepare checkbox items from session contributors
         const checkboxItems = [];
         if (req.session.data['contributors']) {
             checkboxItems.push(...req.session.data['contributors'].map(contributor => ({
@@ -539,7 +534,7 @@ module.exports = function (router) {
 
         // Get current task owners' names for display
         const currentTaskOwners = processTaskOwners(
-            application?.taskOwners?.[task],
+            req.session.data.taskOwners?.[task],
             req.session.data['contributors'] || []
         );
         
@@ -580,14 +575,14 @@ module.exports = function (router) {
         
         // Process task owners
         let taskOwnerDisplay = 'Not assigned yet';
-        if (application?.taskOwners?.academies) {
-            const owners = Array.isArray(application.taskOwners.academies) 
-                ? application.taskOwners.academies 
-                : [application.taskOwners.academies];
+        if (req.session.data.taskOwners?.academies) {
+            const owners = Array.isArray(req.session.data.taskOwners.academies) 
+                ? req.session.data.taskOwners.academies 
+                : [req.session.data.taskOwners.academies];
             
             if (owners.length > 0 && !owners.includes('_unchecked')) {
                 taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
-                    const contributor = application.contributors.find(c => c.email === owner);
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
                     return contributor ? contributor.name : owner;
                 }).join(', ');
             }
@@ -622,14 +617,14 @@ module.exports = function (router) {
         
         // Process task owners
         let taskOwnerDisplay = 'Not assigned yet';
-        if (application?.taskOwners?.incomingTrust) {
-            const owners = Array.isArray(application.taskOwners.incomingTrust) 
-                ? application.taskOwners.incomingTrust 
-                : [application.taskOwners.incomingTrust];
+        if (req.session.data.taskOwners?.incomingTrust) {
+            const owners = Array.isArray(req.session.data.taskOwners.incomingTrust) 
+                ? req.session.data.taskOwners.incomingTrust 
+                : [req.session.data.taskOwners.incomingTrust];
             
             if (owners.length > 0 && !owners.includes('_unchecked')) {
                 taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
-                    const contributor = application.contributors.find(c => c.email === owner);
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
                     return contributor ? contributor.name : owner;
                 }).join(', ');
             }
@@ -656,14 +651,14 @@ module.exports = function (router) {
         
         // Process task owners
         let taskOwnerDisplay = 'Not assigned yet';
-        if (application?.taskOwners?.finance) {
-            const owners = Array.isArray(application.taskOwners.finance) 
-                ? application.taskOwners.finance 
-                : [application.taskOwners.finance];
+        if (req.session.data.taskOwners?.finance) {
+            const owners = Array.isArray(req.session.data.taskOwners.finance) 
+                ? req.session.data.taskOwners.finance 
+                : [req.session.data.taskOwners.finance];
             
             if (owners.length > 0 && !owners.includes('_unchecked')) {
                 taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
-                    const contributor = application.contributors.find(c => c.email === owner);
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
                     return contributor ? contributor.name : owner;
                 }).join(', ');
             }
