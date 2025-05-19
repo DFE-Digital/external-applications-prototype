@@ -12,7 +12,7 @@ module.exports = function (router) {
     // Handle academy search results page
     router.get('/' + version + '/academies-to-transfer-search-results', function (req, res) {
         const radioItems = data.academies.map(academy => ({
-            value: academy.name + "|||" + academy.urn,
+            value: academy.name + "|||" + academy.urn + "|||" + academy.postcode,
             text: academy.name,
             hint: {
                 text: `URN: ${academy.urn}`
@@ -27,9 +27,19 @@ module.exports = function (router) {
     // Handle academy selection
     router.post('/' + version + '/academies-to-transfer-confirmation', function (req, res) {
         // Store the selected academy in session
-        req.session.data['selected-academy'] = req.body['selected-academy'];
+        const selectedAcademy = req.body['selected-academy'];
+        const [name, urn] = selectedAcademy.split('|||');
+        
+        // Find the full academy details from the data file
+        const academy = data.academies.find(a => a.urn === urn);
+        
+        // Store the full academy details in session
+        req.session.data['selected-academy'] = selectedAcademy;
+        req.session.data['selected-academy-details'] = academy;
+        
         res.render(version + '/academies-to-transfer-confirmation', {
-            data: req.session.data
+            data: req.session.data,
+            academy: academy
         });
     });
 
@@ -173,10 +183,26 @@ module.exports = function (router) {
         // Clear it from session immediately
         delete req.session.data['academy-removed'];
         
+        // Process task owners
+        let taskOwnerDisplay = 'Not assigned yet';
+        if (req.session.data.taskOwners?.academies) {
+            const owners = Array.isArray(req.session.data.taskOwners.academies) 
+                ? req.session.data.taskOwners.academies 
+                : [req.session.data.taskOwners.academies];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
         res.render(version + '/academies-to-transfer-summary', {
             success: !!removedAcademy,
             removedAcademy: removedAcademy,
-            data: req.session.data
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
         });
     });
 
