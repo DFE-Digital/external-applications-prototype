@@ -695,5 +695,16 @@ module.exports = function (router) {
             taskOwnerDisplay: taskOwnerDisplay
         });
     });
+
+    // GET handler for check your answers
+    router.get('/' + version + '/check-your-answers', function (req, res) {
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        res.render(version + '/check-your-answers', {
+            data: req.session.data,
+            application: application
+        });
+    });
 }
 

@@ -15,9 +15,14 @@
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-xl">Your application</h1>
     
-    {% if data['applications'] and data['applications'].length > 0 %}
-      <p class="govuk-body-l">Reference number: {{ data['applications'][0].refNumber }}</p>
-    {% endif %}
+    <div class="govuk-inset-text govuk-!-margin-bottom-9">
+      <p>
+        Application reference: <strong>{{ data.application.reference }}</strong>
+      </p>
+      <p>
+        Lead applicant: <strong>{{ data.application.leadApplicant }}</strong>
+      </p>
+    </div>
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
