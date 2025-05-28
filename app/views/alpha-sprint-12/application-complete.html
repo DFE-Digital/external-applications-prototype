@@ -27,7 +27,11 @@
       A Regional Director will make a decision on your application within 3 months.
     </p>
     <p class="govuk-body">
-      <a href="dashboard" class="govuk-link">Track your application</a>.
+      {% if refNumber === '240315-ABC34' %}
+        <a href="dashboard" class="govuk-link">Track your application</a>.
+      {% else %}
+        <a href="dashboard-2" class="govuk-link">Track your application</a>.
+      {% endif %}
     </p>
 
     <h2 class="govuk-heading-m">Contact us</h2>

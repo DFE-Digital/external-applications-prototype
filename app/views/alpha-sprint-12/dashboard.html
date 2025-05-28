@@ -38,7 +38,11 @@
                 </strong>
               </td>
               <td class="govuk-table__cell">
-                <a href="application-task-list?ref={{ newApplication.reference }}" class="govuk-link">Continue application</a>
+                {% if newApplication.status === 'Submitted' %}
+                  <a href="check-your-answers?ref={{ newApplication.reference }}" class="govuk-link">View application</a>
+                {% else %}
+                  <a href="application-task-list?ref={{ newApplication.reference }}" class="govuk-link">Continue application</a>
+                {% endif %}
               </td>
             </tr>
           {% endif %}

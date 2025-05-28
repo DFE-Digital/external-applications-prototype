@@ -218,7 +218,7 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         if (application) {
-            // Update the application status
+            // Update the application status in both data file and session
             application.status = "Submitted";
             application.dateSubmitted = new Date().toLocaleDateString('en-GB');
             
@@ -227,6 +227,17 @@ module.exports = function (router) {
             application.trustDetails = req.session.data['new-trust'] === 'yes' 
                 ? { type: 'New trust', name: req.session.data['proposed-trust-name'] }
                 : { type: 'Existing trust', details: req.session.data.selectedTrust };
+            
+            // Update the application in session data
+            if (req.session.data['applications']) {
+                const sessionApp = req.session.data['applications'].find(app => app.reference === ref);
+                if (sessionApp) {
+                    sessionApp.status = "Submitted";
+                    sessionApp.dateSubmitted = application.dateSubmitted;
+                    sessionApp.academies = application.academies;
+                    sessionApp.trustDetails = application.trustDetails;
+                }
+            }
         }
         
         res.render(version + '/application-complete', {
@@ -260,32 +271,32 @@ module.exports = function (router) {
         if (application) {
             // Only initialize application data if it doesn't exist in session
             if (!req.session.data.application) {
-                req.session.data.application = {
-                    reference: application.reference,
-                    leadApplicant: application.leadApplicant,
-                    contributors: application.contributors || []
-                };
+            req.session.data.application = {
+                reference: application.reference,
+                leadApplicant: application.leadApplicant,
+                contributors: application.contributors || []
+            };
             }
             
             // Only initialize task owners if they don't exist in session
             if (!req.session.data.taskOwners) {
-                req.session.data.taskOwners = application.taskOwners || {};
+            req.session.data.taskOwners = application.taskOwners || {};
             }
             
             // Only initialize contributors if they don't exist in session
             if (!req.session.data['contributors']) {
-                req.session.data['contributors'] = application.contributors || [];
+            req.session.data['contributors'] = application.contributors || [];
             }
             
             // Only initialize status flags if they don't exist in session
             if (req.session.data['academies-to-transfer-status'] === undefined) {
-                req.session.data['academies-to-transfer-status'] = application['academies-to-transfer-status'] || false;
+            req.session.data['academies-to-transfer-status'] = application['academies-to-transfer-status'] || false;
             }
             if (req.session.data['incoming-trust-status'] === undefined) {
-                req.session.data['incoming-trust-status'] = application['incoming-trust-status'] || false;
+            req.session.data['incoming-trust-status'] = application['incoming-trust-status'] || false;
             }
             if (req.session.data['finance-status'] === undefined) {
-                req.session.data['finance-status'] = application['finance-status'] || false;
+            req.session.data['finance-status'] = application['finance-status'] || false;
             }
         }
         
@@ -348,77 +359,76 @@ module.exports = function (router) {
         return res.redirect('application-task-list');
     });
     
-    // Handle starting a new application
-    /*
-    router.post('/' + version + '/start-new-application', function (req, res) {
-        // Generate a new application reference
-        const now = new Date();
-        const year = now.getFullYear().toString().slice(-2);
-        const month = (now.getMonth() + 1).toString().padStart(2, '0');
-        const day = now.getDate().toString().padStart(2, '0');
-        const random = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const refNumber = `${year}${month}${day}-${random}`;
-        
-        // Create application record with empty task owners
-        const application = {
-            refNumber: refNumber,
-            dateStarted: now.toLocaleDateString('en-GB'),
-            status: 'Not submitted',
-            leadApplicant: 'Zara Laney',
-            taskOwners: {
-                academies: [],
-                incomingTrust: [],
-                finance: []
-            },
-            contributors: [
-                {
-                    name: "Zara Laney",
-                    email: "zara.laney@education.gov.uk"
-                }
-            ]
-        };
-
-        // Initialize applications array if it doesn't exist
-        if (!req.session.data['applications']) {
-            req.session.data['applications'] = [];
-        }
-
-        // Add the new application
-        req.session.data['applications'].unshift(application);
-        
-        // Store the current application data
-        req.session.data['application-reference'] = refNumber;
-        req.session.data['taskOwners'] = application.taskOwners;
-        req.session.data['contributors'] = application.contributors;
-        
-        // Clear any existing application data
-        req.session.data['academies-to-transfer'] = [];
-        req.session.data['new-trust'] = null;
-        req.session.data['preferred-trust'] = null;
-        req.session.data['selected-trust'] = null;
-        req.session.data['proposed-trust-name'] = null;
-        req.session.data['academies-to-transfer-status'] = false;
-        req.session.data['incoming-trust-status'] = false;
-        
-        res.redirect('application-task-list');
-    });
-    */
 
     // GET handler for dashboard
     router.get('/' + version + '/dashboard', function (req, res) {
-        // Load applications data into session
-        req.session.data['applications'] = data.applications;
+        // Only load applications data into session if it doesn't exist
+        if (!req.session.data['applications']) {
+            req.session.data['applications'] = data.applications;
+        }
         
         // Find the new application if new-application-started is true
         let newApplication = null;
         if (req.session.data['new-application-started']) {
-            newApplication = data.applications.find(app => app.reference === '240315-ABC34');
+            newApplication = req.session.data['applications'].find(app => app.reference === '240315-ABC34');
         }
         
         res.render(version + '/dashboard', {
             data: req.session.data,
             newApplication: newApplication
         });
+    });
+
+    // POST handler for new application creation
+    router.post('/' + version + '/application-task-list', function (req, res) {
+        const ref = req.query.ref;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        if (application) {
+            // Reset the application status in data file
+            application.status = "Not submitted yet";
+            delete application.dateSubmitted;
+            
+            // Set new-application-started flag
+            req.session.data['new-application-started'] = true;
+            
+            // Initialize application data with reset status
+            req.session.data.application = {
+                reference: application.reference,
+                leadApplicant: application.leadApplicant,
+                contributors: application.contributors || []
+            };
+            
+            // Initialize task owners
+            req.session.data.taskOwners = application.taskOwners || {};
+            
+            // Initialize contributors
+            req.session.data['contributors'] = application.contributors || [];
+            
+            // Initialize status flags
+            req.session.data['academies-to-transfer-status'] = application['academies-to-transfer-status'] || false;
+            req.session.data['incoming-trust-status'] = application['incoming-trust-status'] || false;
+            req.session.data['finance-status'] = application['finance-status'] || false;
+            
+            // Initialize applications array in session if it doesn't exist
+            if (!req.session.data['applications']) {
+                req.session.data['applications'] = [];
+            }
+            
+            // Update or add the application in session
+            const sessionApp = req.session.data['applications'].find(app => app.reference === ref);
+            if (sessionApp) {
+                sessionApp.status = "Not submitted yet";
+                delete sessionApp.dateSubmitted;
+            } else {
+                req.session.data['applications'].push({
+                    ...application,
+                    status: "Not submitted yet"
+                });
+            }
+        }
+        
+        res.redirect('application-task-list?ref=' + ref);
     });
 
     // GET handler for contributors-home
@@ -501,14 +511,14 @@ module.exports = function (router) {
         // Initialize taskOwners in session if it doesn't exist
         if (!req.session.data.taskOwners) {
             req.session.data.taskOwners = {};
-        }
-        
-        // Store the selected owners as an array, filtering out any undefined or null values
-        if (selectedOwners) {
+            }
+            
+            // Store the selected owners as an array, filtering out any undefined or null values
+            if (selectedOwners) {
             req.session.data.taskOwners[task] = Array.isArray(selectedOwners) 
-                ? selectedOwners.filter(owner => owner && owner !== '_unchecked')
-                : [selectedOwners];
-        } else {
+                    ? selectedOwners.filter(owner => owner && owner !== '_unchecked')
+                    : [selectedOwners];
+            } else {
             req.session.data.taskOwners[task] = [];
         }
         
@@ -702,6 +712,40 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         res.render(version + '/check-your-answers', {
+            data: req.session.data,
+            application: application
+        });
+    });
+
+    // GET handler for dashboard-2
+    router.get('/' + version + '/dashboard-2', function (req, res) {
+        // Only load applications data into session if it doesn't exist
+        if (!req.session.data['applications']) {
+            req.session.data['applications'] = data.applications;
+        }
+        
+        // Find the application with reference 240315-XYZ45
+        const application = req.session.data['applications'].find(app => app.reference === '240315-XYZ45');
+        
+        // Reset the application status in data file if it exists
+        if (application) {
+            application.status = "Not submitted yet";
+            delete application.dateSubmitted;
+            
+            // Update or add the application in session
+            const sessionApp = req.session.data['applications'].find(app => app.reference === '240315-XYZ45');
+            if (sessionApp) {
+                sessionApp.status = "Not submitted yet";
+                delete sessionApp.dateSubmitted;
+            } else {
+                req.session.data['applications'].push({
+                    ...application,
+                    status: "Not submitted yet"
+                });
+            }
+        }
+        
+        res.render(version + '/dashboard-2', {
             data: req.session.data,
             application: application
         });
