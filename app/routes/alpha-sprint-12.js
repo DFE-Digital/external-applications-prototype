@@ -238,6 +238,10 @@ module.exports = function (router) {
                     sessionApp.trustDetails = application.trustDetails;
                 }
             }
+
+            // Update the main application object in session
+            req.session.data.application.status = "Submitted";
+            req.session.data.application.dateSubmitted = application.dateSubmitted;
         }
         
         res.render(version + '/application-complete', {
@@ -373,9 +377,16 @@ module.exports = function (router) {
             newApplication = req.session.data['applications'].find(app => app.reference === '240315-ABC34');
         }
         
+        // Find the contributor application
+        let contributorApplication = null;
+        if (req.session.data['applications']) {
+            contributorApplication = req.session.data['applications'].find(app => app.reference === '240315-XYZ45');
+        }
+        
         res.render(version + '/dashboard', {
             data: req.session.data,
-            newApplication: newApplication
+            newApplication: newApplication,
+            contributorApplication: contributorApplication
         });
     });
 
@@ -710,6 +721,14 @@ module.exports = function (router) {
     router.get('/' + version + '/check-your-answers', function (req, res) {
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
+        
+        // If the application has pre-populated academies in the data file, look up their full details
+        if (application && application['academies-to-transfer']) {
+            req.session.data['academies-to-transfer'] = application['academies-to-transfer'].map(urn => {
+                const academy = data.academies.find(a => a.urn === urn);
+                return academy || { urn }; // Return full academy details if found, or just URN if not found
+            });
+        }
         
         res.render(version + '/check-your-answers', {
             data: req.session.data,
