@@ -736,38 +736,5 @@ module.exports = function (router) {
         });
     });
 
-    // GET handler for dashboard-2
-    router.get('/' + version + '/dashboard-2', function (req, res) {
-        // Only load applications data into session if it doesn't exist
-        if (!req.session.data['applications']) {
-            req.session.data['applications'] = data.applications;
-        }
-        
-        // Find the application with reference 240315-XYZ45
-        const application = req.session.data['applications'].find(app => app.reference === '240315-XYZ45');
-        
-        // Reset the application status in data file if it exists
-        if (application) {
-            application.status = "Not submitted yet";
-            delete application.dateSubmitted;
-            
-            // Update or add the application in session
-            const sessionApp = req.session.data['applications'].find(app => app.reference === '240315-XYZ45');
-            if (sessionApp) {
-                sessionApp.status = "Not submitted yet";
-                delete sessionApp.dateSubmitted;
-            } else {
-                req.session.data['applications'].push({
-                    ...application,
-                    status: "Not submitted yet"
-                });
-            }
-        }
-        
-        res.render(version + '/dashboard-2', {
-            data: req.session.data,
-            application: application
-        });
-    });
 }
 
