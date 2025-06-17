@@ -78,7 +78,7 @@
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                New trust being formed
+                Is the result of this transfer the formation of a new trust?
               </dt>
               <dd class="govuk-summary-list__value">
                 {{ "Yes" if data['new-trust'] === 'yes' else "No" }}
@@ -88,7 +88,7 @@
             {% if data['new-trust'] === 'yes' %}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                Proposed trust name
+                New trust
               </dt>
               <dd class="govuk-summary-list__value">
                 {{ data['proposed-trust-name'] }}
@@ -97,7 +97,7 @@
             {% else %}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                Preferred trust identified
+                Is there a preferred trust for these academies?
               </dt>
               <dd class="govuk-summary-list__value">
                 {{ "Yes" if data['preferred-trust'] === 'yes' else "No" }}
@@ -107,7 +107,7 @@
             {% if data['preferred-trust'] === 'yes' and data['selected-trust'] %}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                Selected trust
+                Preferred trust
               </dt>
               <dd class="govuk-summary-list__value">
                 <p class="govuk-body">{{ data.selectedTrust.name }}</p>
