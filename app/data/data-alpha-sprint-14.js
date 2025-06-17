@@ -54,8 +54,8 @@ module.exports = {
     'applications': [
         {
             'reference': "240315-ABC34",
-            'dateStarted': "15/03/2025",
-            'status': "Not submitted yet",
+            'dateStarted': "15 March 2025",
+            'status': "Not submitted",
             'leadApplicant': "Zara Laney",
             'taskOwners': {
                 'academies': "",
@@ -71,8 +71,8 @@ module.exports = {
         },
         {
             'reference': "240315-XYZ45",
-            'dateStarted': "15/03/2025",
-            'status': "Not submitted yet",
+            'dateStarted': "15 March 2025",
+            'status': "Not submitted",
             'leadApplicant': "Zara Laney",
             'taskOwners': {
                 'academies': ["zara.laney@test.org"],

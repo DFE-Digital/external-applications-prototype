@@ -6,7 +6,7 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
-    <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Back to dashboard</a>
+    <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Back</a>
 
     <!-- Notification banner
     <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
@@ -97,7 +97,7 @@
               {% if data.taskOwners and data.taskOwners.members %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.members, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned yet</strong>
+                <strong>Not assigned</strong>
               {% endif %}
             </span>
           </div>
@@ -118,7 +118,7 @@
               {% if data.taskOwners and data.taskOwners.trustees %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.trustees, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned yet</strong>
+                <strong>Not assigned</strong>
               {% endif %}
             </span>
           </div>
@@ -162,7 +162,7 @@
               {% if data.taskOwners and data.taskOwners.consent %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.consent, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned yet</strong>
+                <strong>Not assigned</strong>
               {% endif %}
             </span>
           </div>
@@ -188,7 +188,7 @@
               {% if data.taskOwners and data.taskOwners.rationale %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.rationale, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned yet</strong>
+                <strong>Not assigned</strong>
               {% endif %}
             </span>
           </div>
@@ -209,7 +209,7 @@
               {% if data.taskOwners and data.taskOwners.governance %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.governance, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned yet</strong>
+                <strong>Not assigned</strong>
               {% endif %}
             </span>
           </div>
@@ -235,7 +235,7 @@
               {% if data.taskOwners and data.taskOwners.declaration %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.declaration, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned yet</strong>
+                <strong>Not assigned</strong>
               {% endif %}
             </span>
           </div>

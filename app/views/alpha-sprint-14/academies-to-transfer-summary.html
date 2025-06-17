@@ -6,7 +6,7 @@
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back to the application form",
+    text: "Back",
     href: "application-task-list?ref=" + data.application.reference,
     classes: "govuk-!-margin-top-6"
   }) }}
@@ -99,7 +99,7 @@
       </div>
       <div class="govuk-button-group">
         {{ govukButton({
-          text: "Confirm and continue"
+          text: "Continue"
         }) }}
       </div>
     </form>

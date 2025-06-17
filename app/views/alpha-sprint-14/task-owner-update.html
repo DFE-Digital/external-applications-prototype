@@ -4,7 +4,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
-{% set pageName="Update task owner" %}
+{% set pageName="Assign task to someone" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -26,7 +26,7 @@
     {% endif %}
 
     <h1 class="govuk-heading-xl">
-      Update task owner
+      Assign task to someone
     </h1>
 
     <form action="task-owner-update-handler?task={{ task }}" method="post">
@@ -34,7 +34,7 @@
         name: "task-owner",
         fieldset: {
           legend: {
-            text: "Select task owners",
+            text: "Select all that apply",
             classes: "govuk-fieldset__legend--m"
           }
         },
@@ -43,7 +43,7 @@
       }) }}
 
       {{ govukButton({
-        text: "Save and continue"
+        text: "Assign task"
       }) }}
     </form>
 
