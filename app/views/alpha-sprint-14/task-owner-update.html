@@ -4,7 +4,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
-{% set pageName="Save and continue to someone" %}
+{% set pageName="Assign task to someone" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -26,7 +26,7 @@
     {% endif %}
 
     <h1 class="govuk-heading-xl">
-      Save and continue to someone
+      Assign task to someone
     </h1>
 
     <form action="task-owner-update-handler?task={{ task }}" method="post">
