@@ -184,7 +184,7 @@ module.exports = function (router) {
         delete req.session.data['academy-removed'];
         
         // Process task owners
-        let taskOwnerDisplay = 'Not assigned yet';
+        let taskOwnerDisplay = 'Not assigned';
         if (req.session.data.taskOwners?.academies) {
             const owners = Array.isArray(req.session.data.taskOwners.academies) 
                 ? req.session.data.taskOwners.academies 
@@ -317,12 +317,12 @@ module.exports = function (router) {
             const taskOwners = req.session.data.taskOwners?.[taskOwnerField];
             
             if (!taskOwners) {
-                return 'Not assigned yet';
+                return 'Not assigned';
             }
             
             const owners = Array.isArray(taskOwners) ? taskOwners : [taskOwners];
             if (owners.length === 0 || owners.includes('_unchecked')) {
-                return 'Not assigned yet';
+                return 'Not assigned';
             }
             
             const ownerNames = owners.map(owner => {
@@ -596,10 +596,10 @@ module.exports = function (router) {
 
     // Helper function to process task owners
     function processTaskOwners(taskOwners, contributors) {
-        if (!taskOwners) return 'Not assigned yet';
+        if (!taskOwners) return 'Not assigned';
         
         const owners = Array.isArray(taskOwners) ? taskOwners : [taskOwners];
-        if (owners.length === 0) return 'Not assigned yet';
+        if (owners.length === 0) return 'Not assigned';
         
         return owners.map(owner => {
             const contributor = contributors.find(c => c.email === owner);
@@ -621,7 +621,7 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         // Process task owners
-        let taskOwnerDisplay = 'Not assigned yet';
+        let taskOwnerDisplay = 'Not assigned';
         if (req.session.data.taskOwners?.academies) {
             const owners = Array.isArray(req.session.data.taskOwners.academies) 
                 ? req.session.data.taskOwners.academies 
@@ -663,7 +663,7 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         // Process task owners
-        let taskOwnerDisplay = 'Not assigned yet';
+        let taskOwnerDisplay = 'Not assigned';
         if (req.session.data.taskOwners?.incomingTrust) {
             const owners = Array.isArray(req.session.data.taskOwners.incomingTrust) 
                 ? req.session.data.taskOwners.incomingTrust 
@@ -697,7 +697,7 @@ module.exports = function (router) {
         const application = data.applications.find(app => app.reference === ref);
         
         // Process task owners
-        let taskOwnerDisplay = 'Not assigned yet';
+        let taskOwnerDisplay = 'Not assigned';
         if (req.session.data.taskOwners?.finance) {
             const owners = Array.isArray(req.session.data.taskOwners.finance) 
                 ? req.session.data.taskOwners.finance 
