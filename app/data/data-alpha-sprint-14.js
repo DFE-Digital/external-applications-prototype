@@ -56,7 +56,7 @@ module.exports = {
             'reference': "240315-ABC34",
             'dateStarted': "15 March 2025",
             'status': "Not submitted",
-            'leadApplicant': "Zara Laney",
+            'leadApplicant': "Arden Laney",
             'taskOwners': {
                 'academies': "",
                 'incomingTrust': "",
@@ -64,8 +64,8 @@ module.exports = {
             },
             'contributors': [
                 {
-                    name: "Zara Laney",
-                    email: "zara.laney@test.org"
+                    name: "Arden Laney",
+                    email: "arden.laney@test.org"
                 }
             ]
         },
@@ -73,16 +73,16 @@ module.exports = {
             'reference': "240315-XYZ45",
             'dateStarted': "15 March 2025",
             'status': "Not submitted",
-            'leadApplicant': "Zara Laney",
+            'leadApplicant': "Arden Laney",
             'taskOwners': {
-                'academies': ["zara.laney@test.org"],
+                'academies': ["arden.laney@test.org"],
                 'incomingTrust': ["john.smith@test.org"],
                 'finance': ["sarah.johnson@test.org"]
             },
             'contributors': [
                 {
-                    name: "Zara Laney",
-                    email: "zara.laney@test.org"
+                    name: "Arden Laney",
+                    email: "arden.laney@test.org"
                 },
                 {
                     name: "John Smith",
