@@ -310,7 +310,8 @@ module.exports = function (router) {
             const taskOwnerMap = {
                 'academies-to-transfer': 'academies',
                 'incoming-trust': 'incomingTrust',
-                'finance': 'finance'
+                'finance': 'finance',
+                'declaration': 'declaration'
             };
             
             const taskOwnerField = taskOwnerMap[taskKey];
@@ -545,6 +546,9 @@ module.exports = function (router) {
             case 'finance':
                 redirectUrl = 'finance-summary';
                 break;
+            case 'declaration':
+                redirectUrl = 'declaration-summary';
+                break;
             default:
                 redirectUrl = 'application-task-list?ref=' + req.session.data.application.reference;
         }
@@ -734,6 +738,177 @@ module.exports = function (router) {
             data: req.session.data,
             application: application
         });
+    });
+
+    // Handle declaration trust search results selection
+    router.post('/' + version + '/declaration-trust-confirmation', function (req, res) {
+        // Get the selected trust value from the form data
+        const selectedDeclarationTrustValue = req.body['selected-trust'];
+        
+        if (selectedDeclarationTrustValue) {
+            try {
+                // Parse the JSON string and store temporarily
+                const selectedDeclarationTrust = JSON.parse(selectedDeclarationTrustValue);
+                req.session.data['temp-selected-declaration-trust'] = selectedDeclarationTrustValue;
+                req.session.data.tempSelectedDeclarationTrust = selectedDeclarationTrust;
+                
+                // Prepare the hint HTML in JavaScript to avoid Nunjucks parsing issues
+                const hintHtml = selectedDeclarationTrust ? 
+                    `<div class="govuk-inset-text">
+                        <h2 class="govuk-heading-m">${selectedDeclarationTrust.name}</h2>
+                        <p class="govuk-body">TRN: ${selectedDeclarationTrust.ref}</p>
+                        <p class="govuk-body">UKPRN: ${selectedDeclarationTrust.companies}</p>
+                    </div>` : '';
+                
+                // Render with the parsed trust data and prepared hint HTML
+                res.render(version + '/declaration-trust-confirmation', {
+                    selectedDeclarationTrust: selectedDeclarationTrust,
+                    hintHtml: hintHtml
+                });
+            } catch (error) {
+                console.error('Error parsing selected declaration trust:', error);
+                res.render(version + '/declaration-trust-confirmation', {
+                    selectedDeclarationTrust: null,
+                    hintHtml: ''
+                });
+            }
+        } else {
+            res.render(version + '/declaration-trust-confirmation', {
+                selectedDeclarationTrust: null,
+                hintHtml: ''
+            });
+        }
+    });
+
+    // Handle declaration trust confirmation
+    router.post('/' + version + '/declaration-trust-confirmation-handler', function (req, res) {
+        const confirmTrust = req.body['confirm-trust'];
+        
+        if (confirmTrust === 'yes') {
+            // Only save the trust selection permanently if user confirms with "Yes"
+            req.session.data['selected-declaration-trust'] = req.session.data['temp-selected-declaration-trust'];
+            req.session.data.selectedDeclarationTrust = req.session.data.tempSelectedDeclarationTrust;
+            
+            // Clear the temporary data
+            delete req.session.data['temp-selected-declaration-trust'];
+            delete req.session.data.tempSelectedDeclarationTrust;
+            
+            // Redirect to declaration form when user confirms
+            res.redirect('declaration-form');
+        } else {
+            // Clear the temporary data
+            delete req.session.data['temp-selected-declaration-trust'];
+            delete req.session.data.tempSelectedDeclarationTrust;
+            
+            // Redirect to declaration summary when user says no
+            res.redirect('declaration-summary');
+        }
+    });
+
+    // Handle declaration form submission
+    router.post('/' + version + '/declaration-form-handler', function (req, res) {
+        // Initialize declarations array if it doesn't exist
+        if (!req.session.data['declarations']) {
+            req.session.data['declarations'] = [];
+        }
+        
+        // Create declaration object with complete trust information
+        const declarationData = {
+            trust: {
+                name: req.session.data.selectedDeclarationTrust?.name || '',
+                ref: req.session.data.selectedDeclarationTrust?.ref || '',
+                companies: req.session.data.selectedDeclarationTrust?.companies || ''
+            },
+            chairOfTrustees: req.body['declarationFormChairOfTrustees'] || '',
+            dateOfDeclaration: {
+                day: req.body['passport-issued-day'] || '',
+                month: req.body['passport-issued-month'] || '',
+                year: req.body['passport-issued-year'] || ''
+            }
+        };
+        
+        // Check if we're updating an existing declaration
+        const declarationIndex = req.body['declaration-index'];
+        if (declarationIndex !== undefined && req.session.data['declarations'][declarationIndex]) {
+            // Update existing declaration
+            req.session.data['declarations'][declarationIndex] = declarationData;
+        } else {
+            // Add new declaration to the array
+            req.session.data['declarations'].push(declarationData);
+        }
+        
+        // Redirect to declaration summary
+        res.redirect('declaration-summary');
+    });
+
+    // GET handler for declaration form (for viewing existing declarations)
+    router.get('/' + version + '/declaration-form', function (req, res) {
+        const declarationIndex = req.query.index;
+        let existingDeclaration = null;
+        
+        if (declarationIndex !== undefined && req.session.data['declarations'] && req.session.data['declarations'][declarationIndex]) {
+            existingDeclaration = req.session.data['declarations'][declarationIndex];
+        }
+        
+        res.render(version + '/declaration-form', {
+            data: req.session.data,
+            existingDeclaration: existingDeclaration,
+            declarationIndex: declarationIndex
+        });
+    });
+
+    // GET handler for declaration summary
+    router.get('/' + version + '/declaration-summary', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Process task owners
+        let taskOwnerDisplay = 'Not assigned';
+        if (req.session.data.taskOwners?.declaration) {
+            const owners = Array.isArray(req.session.data.taskOwners.declaration) 
+                ? req.session.data.taskOwners.declaration 
+                : [req.session.data.taskOwners.declaration];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
+        res.render(version + '/declaration-summary', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // Handle declaration deletion
+    router.post('/' + version + '/delete-declaration-handler', function (req, res) {
+        const declarationIndex = req.body['declaration-index'];
+        const confirmDelete = req.body['confirm-delete'];
+        
+        if (confirmDelete === 'yes' && declarationIndex !== undefined && req.session.data['declarations'] && req.session.data['declarations'][declarationIndex]) {
+            // Remove the declaration at the specified index
+            req.session.data['declarations'].splice(declarationIndex, 1);
+        }
+        
+        // Redirect to declaration summary
+        res.redirect('declaration-summary');
+    });
+
+    // GET handler for confirm delete declaration page
+    router.get('/' + version + '/confirm-delete-declaration', function (req, res) {
+        req.session.data['index'] = req.query.index;
+        res.render(version + '/confirm-delete-declaration');
     });
 
 }

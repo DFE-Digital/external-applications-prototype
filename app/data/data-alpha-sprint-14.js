@@ -60,7 +60,8 @@ module.exports = {
             'taskOwners': {
                 'academies': "",
                 'incomingTrust': "",
-                'finance': ""
+                'finance': "",
+                'declaration': ""
             },
             'contributors': [
                 {
@@ -77,7 +78,8 @@ module.exports = {
             'taskOwners': {
                 'academies': ["arden.laney@test.org"],
                 'incomingTrust': ["john.smith@test.org"],
-                'finance': ["sarah.johnson@test.org"]
+                'finance': ["sarah.johnson@test.org"],
+                'declaration': ""
             },
             'contributors': [
                 {

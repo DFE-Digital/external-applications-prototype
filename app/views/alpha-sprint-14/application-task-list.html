@@ -8,24 +8,6 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
     <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Back</a>
 
-    <!-- Notification banner
-    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-      <div class="govuk-notification-banner__header">
-        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-          Success
-        </h2>
-      </div>
-      <div class="govuk-notification-banner__content">
-        <h3 class="govuk-notification-banner__heading">
-          Contributor invite sent
-        </h3>
-        <p class="govuk-body">
-          Contributor invite is sent to <strong>ady.horan@education.gov.uk</strong> and <strong>kimberley.frame@education.gov.uk</strong>.
-        </p>
-      </div>
-    </div>
-     -->  
-
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
       Your application 
     </h1>
@@ -227,23 +209,25 @@
     <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-7-status">
+          <a class="govuk-link govuk-task-list__link" href="declaration-summary" aria-describedby="basic-information-declaration-status">
             Declaration from academy trust chair
           </a>
-          <div id="task-9-hint" class="govuk-task-list__hint">
+          <div id="task-declaration-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              {% if data.taskOwners and data.taskOwners.declaration %}
-                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.declaration, data.contributors) }}</strong>
-              {% else %}
-                <strong>Not assigned</strong>
-              {% endif %}
+              <strong>{{ processTaskOwners('declaration') }}</strong>
             </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="prepare-application-7-status">
-          <strong class="govuk-tag govuk-tag--blue">
-            Incomplete
-          </strong>
+        <div class="govuk-task-list__status" id="basic-information-declaration-status">
+          {% if data['declaration-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
         </div>
       </li>
     </ul>
