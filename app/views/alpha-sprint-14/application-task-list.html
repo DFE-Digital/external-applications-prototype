@@ -5,12 +5,13 @@
 {% block content %}
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+  <div class="govuk-grid-column-full">
     <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Back</a>
-
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
       Your application 
     </h1>
+  </div>
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
     <div class="govuk-inset-text govuk-!-margin-bottom-9">
       <p>
@@ -232,13 +233,6 @@
       </li>
     </ul>
 
-    <h2 class="govuk-heading-m govuk-!-margin-top-9">Inviting contributors</h2>
-
-    <p class="govuk-body">
-      You can invite other people to complete parts of this application.
-    </p>
-    <a href="contributors-home" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Invite contributors</a>
-
     <div class="govuk-button-group govuk-!-margin-top-9">
       <form action="check-your-answers" method="post">
         <button class="govuk-button" type="submit">Preview application</button>
@@ -246,7 +240,14 @@
     </div>
     
   </div>
-  <div class="govuk-grid-column-one-third govuk-!-margin-bottom-6"></div>
+  <div class="govuk-grid-column-one-third govuk-!-margin-bottom-6">
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">Inviting contributors</h2>
+
+    <p class="govuk-body">
+      You can invite other people to complete parts of this application.
+    </p>
+    <a href="contributors-home" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Invite contributors</a>
+  </div>
 </div>
 
 {% endblock %}
