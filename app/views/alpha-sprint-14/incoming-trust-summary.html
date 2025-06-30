@@ -4,7 +4,7 @@
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back",
+    text: "Back to application task list",
     href: "application-task-list?ref=" + data.application.reference,
     classes: "govuk-!-margin-top-6"
   }) }}
@@ -19,11 +19,9 @@
       Incoming trust
     </h1>
 
-    <div class="govuk-inset-text">
-      <p>
-        <strong>{{ taskOwnerDisplay }}</strong> <a class="govuk-link" href="task-owner-update?task=incomingTrust">Change</a>
-      </p>
-    </div>
+    <p class="govuk-body eat-transfer__task-owner-box">
+      {{ taskOwnerDisplay }} <a class="govuk-link" href="task-owner-update?task=incomingTrust">Change</a>
+    </p>
 
     {% if not data['new-trust'] or data['new-trust'].length === 0 %}
     <div class="govuk-inset-text">

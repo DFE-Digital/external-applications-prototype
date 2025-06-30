@@ -4,7 +4,7 @@
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back",
+    text: "Back to application task list",
     href: "application-task-list?ref=" + data.application.reference,
     classes: "govuk-!-margin-top-6"
   }) }}
@@ -19,11 +19,9 @@
       Finance
     </h1>
 
-    <div class="govuk-inset-text">
-      <p>
-        <strong>{{ taskOwnerDisplay }}</strong> <a class="govuk-link" href="task-owner-update?task=finance">Change</a>
-      </p>
-    </div>
+    <p class="govuk-body eat-transfer__task-owner-box">
+      {{ taskOwnerDisplay }} <a class="govuk-link" href="task-owner-update?task=finance">Change</a>
+    </p>
 
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
       <div class="govuk-summary-list__row">

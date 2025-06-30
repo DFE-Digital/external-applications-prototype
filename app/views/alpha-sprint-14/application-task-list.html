@@ -6,7 +6,7 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Back</a>
+    <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Back to dashboard</a>
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
       Your application 
     </h1>
@@ -80,7 +80,7 @@
               {% if data.taskOwners and data.taskOwners.members %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.members, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned</strong>
+                <strong>Task owner: not assigned</strong>
               {% endif %}
             </span>
           </div>
@@ -101,7 +101,7 @@
               {% if data.taskOwners and data.taskOwners.trustees %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.trustees, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned</strong>
+                <strong>Task owner: not assigned</strong>
               {% endif %}
             </span>
           </div>
@@ -145,7 +145,7 @@
               {% if data.taskOwners and data.taskOwners.consent %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.consent, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned</strong>
+                <strong>Task owner: not assigned</strong>
               {% endif %}
             </span>
           </div>
@@ -171,7 +171,7 @@
               {% if data.taskOwners and data.taskOwners.rationale %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.rationale, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned</strong>
+                <strong>Task owner: not assigned</strong>
               {% endif %}
             </span>
           </div>
@@ -192,7 +192,7 @@
               {% if data.taskOwners and data.taskOwners.governance %}
                 <strong>Assigned to: {{ processTaskOwners(data.taskOwners.governance, data.contributors) }}</strong>
               {% else %}
-                <strong>Not assigned</strong>
+                <strong>Task owner: not assigned</strong>
               {% endif %}
             </span>
           </div>

@@ -6,7 +6,7 @@
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back",
+    text: "Back to application task list",
     href: "application-task-list?ref=" + data.application.reference,
     classes: "govuk-!-margin-top-6"
   }) }}
@@ -50,11 +50,9 @@
       Academies to transfer
     </h1>
 
-    <div class="govuk-inset-text">
-      <p>
-        <strong>{{ taskOwnerDisplay }}</strong> <a class="govuk-link" href="task-owner-update?task=academies">Change</a>
-      </p>
-    </div>
+    <p class="govuk-body eat-transfer__task-owner-box">
+      {{ taskOwnerDisplay }} <a class="govuk-link" href="task-owner-update?task=academies">Change</a>
+    </p>
 
     {% if not data['academies-to-transfer'] or data['academies-to-transfer'].length === 0 %}
       <div class="govuk-inset-text">
