@@ -18,3 +18,4 @@ require('./routes/alpha-sprint-10b.js')(router);
 require('./routes/alpha-sprint-11.js')(router);
 require('./routes/alpha-sprint-12.js')(router);
 require('./routes/alpha-sprint-14.js')(router);
+require('./routes/alpha-sprint-16.js')(router);

@@ -1,0 +1,93 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageName="Invite contributors" %}
+
+{% block beforeContent %}
+  {% if data['new-application-started'] %}
+    {{ govukBackLink({
+      text: "Back",
+      href: "javascript:window.history.back()",
+      classes: "govuk-!-margin-top-6"
+    }) }}
+  {% else %}
+    {{ govukBackLink({
+      text: "Back to application task list",
+      href: "application-task-list?ref=" + data.application.reference,
+      classes: "govuk-!-margin-top-6"
+    }) }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    {% if success %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ removedAcademy }} has been removed
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="invite-contributors">
+      Invite contributors
+    </h1>
+
+    <p class="govuk-body">
+      You can invite contributors to your application form. They will be able to view and edit your account details. They are typically the C.E.O, C.O.O. or C.T.O. of the academy trust.
+    </p>
+    {% if data['new-application-started'] %}
+      <p class="govuk-body">
+        If can still add contributors anytime if you need to if you want to skip this step for now.
+      </p>
+    {% endif %}
+
+    <div class="govuk-button-group govuk-!-margin-top-9">
+      <a href="contributor-invite" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Add a contributor
+      </a>
+      {% if data['new-application-started'] %}
+        <a href="application-task-list" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+          Proceed to the application form
+        </a>
+      {% endif %}
+    </div>
+
+    <h2 class="govuk-heading-l govuk-!-margin-bottom-3">
+      Current contributors
+    </h2>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Email address</th>
+          <th scope="col" class="govuk-table__header">Name</th>
+          <th scope="col" class="govuk-table__header">Action</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for contributor in data.contributors %}
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">{{ contributor.email }}</td>
+          <td class="govuk-table__cell">{{ contributor.name }}</td>
+          <td class="govuk-table__cell">
+            <a href="#" class="govuk-link">Remove</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+{% endblock %} 

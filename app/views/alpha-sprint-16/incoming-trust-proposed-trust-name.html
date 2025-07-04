@@ -1,0 +1,41 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Enter proposed trust name" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form class="form" action="proposed-trust-name-handler" method="post">
+      <!--
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      -->
+      {{ govukInput({
+        label: {
+          html: '<span class="govuk-caption-l">Incoming trust</span>
+          Enter the new trust name',
+          classes: "govuk-label--xl",
+          isPageHeading: true
+        },
+        id: "proposed-trust-name",
+        name: "proposed-trust-name",
+        value: data["proposed-trust-name"]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+    
+  </div>
+</div>
+
+{% endblock %} 
