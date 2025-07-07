@@ -22,12 +22,12 @@
       </p>
     </div>
 
-    <h2 class="govuk-heading-m govuk-!-margin-top-9">About the academies and trusts</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">About transferring academies</h2>
     <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="academies-to-transfer-summary" aria-describedby="basic-information-academies-status">
-            Academies to transfer
+          <a class="govuk-link govuk-task-list__link" href="academies-to-transfer-summary" aria-describedby="academies-to-transfer-status">
+            Details of academies
           </a>
           <div id="task-1-hint" class="govuk-task-list__hint">
             <span class="hint-name">
@@ -35,7 +35,7 @@
             </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="basic-information-academies-status">
+        <div class="govuk-task-list__status" id="details-of-academies-  status">
           {% if data['academies-to-transfer-status'] %}
             <strong class="govuk-tag govuk-tag--green">
               Completed
@@ -49,8 +49,58 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="incoming-trust-summary" aria-describedby="basic-information-incoming-trust-status">
-            Incoming trust
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="reason-and-benefits-status">
+            Reason and benefits
+          </a>
+          <div id="task-2-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>{{ processTaskOwners('reason-and-benefits-status') }}</strong>
+            </span>
+          </div>
+        </div>
+        <div class="govuk-task-list__status" id="reason-and-benefits-status">
+          {% if data['reason-and-benefits-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="risks-status">
+            Risks
+          </a>
+          <div id="task-3-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>{{ processTaskOwners('risks-status') }}</strong>
+            </span>
+          </div>
+        </div>
+        <div class="govuk-task-list__status" id="risks-status">
+          {% if data['risks-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+    </ul>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">About the sponsoring trust</h2>
+    <ul class="govuk-task-list">
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="incoming-trust-summary" aria-describedby="incoming-trust-status">
+            Trust details
           </a>
           <div id="task-2-hint" class="govuk-task-list__hint">
             <span class="hint-name">
@@ -58,7 +108,7 @@
             </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="basic-information-incoming-trust-status">
+        <div class="govuk-task-list__status" id="incoming-trust-status">
           {% if data['incoming-trust-status'] %}
             <strong class="govuk-tag govuk-tag--green">
               Completed
@@ -72,59 +122,17 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-2-status">
-            Members
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="reason-and-benefits-status">
+            Reason and benefits
           </a>
-          <div id="task-3-hint" class="govuk-task-list__hint">
+          <div id="task-2-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              {% if data.taskOwners and data.taskOwners.members %}
-                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.members, data.contributors) }}</strong>
-              {% else %}
-                <strong>Task owner: not assigned</strong>
-              {% endif %}
+              <strong>{{ processTaskOwners('reason-and-benefits-status') }}</strong>
             </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="prepare-application-2-status">
-          <strong class="govuk-tag govuk-tag--blue">
-            Incomplete
-          </strong>
-        </div>
-      </li>
-      <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-3-status">
-            Trustees
-          </a>
-          <div id="task-4-hint" class="govuk-task-list__hint">
-            <span class="hint-name">
-              {% if data.taskOwners and data.taskOwners.trustees %}
-                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.trustees, data.contributors) }}</strong>
-              {% else %}
-                <strong>Task owner: not assigned</strong>
-              {% endif %}
-            </span>
-          </div>
-        </div>
-        <div class="govuk-task-list__status" id="prepare-application-3-status">
-          <strong class="govuk-tag govuk-tag--blue">
-            Incomplete
-          </strong>
-        </div>
-      </li>
-      <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="finance-summary" aria-describedby="prepare-application-1-status">
-            Finance
-          </a>
-          <div id="task-5-hint" class="govuk-task-list__hint">
-            <span class="hint-name">
-              <strong>{{ processTaskOwners('finance') }}</strong>
-            </span>
-          </div>
-        </div>
-        <div class="govuk-task-list__status" id="prepare-application-1-status">
-          {% if data['finance-status'] %}
+        <div class="govuk-task-list__status" id="reason-and-benefits-status">
+          {% if data['reason-and-benefits-status'] %}
             <strong class="govuk-tag govuk-tag--green">
               Completed
             </strong>
@@ -137,70 +145,191 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-6-status">
-            Consent and consultations
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="high-quality-and-inclusive-education-status">
+            High-quality and inclusive education
           </a>
-          <div id="task-6-hint" class="govuk-task-list__hint">
+          <div id="task-4-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              {% if data.taskOwners and data.taskOwners.consent %}
-                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.consent, data.contributors) }}</strong>
-              {% else %}
-                <strong>Task owner: not assigned</strong>
-              {% endif %}
+              <strong>{{ processTaskOwners('high-quality-and-inclusive-education-status') }}</strong>
             </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="prepare-application-6-status">
-          <strong class="govuk-tag govuk-tag--blue">
-            Incomplete
-          </strong>
+        <div class="govuk-task-list__status" id="high-quality-and-inclusive-education-status">
+          {% if data['high-quality-and-inclusive-education-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="school-improvement-status">
+            School improvement 
+          </a>
+          <div id="task-5-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>{{ processTaskOwners('school-improvement-status') }}</strong>
+            </span>
+          </div>
+        </div>
+        <div class="govuk-task-list__status" id="school-improvement-status">
+          {% if data['school-improvement-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="finance-and-operations-status">
+            Finance and operations
+          </a>
+          <div id="task-5-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>{{ processTaskOwners('finance-and-operations-status') }}</strong>
+            </span>
+          </div>
+        </div>
+        <div class="govuk-task-list__status" id="finance-and-operations-status">
+          {% if data['finance-and-operations-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="leadership-and-work-force-status">
+            Leadership and work force 
+          </a>
+          <div id="task-6-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>{{ processTaskOwners('leadership-and-work-force-status') }}</strong>
+            </span>
+          </div>
+        </div>
+        <div class="govuk-task-list__status" id="leadership-and-work-force-status">
+          {% if data['leadership-and-work-force-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="governance-status">
+            Governance 
+          </a>
+          <div id="task-6-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>{{ processTaskOwners('governance-status') }}</strong>
+            </span>
+          </div>
+        </div>
+        <div class="govuk-task-list__status" id="governance-status">
+          {% if data['governance-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
         </div>
       </li>
     </ul>
 
-    <h2 class="govuk-heading-m govuk-!-margin-top-9">Rationale and governance</h2>
 
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">Consent and consultations</h2>
     <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-5-status">
-            Rationale
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="diocesan-consent-status">
+            Diocesan consent 
           </a>
-          <div id="task-7-hint" class="govuk-task-list__hint">
+          <div id="task-6-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              {% if data.taskOwners and data.taskOwners.rationale %}
-                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.rationale, data.contributors) }}</strong>
-              {% else %}
-                <strong>Task owner: not assigned</strong>
-              {% endif %}
+              <strong>{{ processTaskOwners('diocesan-consent-status') }}</strong>
             </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="prepare-application-5-status">
-          <strong class="govuk-tag govuk-tag--blue">
-            Incomplete
-          </strong>
+        <div class="govuk-task-list__status" id="diocesan-consent-status">
+          {% if data['diocesan-consent-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
         </div>
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="prepare-application-4-status">
-            Governance and structure
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="board-resolutions-status">
+            Board resolutions
           </a>
-          <div id="task-8-hint" class="govuk-task-list__hint">
+          <div id="task-6-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              {% if data.taskOwners and data.taskOwners.governance %}
-                <strong>Assigned to: {{ processTaskOwners(data.taskOwners.governance, data.contributors) }}</strong>
-              {% else %}
-                <strong>Task owner: not assigned</strong>
-              {% endif %}
+              <strong>{{ processTaskOwners('board-resolutions-status') }}</strong>
             </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="prepare-application-4-status">
-          <strong class="govuk-tag govuk-tag--blue">
-            Incomplete
-          </strong>
+        <div class="govuk-task-list__status" id="board-resolutions-status">
+          {% if data['board-resolutions-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="results-of-consultations-and-other-stakeholder-engagements-status">
+            Results of consultations and other stakeholder engagements
+          </a>
+          <div id="task-6-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>{{ processTaskOwners('results-of-consultations-and-other-stakeholder-engagements-status') }}</strong>
+            </span>
+          </div>
+        </div>
+        <div class="govuk-task-list__status" id="results-of-consultations-and-other-stakeholder-engagements-status">
+          {% if data['results-of-consultations-and-other-stakeholder-engagements-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
         </div>
       </li>
     </ul>
@@ -210,7 +339,7 @@
     <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="declaration-summary" aria-describedby="basic-information-declaration-status">
+          <a class="govuk-link govuk-task-list__link" href="declaration-summary" aria-describedby="declaration-status">
             Declaration from academy trust chair
           </a>
           <div id="task-declaration-hint" class="govuk-task-list__hint">
@@ -219,7 +348,7 @@
             </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="basic-information-declaration-status">
+        <div class="govuk-task-list__status" id="declaration-status">
           {% if data['declaration-status'] %}
             <strong class="govuk-tag govuk-tag--green">
               Completed

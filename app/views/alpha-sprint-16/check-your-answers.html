@@ -26,11 +26,11 @@
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Academies details</h2>
+        <h2 class="govuk-summary-card__title">Details of academies</h2>
         {% if data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="academies-to-transfer">
-              Change<span class="govuk-visually-hidden"> academies to transfer</span>
+              Change<span class="govuk-visually-hidden"> details of academies</span>
             </a>
           </div>
         {% endif %}
@@ -64,7 +64,7 @@
         {% if data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="incoming-trust-summary">
-              Change<span class="govuk-visually-hidden"> incoming trust</span>
+              Change<span class="govuk-visually-hidden"> trust details</span>
             </a>
           </div>
         {% endif %}
@@ -122,46 +122,6 @@
       </div>
     </div>
 
-    <div class="govuk-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Finance</h2>
-        {% if data.application.status !== 'Submitted' %}
-          <div class="govuk-summary-card__actions">
-            <a class="govuk-link" href="finance-summary">
-              Change<span class="govuk-visually-hidden"> finance</span>
-            </a>
-          </div>
-        {% endif %}
-      </div>
-      <div class="govuk-summary-card__content">
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                How will the trust be financed and how do you intend to finance the growth of the trust over the next 3 years (if applicable)?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['create-new-project-academy-finance-how-to-finance-trust'] }}
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                What is the approach to managing schools you are intending to take on which currently have deficits (if applicable)?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['create-new-project-academy-finance-approach'] }}
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                What steps will you take to ensure your financial model is sustainable?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['create-new-project-academy-finance-steps'] }}
-              </dd>
-            </div>
-          </dl>
-      </div>
-    </div>
 
     {% if data.application.status !== 'Submitted' %}
       <h2 class="govuk-heading-m">Now submit your application</h2>

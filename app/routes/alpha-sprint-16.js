@@ -388,6 +388,10 @@ module.exports = function (router) {
         if (req.session.data['applications']) {
             contributorApplication = req.session.data['applications'].find(app => app.reference === '240315-XYZ45');
         }
+        // If not in session, check data file
+        if (!contributorApplication) {
+            contributorApplication = data.applications.find(app => app.reference === '240315-XYZ45');
+        }
         
         res.render(version + '/dashboard', {
             data: req.session.data,
