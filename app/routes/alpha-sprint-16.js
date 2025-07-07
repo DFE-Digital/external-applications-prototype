@@ -743,6 +743,67 @@ module.exports = function (router) {
         });
     });
 
+    // GET handler for reason and benefits academies
+    router.get('/' + version + '/reason-and-benefits-academies', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Process task owners
+        let taskOwnerDisplay = 'Task owner: not assigned';
+        if (req.session.data.taskOwners?.['reason-and-benefits-academies']) {
+            const owners = Array.isArray(req.session.data.taskOwners['reason-and-benefits-academies']) 
+                ? req.session.data.taskOwners['reason-and-benefits-academies'] 
+                : [req.session.data.taskOwners['reason-and-benefits-academies']];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
+        res.render(version + '/reason-and-benefits-academies', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // POST handler for reason and benefits academies strategic needs
+    router.post('/' + version + '/reason-and-benefits-academies-summary', function (req, res) {
+        // Save the strategic needs data to session
+        req.session.data['reason-and-benefits-academies-strategic-needs'] = req.body['reason-and-benefits-academies-strategic-needs'];
+        
+        // Redirect to the reason and benefits academies summary page
+        res.redirect('reason-and-benefits-academies');
+    });
+
+    // POST handler for reason and benefits academies maintain improve
+    router.post('/' + version + '/reason-and-benefits-academies-maintain-improve-handler', function (req, res) {
+        // Save the maintain improve data to session
+        req.session.data['reason-and-benefits-academies-maintain-improve'] = req.body['reason-and-benefits-academies-maintain-improve'];
+        
+        // Redirect to the reason and benefits academies summary page
+        res.redirect('reason-and-benefits-academies');
+    });
+
+    // POST handler for reason and benefits academies benefit trust
+    router.post('/' + version + '/reason-and-benefits-academies-benefit-trust-handler', function (req, res) {
+        // Save the benefit trust data to session
+        req.session.data['reason-and-benefits-academies-benefit-trust'] = req.body['reason-and-benefits-academies-benefit-trust'];
+        
+        // Redirect to the reason and benefits academies summary page
+        res.redirect('reason-and-benefits-academies');
+    });
+
     // GET handler for check your answers
     router.get('/' + version + '/check-your-answers', function (req, res) {
         const ref = req.session.data.application.reference;

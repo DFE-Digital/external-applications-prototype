@@ -49,17 +49,17 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="reason-and-benefits-status">
+          <a class="govuk-link govuk-task-list__link" href="reason-and-benefits-academies" aria-describedby="reason-and-benefits-academies-status">
             Reason and benefits
           </a>
           <div id="task-2-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              <strong>{{ processTaskOwners('reason-and-benefits-status') }}</strong>
+              <strong>{{ processTaskOwners('reason-and-benefits-academies-status') }}</strong>
             </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="reason-and-benefits-status">
-          {% if data['reason-and-benefits-status'] %}
+        <div class="govuk-task-list__status" id="reason-and-benefits-academies-status">
+          {% if data['reason-and-benefits-academies-status'] %}
             <strong class="govuk-tag govuk-tag--green">
               Completed
             </strong>

@@ -60,6 +60,61 @@
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Reason and benefits</h2>
+        {% if data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="reason-and-benefits-academies">
+              Change<span class="govuk-visually-hidden"> reason and benefits</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not data['reason-and-benefits-academies-strategic-needs'] and not data['reason-and-benefits-academies-maintain-improve'] and not data['reason-and-benefits-academies-benefit-trust'] %}
+          <div class="govuk-inset-text">
+            No reason and benefits information has been added.
+          </div>
+        {% else %}
+          <dl class="govuk-summary-list">
+            {% if data['reason-and-benefits-academies-strategic-needs'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                What are the strategic needs of the transferring academies and their local areas?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['reason-and-benefits-academies-strategic-needs'] }}
+              </dd>
+            </div>
+            {% endif %}
+
+            {% if data['reason-and-benefits-academies-maintain-improve'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                How will the transferring academies help maintain and improve existing academies in the trust?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['reason-and-benefits-academies-maintain-improve'] }}
+              </dd>
+            </div>
+            {% endif %}
+
+            {% if data['reason-and-benefits-academies-benefit-trust'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                How will the transferring academies benefit the trust?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['reason-and-benefits-academies-benefit-trust'] }}
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Trust details</h2>
         {% if data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
@@ -122,7 +177,7 @@
       </div>
     </div>
 
-
+    
     {% if data.application.status !== 'Submitted' %}
       <h2 class="govuk-heading-m">Now submit your application</h2>
       <p class="govuk-body">By submitting this application you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>

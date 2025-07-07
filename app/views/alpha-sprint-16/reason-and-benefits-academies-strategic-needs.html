@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="What are the strategic needs" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="reason-and-benefits-academies-summary" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">Reason and benefits</span>
+            What are the strategic needs of the transferring academies and their local areas?',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            text: "Include any diocesan plans"
+          },
+          maxlength: 4000,
+          id: "reason-and-benefits-academies-strategic-needs",
+          name: "reason-and-benefits-academies-strategic-needs",
+          value: data["reason-and-benefits-academies-strategic-needs"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %}
