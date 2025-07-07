@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Incoming trust summary" %}
+{% set pageName="Trust details summary" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -16,7 +16,7 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="incoming-trust">
-      Incoming trust
+      Trust details
     </h1>
 
     <p class="govuk-body eat-transfer__task-owner-box">
@@ -25,10 +25,10 @@
 
     {% if not data['new-trust'] or data['new-trust'].length === 0 %}
     <div class="govuk-inset-text">
-      No incoming trust information has been added.
+      No trust details have been added.
     </div>
     <a href="incoming-trust-new-trust-question" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-      Add incoming trust information
+      Add trust details
     </a>
     {% else %}
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
