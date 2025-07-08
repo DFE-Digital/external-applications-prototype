@@ -1,0 +1,41 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="How will the transferring academies benefit the trust" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="reason-and-benefits-trust-benefit-trust-handler" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">Reason and benefits</span>
+            How will the trust benefit the transferring academies?',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          maxlength: 4000,
+          id: "reason-and-benefits-trust-benefit-trust",
+          name: "reason-and-benefits-trust-benefit-trust",
+          value: data["reason-and-benefits-trust-benefit-trust"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

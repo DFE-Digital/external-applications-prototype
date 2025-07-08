@@ -60,11 +60,11 @@
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Reason and benefits</h2>
+        <h2 class="govuk-summary-card__title">Reason and benefits (Academies)</h2>
         {% if data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="reason-and-benefits-academies">
-              Change<span class="govuk-visually-hidden"> reason and benefits</span>
+              Change<span class="govuk-visually-hidden"> reason and benefits (academies)</span>
             </a>
           </div>
         {% endif %}
@@ -105,6 +105,119 @@
               </dt>
               <dd class="govuk-summary-list__value">
                 {{ data['reason-and-benefits-academies-benefit-trust'] }}
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Risks</h2>
+        {% if data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="risks-summary">
+              Change<span class="govuk-visually-hidden"> risks</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not data['risks-due-diligence'] and not data['risks-pupil-numbers'] %}
+          <div class="govuk-inset-text">
+            No risks information has been added.
+          </div>
+        {% else %}
+          <dl class="govuk-summary-list">
+            {% if data['risks-due-diligence'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                What due diligence activities have been carried out on the transferring academies?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['risks-due-diligence'] }}
+              </dd>
+            </div>
+            {% endif %}
+            {% if data['risks-pupil-numbers'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Are pupil numbers in any transferring academy expected to drop below 85% of the school capacity?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['risks-pupil-numbers'] }}
+              </dd>
+            </div>
+            {% endif %}
+            {% if data['risks-pupil-numbers'] === 'Yes' and data['risks-pupil-forecast'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Provide a 3 year forecast of pupil numbers and plans to improve this
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['risks-pupil-forecast'] }}
+              </dd>
+            </div>
+            {% endif %}
+            {% if data['risks-financial-deficit'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Do any transferring academy have an in-year deficit or overall deficit?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['risks-financial-deficit'] }}
+              </dd>
+            </div>
+            {% endif %}
+            {% if data['risks-financial-deficit'] === 'Yes' and data['risks-financial-forecast'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Provide a 3 year financial forecast for the academy and your plans to bring the academy into surplus
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['risks-financial-forecast'] }}
+              </dd>
+            </div>
+            {% endif %}
+            {% if data['risks-finances-pooled'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Are any transferring academy's finances currently pooled?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['risks-finances-pooled'] }}
+              </dd>
+            </div>
+            {% endif %}
+            {% if data['risks-finances-pooled'] === 'Yes' and data['risks-reserves-transfer'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                How much of the reserves and funding allocated to the academies will transfer over?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['risks-reserves-transfer'] }}
+              </dd>
+            </div>
+            {% endif %}
+            {% if data['risks-other-risks'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Are there other risks related to the transferring academies?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['risks-other-risks'] }}
+              </dd>
+            </div>
+            {% endif %}
+            {% if data['risks-other-risks'] === 'Yes' and data['risks-risk-management'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                What are the risks and the plans to manage them?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['risks-risk-management'] }}
               </dd>
             </div>
             {% endif %}
@@ -172,6 +285,74 @@
             </div>
             {% endif %}
             {% endif %}
+          </dl>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Reason and benefits (Trust)</h2>
+        {% if data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="reason-and-benefits-trust">
+              Change<span class="govuk-visually-hidden"> reason and benefits (trust)</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not data['reason-and-benefits-trust-strategic-needs'] and not data['reason-and-benefits-trust-maintain-improve'] and not data['reason-and-benefits-trust-benefit-trust'] %}
+          <div class="govuk-inset-text">
+            No reason and benefits information has been added.
+          </div>
+        {% else %}
+          <dl class="govuk-summary-list">
+            {% if data['reason-and-benefits-trust-strategic-needs'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                What are the strategic needs of the trust?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['reason-and-benefits-trust-strategic-needs'] }}
+              </dd>
+            </div>
+            {% endif %}
+
+            {% if data['reason-and-benefits-trust-maintain-improve'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                How will the trust support the developmental needs of the transferring academies?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['reason-and-benefits-trust-maintain-improve'] }}
+              </dd>
+            </div>
+            {% endif %}
+
+            {% if data['reason-and-benefits-trust-benefit-trust'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                How will the trust benefit the transferring academies?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['reason-and-benefits-trust-benefit-trust'] }}
+              </dd>
+            </div>
+            {% endif %}
+
+            <!-- Temporarily hidden: What type of transfer it is?
+            {% if data['reason-and-benefits-trust-transfer-type'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                What type of transfer it is?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['reason-and-benefits-trust-transfer-type'] }}
+              </dd>
+            </div>
+            {% endif %}
+            -->
           </dl>
         {% endif %}
       </div>

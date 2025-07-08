@@ -72,7 +72,7 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="risks-status">
+          <a class="govuk-link govuk-task-list__link" href="risks-summary" aria-describedby="risks-status">
             Risks
           </a>
           <div id="task-3-hint" class="govuk-task-list__hint">
@@ -122,17 +122,17 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="reason-and-benefits-status">
+          <a class="govuk-link govuk-task-list__link" href="reason-and-benefits-trust" aria-describedby="reason-and-benefits-trust-status">
             Reason and benefits
           </a>
           <div id="task-2-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              <strong>{{ processTaskOwners('reason-and-benefits-status') }}</strong>
+              <strong>{{ processTaskOwners('reason-and-benefits-trust-status') }}</strong>
             </span>
           </div>
         </div>
-        <div class="govuk-task-list__status" id="reason-and-benefits-status">
-          {% if data['reason-and-benefits-status'] %}
+        <div class="govuk-task-list__status" id="reason-and-benefits-trust-status">
+          {% if data['reason-and-benefits-trust-status'] %}
             <strong class="govuk-tag govuk-tag--green">
               Completed
             </strong>
