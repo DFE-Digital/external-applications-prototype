@@ -317,7 +317,13 @@ module.exports = function (router) {
                 'academies-to-transfer': 'academies',
                 'incoming-trust': 'incomingTrust',
                 'finance': 'finance',
-                'declaration': 'declaration'
+                'declaration': 'declaration',
+                'risks': 'risks',
+                'reason-and-benefits-academies': 'reason-and-benefits-academies',
+                'reason-and-benefits-trust': 'reason-and-benefits-trust',
+                'risks-status': 'risks',
+                'reason-and-benefits-academies-status': 'reason-and-benefits-academies',
+                'reason-and-benefits-trust-status': 'reason-and-benefits-trust'
             };
             
             const taskOwnerField = taskOwnerMap[taskKey];
@@ -571,6 +577,9 @@ module.exports = function (router) {
             case 'declaration':
                 redirectUrl = 'declaration-summary';
                 break;
+            case 'risks':
+                redirectUrl = 'risks-summary';
+                break;
             default:
                 redirectUrl = 'application-task-list?ref=' + req.session.data.application.reference;
         }
@@ -743,6 +752,177 @@ module.exports = function (router) {
         });
     });
 
+    // GET handler for risks summary
+    router.get('/' + version + '/risks-summary', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Process task owners
+        let taskOwnerDisplay = 'Task owner: not assigned';
+        if (req.session.data.taskOwners?.risks) {
+            const owners = Array.isArray(req.session.data.taskOwners.risks) 
+                ? req.session.data.taskOwners.risks 
+                : [req.session.data.taskOwners.risks];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
+        res.render(version + '/risks-summary', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // POST handler for risks summary
+    router.post('/' + version + '/risks-summary', function (req, res) {
+        // Check if this is the due diligence form submission
+        if (req.body['risks-due-diligence']) {
+            // Save the due diligence data to session
+            req.session.data['risks-due-diligence'] = req.body['risks-due-diligence'];
+            
+            // Redirect to the risks summary page (GET)
+            return res.redirect('risks-summary');
+        }
+        
+        // Check if this is the pupil numbers form submission
+        if (req.body['risks-pupil-numbers']) {
+            // Save the pupil numbers data to session
+            req.session.data['risks-pupil-numbers'] = req.body['risks-pupil-numbers'];
+            
+            // If the answer is "No", clear any existing pupil forecast data and go to summary
+            if (req.body['risks-pupil-numbers'] === 'No') {
+                req.session.data['risks-pupil-forecast'] = '';
+                return res.redirect('risks-summary');
+            }
+            
+            // If the answer is "Yes", go to the forecast question
+            if (req.body['risks-pupil-numbers'] === 'Yes') {
+                return res.redirect('risks-pupil-forecast');
+            }
+        }
+        
+        // Check if this is the pupil forecast form submission
+        if (req.body['risks-pupil-forecast']) {
+            // Save the pupil forecast data to session
+            req.session.data['risks-pupil-forecast'] = req.body['risks-pupil-forecast'];
+            
+            // Redirect to the risks summary page (GET)
+            return res.redirect('risks-summary');
+        }
+        
+        // Check if this is the financial deficit form submission
+        if (req.body['risks-financial-deficit']) {
+            // Save the financial deficit data to session
+            req.session.data['risks-financial-deficit'] = req.body['risks-financial-deficit'];
+            
+            // If the answer is "No", clear any existing financial forecast data and go to summary
+            if (req.body['risks-financial-deficit'] === 'No') {
+                req.session.data['risks-financial-forecast'] = '';
+                return res.redirect('risks-summary');
+            }
+            
+            // If the answer is "Yes", go to the financial forecast question
+            if (req.body['risks-financial-deficit'] === 'Yes') {
+                return res.redirect('risks-financial-forecast');
+            }
+        }
+        
+        // Check if this is the financial forecast form submission
+        if (req.body['risks-financial-forecast']) {
+            // Save the financial forecast data to session
+            req.session.data['risks-financial-forecast'] = req.body['risks-financial-forecast'];
+            
+            // Redirect to the risks summary page (GET)
+            return res.redirect('risks-summary');
+        }
+        
+        // Check if this is the finances pooled form submission
+        if (req.body['risks-finances-pooled']) {
+            // Save the finances pooled data to session
+            req.session.data['risks-finances-pooled'] = req.body['risks-finances-pooled'];
+            
+            // If the answer is "No", clear any existing reserves transfer data and go to summary
+            if (req.body['risks-finances-pooled'] === 'No') {
+                req.session.data['risks-reserves-transfer'] = '';
+                return res.redirect('risks-summary');
+            }
+            
+            // If the answer is "Yes", go to the reserves transfer question
+            if (req.body['risks-finances-pooled'] === 'Yes') {
+                return res.redirect('risks-reserves-transfer');
+            }
+        }
+        
+        // Check if this is the reserves transfer form submission
+        if (req.body['risks-reserves-transfer']) {
+            // Save the reserves transfer data to session
+            req.session.data['risks-reserves-transfer'] = req.body['risks-reserves-transfer'];
+            
+            // Redirect to the risks summary page (GET)
+            return res.redirect('risks-summary');
+        }
+        
+        // Check if this is the other risks form submission
+        if (req.body['risks-other-risks']) {
+            // Save the other risks data to session
+            req.session.data['risks-other-risks'] = req.body['risks-other-risks'];
+            
+            // If the answer is "No", clear any existing risk management data and go to summary
+            if (req.body['risks-other-risks'] === 'No') {
+                req.session.data['risks-risk-management'] = '';
+                return res.redirect('risks-summary');
+            }
+            
+            // If the answer is "Yes", go to the risk management question
+            if (req.body['risks-other-risks'] === 'Yes') {
+                return res.redirect('risks-risk-management');
+            }
+        }
+        
+        // Check if this is the risk management form submission
+        if (req.body['risks-risk-management']) {
+            // Save the risk management data to session
+            req.session.data['risks-risk-management'] = req.body['risks-risk-management'];
+            
+            // Redirect to the risks summary page (GET)
+            return res.redirect('risks-summary');
+        }
+        
+        // Check if this is the completion checkbox form submission
+        if (req.body['risks-status']) {
+            // Save the checkbox state - using 'Complete' to match the form value
+            req.session.data['risks-status'] = req.body['risks-status'] === 'Complete';
+            
+            // Go to application task list
+            return res.redirect('application-task-list');
+        }
+        
+        // Default fallback
+        return res.redirect('risks-summary');
+    });
+
+    // POST handler for risks due diligence
+    router.post('/' + version + '/risks-due-diligence', function (req, res) {
+        // Save the due diligence data to session
+        req.session.data['risks-due-diligence'] = req.body['risks-due-diligence'];
+        
+        // Redirect to the risks summary page
+        res.redirect('risks-summary');
+    });
+
     // GET handler for reason and benefits academies
     router.get('/' + version + '/reason-and-benefits-academies', function (req, res) {
         // Initialize application data if not exists
@@ -802,6 +982,76 @@ module.exports = function (router) {
         
         // Redirect to the reason and benefits academies summary page
         res.redirect('reason-and-benefits-academies');
+    });
+
+    // GET handler for reason and benefits trust
+    router.get('/' + version + '/reason-and-benefits-trust', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Process task owners
+        let taskOwnerDisplay = 'Task owner: not assigned';
+        if (req.session.data.taskOwners?.['reason-and-benefits-trust']) {
+            const owners = Array.isArray(req.session.data.taskOwners['reason-and-benefits-trust']) 
+                ? req.session.data.taskOwners['reason-and-benefits-trust'] 
+                : [req.session.data.taskOwners['reason-and-benefits-trust']];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
+        res.render(version + '/reason-and-benefits-trust', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // POST handler for reason and benefits trust strategic needs
+    router.post('/' + version + '/reason-and-benefits-trust-strategic-needs-handler', function (req, res) {
+        // Save the strategic needs data to session
+        req.session.data['reason-and-benefits-trust-strategic-needs'] = req.body['reason-and-benefits-trust-strategic-needs'];
+        
+        // Redirect to the reason and benefits trust summary page
+        res.redirect('reason-and-benefits-trust');
+    });
+
+    // POST handler for reason and benefits trust maintain improve
+    router.post('/' + version + '/reason-and-benefits-trust-maintain-improve-handler', function (req, res) {
+        // Save the maintain improve data to session
+        req.session.data['reason-and-benefits-trust-maintain-improve'] = req.body['reason-and-benefits-trust-maintain-improve'];
+        
+        // Redirect to the reason and benefits trust summary page
+        res.redirect('reason-and-benefits-trust');
+    });
+
+    // POST handler for reason and benefits trust benefit trust
+    router.post('/' + version + '/reason-and-benefits-trust-benefit-trust-handler', function (req, res) {
+        // Save the benefit trust data to session
+        req.session.data['reason-and-benefits-trust-benefit-trust'] = req.body['reason-and-benefits-trust-benefit-trust'];
+        
+        // Redirect to the reason and benefits trust summary page
+        res.redirect('reason-and-benefits-trust');
+    });
+
+    // POST handler for reason and benefits trust transfer type
+    router.post('/' + version + '/reason-and-benefits-trust-transfer-type-handler', function (req, res) {
+        // Save the transfer type data to session
+        req.session.data['reason-and-benefits-trust-transfer-type'] = req.body['reason-and-benefits-trust-transfer-type'];
+        
+        // Redirect to the reason and benefits trust summary page
+        res.redirect('reason-and-benefits-trust');
     });
 
     // GET handler for check your answers

@@ -1,0 +1,52 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Are there other risks related to the transferring academies" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="risks-summary" method="post">
+
+        {{ govukRadios({
+          name: "risks-other-risks",
+          fieldset: {
+            legend: {
+              html: '<span class="govuk-caption-l">Risks</span>
+              Are there other risks related to the transferring academies?',
+              classes: "govuk-fieldset__legend--l",
+              isPageHeading: true
+            }
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes",
+              checked: data["risks-other-risks"] === "Yes"
+            },
+            {
+              value: "No",
+              text: "No",
+              checked: data["risks-other-risks"] === "No"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 
