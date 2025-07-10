@@ -1036,15 +1036,6 @@ module.exports = function (router) {
         res.redirect('reason-and-benefits-trust');
     });
 
-    // POST handler for reason and benefits trust benefit trust
-    router.post('/' + version + '/reason-and-benefits-trust-benefit-trust-handler', function (req, res) {
-        // Save the benefit trust data to session
-        req.session.data['reason-and-benefits-trust-benefit-trust'] = req.body['reason-and-benefits-trust-benefit-trust'];
-        
-        // Redirect to the reason and benefits trust summary page
-        res.redirect('reason-and-benefits-trust');
-    });
-
     // POST handler for reason and benefits trust transfer type
     router.post('/' + version + '/reason-and-benefits-trust-transfer-type-handler', function (req, res) {
         // Save the transfer type data to session
