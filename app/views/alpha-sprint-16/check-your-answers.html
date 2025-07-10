@@ -302,7 +302,7 @@
         {% endif %}
       </div>
       <div class="govuk-summary-card__content">
-        {% if not data['reason-and-benefits-trust-strategic-needs'] and not data['reason-and-benefits-trust-maintain-improve'] and not data['reason-and-benefits-trust-benefit-trust'] %}
+        {% if not data['reason-and-benefits-trust-strategic-needs'] and not data['reason-and-benefits-trust-maintain-improve'] %}
           <div class="govuk-inset-text">
             No reason and benefits information has been added.
           </div>
@@ -326,17 +326,6 @@
               </dt>
               <dd class="govuk-summary-list__value">
                 {{ data['reason-and-benefits-trust-maintain-improve'] }}
-              </dd>
-            </div>
-            {% endif %}
-
-            {% if data['reason-and-benefits-trust-benefit-trust'] %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                How will the trust benefit the transferring academies?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                {{ data['reason-and-benefits-trust-benefit-trust'] }}
               </dd>
             </div>
             {% endif %}
