@@ -324,6 +324,8 @@ module.exports = function (router) {
                 'risks-status': 'risks',
                 'reason-and-benefits-academies-status': 'reason-and-benefits-academies',
                 'reason-and-benefits-trust-status': 'reason-and-benefits-trust',
+                'school-improvement': 'school-improvement',
+                'school-improvement-status': 'school-improvement',
                 'high-quality-and-inclusive-education-status': 'high-quality-and-inclusive-education'
             };
             
@@ -586,6 +588,9 @@ module.exports = function (router) {
                 break;
             case 'reason-and-benefits-trust':
                 redirectUrl = 'reason-and-benefits-trust';
+                break;
+            case 'school-improvement':
+                redirectUrl = 'school-improvement';
                 break;
             case 'high-quality-and-inclusive-education':
                 redirectUrl = 'high-quality-and-inclusive-education';
@@ -1110,6 +1115,54 @@ module.exports = function (router) {
             data: req.session.data,
             taskOwnerDisplay: taskOwnerDisplay
         });
+    });
+
+    // GET handler for school improvement
+    router.get('/' + version + '/school-improvement', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Load contributors from application data if not already in session
+        if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
+            req.session.data['contributors'] = application.contributors;
+        }
+        
+        // Process task owners
+        let taskOwnerDisplay = 'Task owner: not assigned';
+        if (req.session.data.taskOwners?.['school-improvement']) {
+            const owners = Array.isArray(req.session.data.taskOwners['school-improvement']) 
+                ? req.session.data.taskOwners['school-improvement'] 
+                : [req.session.data.taskOwners['school-improvement']];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
+        res.render(version + '/school-improvement', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // POST handler for school improvement model
+    router.post('/' + version + '/school-improvement-model-handler', function (req, res) {
+        // Save the school improvement model data to session
+        req.session.data['school-improvement-model'] = req.body['school-improvement-model'];
+        
+        // Redirect to the school improvement summary page
+        res.redirect('school-improvement');
     });
 
     // GET handler for check your answers

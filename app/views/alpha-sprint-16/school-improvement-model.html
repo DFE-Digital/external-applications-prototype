@@ -1,0 +1,48 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="What will be the trust's school improvement model and how will it be actioned?" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="school-improvement-model-handler" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">School improvement</span>
+            What will be the trust\'s school improvement model and how will it be actioned?',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            html: '<p class="govuk-body">For example:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>use of school improvement leadership from the academy joining the trust</li>
+              <li>evidence showing how the trust has improved similar academies</li>
+            </ul>'
+          },
+          maxlength: 4000,
+          id: "school-improvement-model",
+          name: "school-improvement-model",
+          value: data["school-improvement-model"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 
