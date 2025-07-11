@@ -347,6 +347,39 @@
       </div>
     </div>
 
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">School improvement</h2>
+        {% if data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="school-improvement">
+              Change<span class="govuk-visually-hidden"> school improvement</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not data['school-improvement-model'] %}
+          <div class="govuk-inset-text">
+            No school improvement information has been added.
+          </div>
+        {% else %}
+          <dl class="govuk-summary-list">
+            {% if data['school-improvement-model'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                What will be the trust's school improvement model and how will it be actioned?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['school-improvement-model'] }}
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+        {% endif %}
+      </div>
+    </div>
+
     
     {% if data.application.status !== 'Submitted' %}
       <h2 class="govuk-heading-m">Now submit your application</h2>

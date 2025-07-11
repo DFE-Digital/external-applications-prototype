@@ -323,7 +323,9 @@ module.exports = function (router) {
                 'reason-and-benefits-trust': 'reason-and-benefits-trust',
                 'risks-status': 'risks',
                 'reason-and-benefits-academies-status': 'reason-and-benefits-academies',
-                'reason-and-benefits-trust-status': 'reason-and-benefits-trust'
+                'reason-and-benefits-trust-status': 'reason-and-benefits-trust',
+                'school-improvement': 'school-improvement',
+                'school-improvement-status': 'school-improvement'
             };
             
             const taskOwnerField = taskOwnerMap[taskKey];
@@ -579,6 +581,9 @@ module.exports = function (router) {
                 break;
             case 'risks':
                 redirectUrl = 'risks-summary';
+                break;
+            case 'school-improvement':
+                redirectUrl = 'school-improvement';
                 break;
             default:
                 redirectUrl = 'application-task-list?ref=' + req.session.data.application.reference;
@@ -1043,6 +1048,49 @@ module.exports = function (router) {
         
         // Redirect to the reason and benefits trust summary page
         res.redirect('reason-and-benefits-trust');
+    });
+
+    // GET handler for school improvement
+    router.get('/' + version + '/school-improvement', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Process task owners
+        let taskOwnerDisplay = 'Task owner: not assigned';
+        if (req.session.data.taskOwners?.['school-improvement']) {
+            const owners = Array.isArray(req.session.data.taskOwners['school-improvement']) 
+                ? req.session.data.taskOwners['school-improvement'] 
+                : [req.session.data.taskOwners['school-improvement']];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
+        res.render(version + '/school-improvement', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // POST handler for school improvement model
+    router.post('/' + version + '/school-improvement-model-handler', function (req, res) {
+        // Save the school improvement model data to session
+        req.session.data['school-improvement-model'] = req.body['school-improvement-model'];
+        
+        // Redirect to the school improvement summary page
+        res.redirect('school-improvement');
     });
 
     // GET handler for check your answers
