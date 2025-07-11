@@ -347,6 +347,50 @@
       </div>
     </div>
 
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">High-quality and inclusive education</h2>
+        {% if data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="high-quality-and-inclusive-education">
+              Change<span class="govuk-visually-hidden"> high-quality and inclusive education</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not data['high-quality-and-inclusive-education-quality'] and not data['high-quality-and-inclusive-education-inclusive'] %}
+          <div class="govuk-inset-text">
+            No high-quality and inclusive education information has been added.
+          </div>
+        {% else %}
+          <dl class="govuk-summary-list">
+            {% if data['high-quality-and-inclusive-education-quality'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                How do the existing academies at the trust provide high quality and inclusive education?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['high-quality-and-inclusive-education-quality'] }}
+              </dd>
+            </div>
+            {% endif %}
+
+            {% if data['high-quality-and-inclusive-education-inclusive'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                How will the transfer impact the trust and transferring academies?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ data['high-quality-and-inclusive-education-inclusive'] }}
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+        {% endif %}
+      </div>
+    </div>
+
     
     {% if data.application.status !== 'Submitted' %}
       <h2 class="govuk-heading-m">Now submit your application</h2>

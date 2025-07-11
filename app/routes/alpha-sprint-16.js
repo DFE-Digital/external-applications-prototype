@@ -323,7 +323,8 @@ module.exports = function (router) {
                 'reason-and-benefits-trust': 'reason-and-benefits-trust',
                 'risks-status': 'risks',
                 'reason-and-benefits-academies-status': 'reason-and-benefits-academies',
-                'reason-and-benefits-trust-status': 'reason-and-benefits-trust'
+                'reason-and-benefits-trust-status': 'reason-and-benefits-trust',
+                'high-quality-and-inclusive-education-status': 'high-quality-and-inclusive-education'
             };
             
             const taskOwnerField = taskOwnerMap[taskKey];
@@ -579,6 +580,15 @@ module.exports = function (router) {
                 break;
             case 'risks':
                 redirectUrl = 'risks-summary';
+                break;
+            case 'reason-and-benefits-academies':
+                redirectUrl = 'reason-and-benefits-academies';
+                break;
+            case 'reason-and-benefits-trust':
+                redirectUrl = 'reason-and-benefits-trust';
+                break;
+            case 'high-quality-and-inclusive-education':
+                redirectUrl = 'high-quality-and-inclusive-education';
                 break;
             default:
                 redirectUrl = 'application-task-list?ref=' + req.session.data.application.reference;
@@ -1043,6 +1053,63 @@ module.exports = function (router) {
         
         // Redirect to the reason and benefits trust summary page
         res.redirect('reason-and-benefits-trust');
+    });
+
+    // POST handler for high-quality and inclusive education quality
+    router.post('/' + version + '/high-quality-and-inclusive-education-quality-handler', function (req, res) {
+        // Save the quality data to session
+        req.session.data['high-quality-and-inclusive-education-quality'] = req.body['high-quality-and-inclusive-education-quality'];
+        
+        // Redirect to the high-quality and inclusive education summary page
+        res.redirect('high-quality-and-inclusive-education');
+    });
+
+    // POST handler for high-quality and inclusive education inclusive
+    router.post('/' + version + '/high-quality-and-inclusive-education-inclusive-handler', function (req, res) {
+        // Save the inclusive data to session
+        req.session.data['high-quality-and-inclusive-education-inclusive'] = req.body['high-quality-and-inclusive-education-inclusive'];
+        
+        // Redirect to the high-quality and inclusive education summary page
+        res.redirect('high-quality-and-inclusive-education');
+    });
+
+    // GET handler for high-quality and inclusive education summary
+    router.get('/' + version + '/high-quality-and-inclusive-education', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Load contributors from application data if not already in session
+        if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
+            req.session.data['contributors'] = application.contributors;
+        }
+        
+        // Process task owners
+        let taskOwnerDisplay = 'Task owner: not assigned';
+        if (req.session.data.taskOwners?.['high-quality-and-inclusive-education']) {
+            const owners = Array.isArray(req.session.data.taskOwners['high-quality-and-inclusive-education']) 
+                ? req.session.data.taskOwners['high-quality-and-inclusive-education'] 
+                : [req.session.data.taskOwners['high-quality-and-inclusive-education']];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
+        res.render(version + '/high-quality-and-inclusive-education', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
     });
 
     // GET handler for check your answers
