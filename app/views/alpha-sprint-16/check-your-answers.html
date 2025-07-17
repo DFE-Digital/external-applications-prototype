@@ -424,6 +424,88 @@
       </div>
     </div>
 
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Members</h2>
+        {% if data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="members-summary">
+              Change<span class="govuk-visually-hidden"> members</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not data['members-to-add'] and not data['members-to-remove'] %}
+          <div class="govuk-inset-text">
+            No members information has been added.
+          </div>
+        {% else %}
+          {% if data['members-to-add'] and data['members-to-add'].length > 0 %}
+            <h3 class="govuk-heading-s">Who will be the Members of the trust after the transfer?</h3>
+            <dl class="govuk-summary-list">
+              {% for member in data['members-to-add'] %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Member {{ loop.index }}
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ member.name }}</p>
+                  </dd>
+                </div>
+                {% if member.currentResponsibilities %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Current responsibilities for {{ member.name }}
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ member.currentResponsibilities }}</p>
+                  </dd>
+                </div>
+                {% endif %}
+                {% if member.pastResponsibilities %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Past responsibilities for {{ member.name }}
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ member.pastResponsibilities }}</p>
+                  </dd>
+                </div>
+                {% endif %}
+                {% if member.futureRole %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Future role for {{ member.name }}
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ member.futureRole }}</p>
+                  </dd>
+                </div>
+                {% endif %}
+              {% endfor %}
+            </dl>
+          {% endif %}
+
+          {% if data['members-to-remove'] and data['members-to-remove'].length > 0 %}
+            <h3 class="govuk-heading-s">Name of the current members who will be removed?</h3>
+            <dl class="govuk-summary-list">
+              {% for member in data['members-to-remove'] %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Member to remove {{ loop.index }}
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ member.name }}</p>
+                  </dd>
+                </div>
+              {% endfor %}
+            </dl>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
     
     {% if data.application.status !== 'Submitted' %}
       <h2 class="govuk-heading-m">Now submit your application</h2>

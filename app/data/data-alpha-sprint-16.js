@@ -51,6 +51,48 @@ module.exports = {
             postcode: "SE10 8EW"
         }
     ],
+    'members': [
+        {
+            name: "John Smith",
+            role: "Chair of Trustees",
+            email: "john.smith@example.com"
+        },
+        {
+            name: "Sarah Johnson",
+            role: "Vice Chair",
+            email: "sarah.johnson@example.com"
+        },
+        {
+            name: "Michael Brown",
+            role: "Trustee",
+            email: "michael.brown@example.com"
+        },
+        {
+            name: "Emma Wilson",
+            role: "Trustee",
+            email: "emma.wilson@example.com"
+        },
+        {
+            name: "David Thompson",
+            role: "Trustee",
+            email: "david.thompson@example.com"
+        },
+        {
+            name: "Lisa Davis",
+            role: "Trustee",
+            email: "lisa.davis@example.com"
+        },
+        {
+            name: "Robert Miller",
+            role: "Trustee",
+            email: "robert.miller@example.com"
+        },
+        {
+            name: "Jennifer Garcia",
+            role: "Trustee",
+            email: "jennifer.garcia@example.com"
+        }
+    ],
     'applications': [
         {
             'reference': "240315-ABC34",

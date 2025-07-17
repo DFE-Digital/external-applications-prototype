@@ -1,0 +1,55 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Confirm delete member to remove" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form class="form" action="delete-member-to-remove" method="post">
+      {% set memberIndex = data['delete-member-to-remove-index'] %}
+      {% set member = data['members-to-remove'][memberIndex] %}
+
+      {{ govukRadios({
+        idPrefix: "confirm-delete-member-to-remove",
+        name: "confirm-delete-member-to-remove",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Members to remove</span>
+            Are you sure you want to remove ' + member.name + ' from the removal list?',
+            classes: "govuk-fieldset__legend--xl",
+            isPageHeading: true
+          }
+        },
+        hint: {
+          text: "This action cannot be undone."
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes, remove this member from the list"
+          },
+          {
+            value: "no",
+            text: "No, keep this member in the list"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

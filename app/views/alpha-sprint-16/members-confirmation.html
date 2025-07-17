@@ -1,0 +1,59 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Confirm member" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form class="form" action="add-more-members-handler" method="post">
+      {% set selectedMember = data['selected-member'].split('|||') %}
+      {% set memberName = selectedMember[0] %}
+      {% set memberRole = selectedMember[1] %}
+
+      {{ govukRadios({
+        idPrefix: "confirm-member",
+        name: "confirm-member",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Members</span>
+            Is this the right member?',
+            classes: "govuk-fieldset__legend--xl",
+            isPageHeading: true
+          }
+        },
+        hint: {
+          html: '<div class="govuk-inset-text">
+            <h2 class="govuk-heading-m">' + memberName + '</h2>
+            <p class="govuk-body">Role: ' + memberRole + '</p>
+          </div>'
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+    
+  </div>
+</div>
+
+{% endblock %} 
