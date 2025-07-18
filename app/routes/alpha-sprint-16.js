@@ -320,6 +320,8 @@ module.exports = function (router) {
                 'declaration': 'declaration',
                 'members': 'members',
                 'members-status': 'members',
+                'members-1': 'members1',
+                'members-1-status': 'members1',
                 'risks': 'risks',
                 'reason-and-benefits-academies': 'reason-and-benefits-academies',
                 'reason-and-benefits-trust': 'reason-and-benefits-trust',
@@ -596,6 +598,9 @@ module.exports = function (router) {
                 break;
             case 'high-quality-and-inclusive-education':
                 redirectUrl = 'high-quality-and-inclusive-education';
+                break;
+            case 'members1':
+                redirectUrl = 'members-1-summary';
                 break;
             default:
                 redirectUrl = 'application-task-list?ref=' + req.session.data.application.reference;
