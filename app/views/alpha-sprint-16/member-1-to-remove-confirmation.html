@@ -1,0 +1,72 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Confirm member to remove" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to Add a member to remove",
+    href: "member-1-to-remove-add",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+      Is this the right member to remove?
+    </h1>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Member name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['member-to-remove-first-name'] }} {{ data['member-to-remove-last-name'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="member-1-to-remove-add">
+            Change<span class="govuk-visually-hidden"> member name</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+
+    <form action="members-1-summary" method="post">
+      
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            Is this the right member to remove?
+          </legend>
+          <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="member-to-remove-confirmed-yes" name="member-to-remove-confirmed" type="radio" value="Yes" {% if data['member-to-remove-confirmed'] == 'Yes' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="member-to-remove-confirmed-yes">
+                Yes
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="member-to-remove-confirmed-no" name="member-to-remove-confirmed" type="radio" value="No" {% if data['member-to-remove-confirmed'] == 'No' %}checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="member-to-remove-confirmed-no">
+                No
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %} 
