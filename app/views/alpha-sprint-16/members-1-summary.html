@@ -25,11 +25,6 @@
 
     <h2 class="govuk-heading-m">Who will be the Members of the trust after the transfer?</h2>
     
-    <p class="govuk-body">
-      The trust must have at least 3 members and should have 5 or more.
-      Members must not be employees of the trust.
-    </p>
-    
     {% if not data['members-1-to-add'] or data['members-1-to-add'].length === 0 %}
       <div class="govuk-inset-text">
         No members have been added. Use the 'Add member' button below to add members.
@@ -103,7 +98,7 @@
       Add member
     </a>
 
-    <h2 class="govuk-heading-m">Which current members are leaving the trust?</h2>
+    <h2 class="govuk-heading-m">Name of the current members who will be removed?</h2>
     
     {% if not data['members-1-to-remove'] or data['members-1-to-remove'].length === 0 %}
       <div class="govuk-inset-text">
