@@ -1,0 +1,52 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Is this the right member?" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to Add a member by name",
+    href: "member-add",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    <form action="member-current-responsibilities" method="post">
+      
+      {{ govukRadios({
+        name: "member-confirmed",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Members</span>
+            Is ' + data['member-first-name'] + ' ' + data['member-last-name'] + ' an existing member or a new one?',
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        items: [
+          {
+            value: "Yes",
+            text: "Yes",
+            checked: data["member-confirmed"] === "Yes"
+          },
+          {
+            value: "No",
+            text: "No",
+            checked: data["member-confirmed"] === "No"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

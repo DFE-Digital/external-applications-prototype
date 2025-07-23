@@ -318,6 +318,8 @@ module.exports = function (router) {
                 'incoming-trust': 'incomingTrust',
                 'finance': 'finance',
                 'declaration': 'declaration',
+                'members': 'members',
+                'members-status': 'members',
                 'risks': 'risks',
                 'reason-and-benefits-academies': 'reason-and-benefits-academies',
                 'reason-and-benefits-trust': 'reason-and-benefits-trust',
@@ -594,6 +596,9 @@ module.exports = function (router) {
                 break;
             case 'high-quality-and-inclusive-education':
                 redirectUrl = 'high-quality-and-inclusive-education';
+                break;
+            case 'members':
+                redirectUrl = 'members-summary';
                 break;
             default:
                 redirectUrl = 'application-task-list?ref=' + req.session.data.application.reference;
@@ -1358,6 +1363,197 @@ module.exports = function (router) {
     router.get('/' + version + '/confirm-delete-declaration', function (req, res) {
         req.session.data['index'] = req.query.index;
         res.render(version + '/confirm-delete-declaration');
+    });
+
+    // Members routes
+    // GET handler for members summary
+    router.get('/' + version + '/members-summary', function (req, res) {
+        // Set up task owner display
+        let taskOwnerDisplay = 'No task owner assigned';
+        if (req.session.data.taskOwners?.members) {
+            const owners = Array.isArray(req.session.data.taskOwners.members)
+                ? req.session.data.taskOwners.members
+                : [req.session.data.taskOwners.members];
+            taskOwnerDisplay = owners.join(', ');
+        }
+
+        res.render(version + '/members-summary', {
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // Handle members summary form submission
+    router.post('/' + version + '/members-summary', function (req, res) {
+        // Handle completion status
+        if (req.body['members-status'] !== undefined) {
+            req.session.data['members-status'] = req.body['members-status'] === 'Complete';
+        }
+
+        // Handle member deletion
+        if (req.body['delete-member'] !== undefined) {
+            const memberIndex = parseInt(req.body['delete-member']);
+            if (req.session.data['members-to-add'] && req.session.data['members-to-add'][memberIndex]) {
+                req.session.data['members-to-add'].splice(memberIndex, 1);
+            }
+        }
+
+        // Handle member to remove deletion
+        if (req.body['delete-member-to-remove'] !== undefined) {
+            const memberIndex = parseInt(req.body['delete-member-to-remove']);
+            if (req.session.data['members-to-remove'] && req.session.data['members-to-remove'][memberIndex]) {
+                req.session.data['members-to-remove'].splice(memberIndex, 1);
+            }
+        }
+
+        // Handle member to remove confirmation and save
+        if (req.body['member-to-remove-confirmed'] !== undefined) {
+            const confirmed = req.body['member-to-remove-confirmed'];
+            
+            if (confirmed === 'Yes') {
+                const firstName = req.session.data['member-to-remove-first-name'];
+                const lastName = req.session.data['member-to-remove-last-name'];
+                const name = `${firstName} ${lastName}`.trim();
+
+                // Initialize members-to-remove array if it doesn't exist
+                if (!req.session.data['members-to-remove']) {
+                    req.session.data['members-to-remove'] = [];
+                }
+
+                // Add the member to the array
+                req.session.data['members-to-remove'].push({
+                    name: name,
+                    firstName: firstName,
+                    lastName: lastName
+                });
+            }
+
+            // Clear temporary session data
+            delete req.session.data['member-to-remove-first-name'];
+            delete req.session.data['member-to-remove-last-name'];
+        }
+
+        // Handle member future role and save complete member data
+        if (req.body['member-future-role'] !== undefined) {
+            const futureRole = req.body['member-future-role'];
+            const firstName = req.session.data['member-first-name'];
+            const lastName = req.session.data['member-last-name'];
+            const name = `${firstName} ${lastName}`.trim();
+
+            // Find the member in the array and update their data
+            if (req.session.data['members-to-add']) {
+                const memberIndex = req.session.data['members-to-add'].findIndex(m => m.name === name);
+                if (memberIndex !== -1) {
+                    req.session.data['members-to-add'][memberIndex].currentResponsibilities = req.session.data['member-current-responsibilities'];
+                    req.session.data['members-to-add'][memberIndex].pastResponsibilities = req.session.data['member-past-responsibilities'];
+                    req.session.data['members-to-add'][memberIndex].futureRole = futureRole;
+                }
+            }
+
+            // Clear temporary session data
+            delete req.session.data['member-first-name'];
+            delete req.session.data['member-last-name'];
+            delete req.session.data['member-current-responsibilities'];
+            delete req.session.data['member-past-responsibilities'];
+            delete req.session.data['member-future-role'];
+        }
+
+        // Redirect based on the action
+        if (req.body['members-status'] !== undefined) {
+            res.redirect('application-task-list');
+        } else {
+            res.redirect('members-summary');
+        }
+    });
+
+    // Handle member add form
+    router.post('/' + version + '/member-confirmation', function (req, res) {
+        const firstName = req.body['member-first-name'];
+        const lastName = req.body['member-last-name'];
+        const name = `${firstName} ${lastName}`.trim();
+
+        res.render(version + '/member-confirmation', {
+            'member-first-name': firstName,
+            'member-last-name': lastName,
+            'member-name': name
+        });
+    });
+
+    // Handle member confirmation and save member
+    router.post('/' + version + '/member-current-responsibilities', function (req, res) {
+        const confirmed = req.body['member-confirmed'];
+        
+        if (confirmed === 'Yes') {
+            const firstName = req.session.data['member-first-name'];
+            const lastName = req.session.data['member-last-name'];
+            const name = `${firstName} ${lastName}`.trim();
+
+            // Initialize members-to-add array if it doesn't exist
+            if (!req.session.data['members-to-add']) {
+                req.session.data['members-to-add'] = [];
+            }
+
+            // Add the member to the array
+            req.session.data['members-to-add'].push({
+                name: name,
+                firstName: firstName,
+                lastName: lastName
+            });
+        }
+
+        res.render(version + '/member-current-responsibilities');
+    });
+
+    // Handle member current responsibilities
+    router.post('/' + version + '/member-past-responsibilities', function (req, res) {
+        const currentResponsibilities = req.body['member-current-responsibilities'];
+        
+        // Save to session for the current member being added
+        req.session.data['member-current-responsibilities'] = currentResponsibilities;
+
+        res.render(version + '/member-past-responsibilities');
+    });
+
+    // Handle member past responsibilities
+    router.post('/' + version + '/member-future-role', function (req, res) {
+        const pastResponsibilities = req.body['member-past-responsibilities'];
+        
+        // Save to session for the current member being added
+        req.session.data['member-past-responsibilities'] = pastResponsibilities;
+
+        res.render(version + '/member-future-role');
+    });
+
+    // Handle member to remove add form
+    router.post('/' + version + '/member-to-remove-confirmation', function (req, res) {
+        const firstName = req.body['member-to-remove-first-name'];
+        const lastName = req.body['member-to-remove-last-name'];
+        const name = `${firstName} ${lastName}`.trim();
+
+        res.render(version + '/member-to-remove-confirmation', {
+            'member-to-remove-first-name': firstName,
+            'member-to-remove-last-name': lastName,
+            'member-to-remove-name': name
+        });
+    });
+
+    // Handle member deletion confirmation
+    router.get('/' + version + '/confirm-delete-member', function (req, res) {
+        const memberIndex = parseInt(req.query.index);
+        req.session.data['delete-member-index'] = memberIndex;
+
+        res.render(version + '/confirm-delete-member', {
+            index: memberIndex
+        });
+    });
+
+    // Handle member to remove deletion confirmation
+    router.get('/' + version + '/confirm-delete-member-to-remove', function (req, res) {
+        const memberIndex = parseInt(req.query.index);
+        req.session.data['delete-member-to-remove-index'] = memberIndex;
+
+        res.render(version + '/confirm-delete-member-to-remove', {
+            index: memberIndex
+        });
     });
 
 }
