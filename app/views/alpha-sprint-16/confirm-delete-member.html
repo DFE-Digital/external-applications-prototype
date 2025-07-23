@@ -1,11 +1,11 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Confirm delete member to remove" %}
+{% set pageName="Confirm delete member" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back to Members 1",
-    href: "members-1-summary",
+    text: "Back to Members",
+    href: "members-summary",
     classes: "govuk-!-margin-top-6"
   }) }}
 {% endblock %}
@@ -16,7 +16,7 @@
   <div class="govuk-grid-column-two-thirds">
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-      Are you sure you want to remove this member from the removal list?
+      Are you sure you want to remove this member?
     </h1>
 
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -25,20 +25,20 @@
           Member name
         </dt>
         <dd class="govuk-summary-list__value">
-          {{ data['members-1-to-remove'][data.index].name }}
+          {{ data['members-to-add'][data.index].name }}
         </dd>
       </div>
     </dl>
 
-    <form action="members-1-summary" method="post">
-      <input type="hidden" name="delete-member-1-to-remove" value="{{ data.index }}">
+    <form action="members-summary" method="post">
+      <input type="hidden" name="delete-member" value="{{ data.index }}">
       
       <div class="govuk-button-group">
         {{ govukButton({
-          text: "Yes, remove from list",
+          text: "Yes, remove member",
           classes: "govuk-button--warning"
         }) }}
-        <a href="members-1-summary" class="govuk-link">Cancel</a>
+        <a href="members-summary" class="govuk-link">Cancel</a>
       </div>
       
     </form>

@@ -4,8 +4,8 @@
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back to Members 1",
-    href: "members-1-summary",
+    text: "Back to Members",
+    href: "members-summary",
     classes: "govuk-!-margin-top-6"
   }) }}
 {% endblock %}
@@ -23,7 +23,7 @@
       Enter the full name of the member who will be part of the trust after the transfer.
     </p>
 
-    <form action="member-1-confirmation" method="post">
+    <form action="member-confirmation" method="post">
       
       <div class="govuk-form-group">
         <label class="govuk-label" for="member-first-name">

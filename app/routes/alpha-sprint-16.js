@@ -318,8 +318,8 @@ module.exports = function (router) {
                 'incoming-trust': 'incomingTrust',
                 'finance': 'finance',
                 'declaration': 'declaration',
-                'members-1': 'members1',
-                'members-1-status': 'members1',
+                'members': 'members',
+                'members-status': 'members',
                 'risks': 'risks',
                 'reason-and-benefits-academies': 'reason-and-benefits-academies',
                 'reason-and-benefits-trust': 'reason-and-benefits-trust',
@@ -597,8 +597,8 @@ module.exports = function (router) {
             case 'high-quality-and-inclusive-education':
                 redirectUrl = 'high-quality-and-inclusive-education';
                 break;
-            case 'members1':
-                redirectUrl = 'members-1-summary';
+            case 'members':
+                redirectUrl = 'members-summary';
                 break;
             default:
                 redirectUrl = 'application-task-list?ref=' + req.session.data.application.reference;
@@ -1365,43 +1365,43 @@ module.exports = function (router) {
         res.render(version + '/confirm-delete-declaration');
     });
 
-    // Members 1 routes
-    // GET handler for members-1 summary
-    router.get('/' + version + '/members-1-summary', function (req, res) {
+    // Members routes
+    // GET handler for members summary
+    router.get('/' + version + '/members-summary', function (req, res) {
         // Set up task owner display
         let taskOwnerDisplay = 'No task owner assigned';
-        if (req.session.data.taskOwners?.members1) {
-            const owners = Array.isArray(req.session.data.taskOwners.members1)
-                ? req.session.data.taskOwners.members1
-                : [req.session.data.taskOwners.members1];
+        if (req.session.data.taskOwners?.members) {
+            const owners = Array.isArray(req.session.data.taskOwners.members)
+                ? req.session.data.taskOwners.members
+                : [req.session.data.taskOwners.members];
             taskOwnerDisplay = owners.join(', ');
         }
 
-        res.render(version + '/members-1-summary', {
+        res.render(version + '/members-summary', {
             taskOwnerDisplay: taskOwnerDisplay
         });
     });
 
-    // Handle members-1 summary form submission
-    router.post('/' + version + '/members-1-summary', function (req, res) {
+    // Handle members summary form submission
+    router.post('/' + version + '/members-summary', function (req, res) {
         // Handle completion status
-        if (req.body['members-1-status'] !== undefined) {
-            req.session.data['members-1-status'] = req.body['members-1-status'] === 'Complete';
+        if (req.body['members-status'] !== undefined) {
+            req.session.data['members-status'] = req.body['members-status'] === 'Complete';
         }
 
         // Handle member deletion
-        if (req.body['delete-member-1'] !== undefined) {
-            const memberIndex = parseInt(req.body['delete-member-1']);
-            if (req.session.data['members-1-to-add'] && req.session.data['members-1-to-add'][memberIndex]) {
-                req.session.data['members-1-to-add'].splice(memberIndex, 1);
+        if (req.body['delete-member'] !== undefined) {
+            const memberIndex = parseInt(req.body['delete-member']);
+            if (req.session.data['members-to-add'] && req.session.data['members-to-add'][memberIndex]) {
+                req.session.data['members-to-add'].splice(memberIndex, 1);
             }
         }
 
         // Handle member to remove deletion
-        if (req.body['delete-member-1-to-remove'] !== undefined) {
-            const memberIndex = parseInt(req.body['delete-member-1-to-remove']);
-            if (req.session.data['members-1-to-remove'] && req.session.data['members-1-to-remove'][memberIndex]) {
-                req.session.data['members-1-to-remove'].splice(memberIndex, 1);
+        if (req.body['delete-member-to-remove'] !== undefined) {
+            const memberIndex = parseInt(req.body['delete-member-to-remove']);
+            if (req.session.data['members-to-remove'] && req.session.data['members-to-remove'][memberIndex]) {
+                req.session.data['members-to-remove'].splice(memberIndex, 1);
             }
         }
 
@@ -1414,13 +1414,13 @@ module.exports = function (router) {
                 const lastName = req.session.data['member-to-remove-last-name'];
                 const name = `${firstName} ${lastName}`.trim();
 
-                // Initialize members-1-to-remove array if it doesn't exist
-                if (!req.session.data['members-1-to-remove']) {
-                    req.session.data['members-1-to-remove'] = [];
+                // Initialize members-to-remove array if it doesn't exist
+                if (!req.session.data['members-to-remove']) {
+                    req.session.data['members-to-remove'] = [];
                 }
 
                 // Add the member to the array
-                req.session.data['members-1-to-remove'].push({
+                req.session.data['members-to-remove'].push({
                     name: name,
                     firstName: firstName,
                     lastName: lastName
@@ -1440,12 +1440,12 @@ module.exports = function (router) {
             const name = `${firstName} ${lastName}`.trim();
 
             // Find the member in the array and update their data
-            if (req.session.data['members-1-to-add']) {
-                const memberIndex = req.session.data['members-1-to-add'].findIndex(m => m.name === name);
+            if (req.session.data['members-to-add']) {
+                const memberIndex = req.session.data['members-to-add'].findIndex(m => m.name === name);
                 if (memberIndex !== -1) {
-                    req.session.data['members-1-to-add'][memberIndex].currentResponsibilities = req.session.data['member-current-responsibilities'];
-                    req.session.data['members-1-to-add'][memberIndex].pastResponsibilities = req.session.data['member-past-responsibilities'];
-                    req.session.data['members-1-to-add'][memberIndex].futureRole = futureRole;
+                    req.session.data['members-to-add'][memberIndex].currentResponsibilities = req.session.data['member-current-responsibilities'];
+                    req.session.data['members-to-add'][memberIndex].pastResponsibilities = req.session.data['member-past-responsibilities'];
+                    req.session.data['members-to-add'][memberIndex].futureRole = futureRole;
                 }
             }
 
@@ -1458,28 +1458,28 @@ module.exports = function (router) {
         }
 
         // Redirect based on the action
-        if (req.body['members-1-status'] !== undefined) {
+        if (req.body['members-status'] !== undefined) {
             res.redirect('application-task-list');
         } else {
-            res.redirect('members-1-summary');
+            res.redirect('members-summary');
         }
     });
 
-    // Handle member-1 add form
-    router.post('/' + version + '/member-1-confirmation', function (req, res) {
+    // Handle member add form
+    router.post('/' + version + '/member-confirmation', function (req, res) {
         const firstName = req.body['member-first-name'];
         const lastName = req.body['member-last-name'];
         const name = `${firstName} ${lastName}`.trim();
 
-        res.render(version + '/member-1-confirmation', {
+        res.render(version + '/member-confirmation', {
             'member-first-name': firstName,
             'member-last-name': lastName,
             'member-name': name
         });
     });
 
-    // Handle member-1 confirmation and save member
-    router.post('/' + version + '/member-1-current-responsibilities', function (req, res) {
+    // Handle member confirmation and save member
+    router.post('/' + version + '/member-current-responsibilities', function (req, res) {
         const confirmed = req.body['member-confirmed'];
         
         if (confirmed === 'Yes') {
@@ -1487,71 +1487,71 @@ module.exports = function (router) {
             const lastName = req.session.data['member-last-name'];
             const name = `${firstName} ${lastName}`.trim();
 
-            // Initialize members-1-to-add array if it doesn't exist
-            if (!req.session.data['members-1-to-add']) {
-                req.session.data['members-1-to-add'] = [];
+            // Initialize members-to-add array if it doesn't exist
+            if (!req.session.data['members-to-add']) {
+                req.session.data['members-to-add'] = [];
             }
 
             // Add the member to the array
-            req.session.data['members-1-to-add'].push({
+            req.session.data['members-to-add'].push({
                 name: name,
                 firstName: firstName,
                 lastName: lastName
             });
         }
 
-        res.render(version + '/member-1-current-responsibilities');
+        res.render(version + '/member-current-responsibilities');
     });
 
-    // Handle member-1 current responsibilities
-    router.post('/' + version + '/member-1-past-responsibilities', function (req, res) {
+    // Handle member current responsibilities
+    router.post('/' + version + '/member-past-responsibilities', function (req, res) {
         const currentResponsibilities = req.body['member-current-responsibilities'];
         
         // Save to session for the current member being added
         req.session.data['member-current-responsibilities'] = currentResponsibilities;
 
-        res.render(version + '/member-1-past-responsibilities');
+        res.render(version + '/member-past-responsibilities');
     });
 
-    // Handle member-1 past responsibilities
-    router.post('/' + version + '/member-1-future-role', function (req, res) {
+    // Handle member past responsibilities
+    router.post('/' + version + '/member-future-role', function (req, res) {
         const pastResponsibilities = req.body['member-past-responsibilities'];
         
         // Save to session for the current member being added
         req.session.data['member-past-responsibilities'] = pastResponsibilities;
 
-        res.render(version + '/member-1-future-role');
+        res.render(version + '/member-future-role');
     });
 
-    // Handle member-1 to remove add form
-    router.post('/' + version + '/member-1-to-remove-confirmation', function (req, res) {
+    // Handle member to remove add form
+    router.post('/' + version + '/member-to-remove-confirmation', function (req, res) {
         const firstName = req.body['member-to-remove-first-name'];
         const lastName = req.body['member-to-remove-last-name'];
         const name = `${firstName} ${lastName}`.trim();
 
-        res.render(version + '/member-1-to-remove-confirmation', {
+        res.render(version + '/member-to-remove-confirmation', {
             'member-to-remove-first-name': firstName,
             'member-to-remove-last-name': lastName,
             'member-to-remove-name': name
         });
     });
 
-    // Handle member-1 deletion confirmation
-    router.get('/' + version + '/confirm-delete-member-1', function (req, res) {
+    // Handle member deletion confirmation
+    router.get('/' + version + '/confirm-delete-member', function (req, res) {
         const memberIndex = parseInt(req.query.index);
-        req.session.data['delete-member-1-index'] = memberIndex;
+        req.session.data['delete-member-index'] = memberIndex;
 
-        res.render(version + '/confirm-delete-member-1', {
+        res.render(version + '/confirm-delete-member', {
             index: memberIndex
         });
     });
 
-    // Handle member-1 to remove deletion confirmation
-    router.get('/' + version + '/confirm-delete-member-1-to-remove', function (req, res) {
+    // Handle member to remove deletion confirmation
+    router.get('/' + version + '/confirm-delete-member-to-remove', function (req, res) {
         const memberIndex = parseInt(req.query.index);
-        req.session.data['delete-member-1-to-remove-index'] = memberIndex;
+        req.session.data['delete-member-to-remove-index'] = memberIndex;
 
-        res.render(version + '/confirm-delete-member-1-to-remove', {
+        res.render(version + '/confirm-delete-member-to-remove', {
             index: memberIndex
         });
     });
