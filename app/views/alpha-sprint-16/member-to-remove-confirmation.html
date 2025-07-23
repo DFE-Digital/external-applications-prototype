@@ -5,7 +5,7 @@
 {% block beforeContent %}
   {{ govukBackLink({
     text: "Back to Add a member to remove",
-    href: "member-1-to-remove-add",
+    href: "member-to-remove-add",
     classes: "govuk-!-margin-top-6"
   }) }}
 {% endblock %}
@@ -28,14 +28,14 @@
           {{ data['member-to-remove-first-name'] }} {{ data['member-to-remove-last-name'] }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="member-1-to-remove-add">
+          <a class="govuk-link" href="member-to-remove-add">
             Change<span class="govuk-visually-hidden"> member name</span>
           </a>
         </dd>
       </div>
     </dl>
 
-    <form action="members-1-summary" method="post">
+    <form action="members-summary" method="post">
       
       <div class="govuk-form-group">
         <fieldset class="govuk-fieldset">

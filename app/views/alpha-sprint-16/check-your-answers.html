@@ -426,28 +426,28 @@
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Members 1</h2>
+        <h2 class="govuk-summary-card__title">Members</h2>
         {% if data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
-            <a class="govuk-link" href="members-1-summary">
-              Change<span class="govuk-visually-hidden"> members 1</span>
+            <a class="govuk-link" href="members-summary">
+              Change<span class="govuk-visually-hidden"> members</span>
             </a>
           </div>
         {% endif %}
       </div>
       
-      {% if not data['members-1-to-add'] and not data['members-1-to-remove'] %}
+      {% if not data['members-to-add'] and not data['members-to-remove'] %}
         <div class="govuk-summary-card__content">
           <div class="govuk-inset-text">
-            No members 1 information has been added.
+            No members information has been added.
           </div>
         </div>
       {% else %}
-        {% if data['members-1-to-add'] and data['members-1-to-add'].length > 0 %}
+        {% if data['members-to-add'] and data['members-to-add'].length > 0 %}
           <div class="govuk-summary-card__content">
             <h3 class="govuk-heading-s">Who will be the Members of the trust after the transfer?</h3>
             <dl class="govuk-summary-list">
-              {% for member in data['members-1-to-add'] %}
+              {% for member in data['members-to-add'] %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
                     Member {{ loop.index }}
@@ -491,11 +491,11 @@
           </div>
         {% endif %}
 
-        {% if data['members-1-to-remove'] and data['members-1-to-remove'].length > 0 %}
+        {% if data['members-to-remove'] and data['members-to-remove'].length > 0 %}
           <div class="govuk-summary-card__content">
             <h3 class="govuk-heading-s">Name of the current members who will be removed?</h3>
             <dl class="govuk-summary-list">
-              {% for member in data['members-1-to-remove'] %}
+              {% for member in data['members-to-remove'] %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
                     Member to remove {{ loop.index }}
