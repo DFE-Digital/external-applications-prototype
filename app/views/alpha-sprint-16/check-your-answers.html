@@ -517,13 +517,16 @@
           </div>
         {% endif %}
       </div>
-      <div class="govuk-summary-card__content">
-        {% if not data['members-1-to-add'] and not data['members-1-to-remove'] %}
+      
+      {% if not data['members-1-to-add'] and not data['members-1-to-remove'] %}
+        <div class="govuk-summary-card__content">
           <div class="govuk-inset-text">
             No members 1 information has been added.
           </div>
-        {% else %}
-          {% if data['members-1-to-add'] and data['members-1-to-add'].length > 0 %}
+        </div>
+      {% else %}
+        {% if data['members-1-to-add'] and data['members-1-to-add'].length > 0 %}
+          <div class="govuk-summary-card__content">
             <h3 class="govuk-heading-s">Who will be the Members of the trust after the transfer?</h3>
             <dl class="govuk-summary-list">
               {% for member in data['members-1-to-add'] %}
@@ -567,9 +570,11 @@
                 {% endif %}
               {% endfor %}
             </dl>
-          {% endif %}
+          </div>
+        {% endif %}
 
-          {% if data['members-1-to-remove'] and data['members-1-to-remove'].length > 0 %}
+        {% if data['members-1-to-remove'] and data['members-1-to-remove'].length > 0 %}
+          <div class="govuk-summary-card__content">
             <h3 class="govuk-heading-s">Name of the current members who will be removed?</h3>
             <dl class="govuk-summary-list">
               {% for member in data['members-1-to-remove'] %}
@@ -583,9 +588,9 @@
                 </div>
               {% endfor %}
             </dl>
-          {% endif %}
+          </div>
         {% endif %}
-      </div>
+      {% endif %}
     </div>
 
     

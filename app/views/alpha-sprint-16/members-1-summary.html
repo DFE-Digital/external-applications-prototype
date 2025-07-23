@@ -30,68 +30,80 @@
         No members have been added. Use the 'Add member' button below to add members.
       </div>
     {% else %}
-      <dl class="govuk-summary-list">
-        {% for member in data['members-1-to-add'] %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              Member {{ loop.index }}
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <p class="govuk-body">{{ member.name }}</p>
-            </dd>
-            <dd class="govuk-summary-list__actions">
+      {% for member in data['members-1-to-add'] %}
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h3 class="govuk-summary-card__title">Member {{ loop.index }}</h3>
+            <div class="govuk-summary-card__actions">
               <a class="govuk-link" href="confirm-delete-member-1?index={{ loop.index0 }}">
                 Remove<span class="govuk-visually-hidden"> member {{ loop.index }}</span>
               </a>
-            </dd>
+            </div>
           </div>
-          {% if member.currentResponsibilities %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              What is {{ member.name }}'s current responsibilities?
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <p class="govuk-body">{{ member.currentResponsibilities }}</p>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="member-1-current-responsibilities?member={{ loop.index0 }}">
-                Change<span class="govuk-visually-hidden"> current responsibilities for {{ member.name }}</span>
-              </a>
-            </dd>
+          <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ member.name }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="member-1-add?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> member {{ loop.index }} name</span>
+                  </a>
+                </dd>
+              </div>
+              {% if member.currentResponsibilities %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  What is {{ member.name }}'s current responsibilities?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ member.currentResponsibilities }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="member-1-current-responsibilities?member={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> current responsibilities for {{ member.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              {% if member.pastResponsibilities %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  What is {{ member.name }}'s past responsibilities?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ member.pastResponsibilities }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="member-1-past-responsibilities?member={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> past responsibilities for {{ member.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              {% if member.futureRole %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  What will {{ member.name }}'s role and responsibilities be as a member?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ member.futureRole }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="member-1-future-role?member={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> future role for {{ member.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+            </dl>
           </div>
-          {% endif %}
-          {% if member.pastResponsibilities %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              What is {{ member.name }}'s past responsibilities?
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <p class="govuk-body">{{ member.pastResponsibilities }}</p>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="member-1-past-responsibilities?member={{ loop.index0 }}">
-                Change<span class="govuk-visually-hidden"> past responsibilities for {{ member.name }}</span>
-              </a>
-            </dd>
-          </div>
-          {% endif %}
-          {% if member.futureRole %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              What will {{ member.name }}'s role and responsibilities be as a member?
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <p class="govuk-body">{{ member.futureRole }}</p>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="member-1-future-role?member={{ loop.index0 }}">
-                Change<span class="govuk-visually-hidden"> future role for {{ member.name }}</span>
-              </a>
-            </dd>
-          </div>
-          {% endif %}
-        {% endfor %}
-      </dl>
+        </div>
+      {% endfor %}
     {% endif %}
 
     <a href="member-1-add" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
