@@ -512,6 +512,42 @@
     </div>
 
     
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Declaration from academy trust chair</h2>
+        {% if data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="declaration-summary">
+              Change<span class="govuk-visually-hidden"> declaration from academy trust chair</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not data['declarations'] or data['declarations'].length === 0 %}
+          <div class="govuk-inset-text">
+            No declarations have been added.
+          </div>
+        {% else %}
+          <dl class="govuk-summary-list">
+            {% for declaration in data['declarations'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Declaration {{ loop.index }}
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body"><strong>{{ declaration.trust.name }}</strong></p>
+                <p class="govuk-body">Chair of trustees: {{ declaration.chairOfTrustees }}</p>
+                <p class="govuk-body govuk-!-margin-bottom-0">Date: {{ declaration.dateOfDeclaration.day }}/{{ declaration.dateOfDeclaration.month }}/{{ declaration.dateOfDeclaration.year }}</p>
+              </dd>
+            </div>
+            {% endfor %}
+          </dl>
+        {% endif %}
+      </div>
+    </div>
+
+    
     {% if data.application.status !== 'Submitted' %}
       <h2 class="govuk-heading-m">Now submit your application</h2>
       <p class="govuk-body">By submitting this application you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>

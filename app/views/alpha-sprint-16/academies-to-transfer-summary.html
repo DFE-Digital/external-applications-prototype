@@ -68,6 +68,8 @@
             <dd class="govuk-summary-list__value">
               <p class="govuk-body">{{ academy.name }}</p>
               <p class="govuk-body govuk-!-margin-bottom-0">URN: {{ academy.urn }}</p>
+              <p class="govuk-body govuk-!-margin-bottom-0">Postcode: {{ academy.postcode }}</p>
+              <p class="govuk-body govuk-!-margin-bottom-0">Trust: {{ academy.academyTrust }}</p>
             </dd>
             <dd class="govuk-summary-list__actions">
               <a class="govuk-link" href="confirm-delete-academy?index={{ loop.index0 }}">

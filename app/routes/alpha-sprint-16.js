@@ -12,10 +12,10 @@ module.exports = function (router) {
     // Handle academy search results page
     router.get('/' + version + '/academies-to-transfer-search-results', function (req, res) {
         const radioItems = data.academies.map(academy => ({
-            value: academy.name + "|||" + academy.urn + "|||" + academy.postcode,
+            value: academy.name + "|||" + academy.urn + "|||" + academy.postcode + "|||" + academy.academyTrust,
             text: academy.name,
             hint: {
-                text: `URN: ${academy.urn}`
+                html: `URN: ${academy.urn} | Postcode: ${academy.postcode}<br>Trust: ${academy.academyTrust}`
             }
         }));
 
@@ -28,7 +28,7 @@ module.exports = function (router) {
     router.post('/' + version + '/academies-to-transfer-confirmation', function (req, res) {
         // Store the selected academy in session
         const selectedAcademy = req.body['selected-academy'];
-        const [name, urn] = selectedAcademy.split('|||');
+        const [name, urn, postcode, academyTrust] = selectedAcademy.split('|||');
         
         // Find the full academy details from the data file
         const academy = data.academies.find(a => a.urn === urn);
@@ -50,7 +50,7 @@ module.exports = function (router) {
         if (confirmAcademy === 'yes') {
             // Get the selected academy details
             const selectedAcademy = req.session.data['selected-academy'];
-            const [name, urn] = selectedAcademy.split('|||');
+            const [name, urn, postcode, academyTrust] = selectedAcademy.split('|||');
 
             // Initialize academies-to-transfer array if it doesn't exist
             if (!req.session.data['academies-to-transfer']) {
@@ -60,7 +60,9 @@ module.exports = function (router) {
             // Add the new academy to the list
             req.session.data['academies-to-transfer'].push({
                 name: name,
-                urn: urn
+                urn: urn,
+                postcode: postcode,
+                academyTrust: academyTrust
             });
 
             // Clear any existing errors since we now have an academy
@@ -1273,14 +1275,30 @@ module.exports = function (router) {
                 day: req.body['passport-issued-day'] || '',
                 month: req.body['passport-issued-month'] || '',
                 year: req.body['passport-issued-year'] || ''
-            }
+            },
+            status: 'Signed'
         };
         
         // Check if we're updating an existing declaration
         const declarationIndex = req.body['declaration-index'];
+        const trustName = req.session.data.selectedDeclarationTrust?.name;
+        
         if (declarationIndex !== undefined && req.session.data['declarations'][declarationIndex]) {
-            // Update existing declaration
+            // Update existing declaration by index
             req.session.data['declarations'][declarationIndex] = declarationData;
+        } else if (trustName && req.session.data['declarations']) {
+            // Try to find existing declaration by trust name
+            const existingIndex = req.session.data['declarations'].findIndex(declaration => 
+                declaration.trust.name === trustName
+            );
+            
+            if (existingIndex !== -1) {
+                // Update existing declaration
+                req.session.data['declarations'][existingIndex] = declarationData;
+            } else {
+                // Add new declaration to the array
+                req.session.data['declarations'].push(declarationData);
+            }
         } else {
             // Add new declaration to the array
             req.session.data['declarations'].push(declarationData);
@@ -1293,16 +1311,34 @@ module.exports = function (router) {
     // GET handler for declaration form (for viewing existing declarations)
     router.get('/' + version + '/declaration-form', function (req, res) {
         const declarationIndex = req.query.index;
+        const trustName = req.query.trust;
         let existingDeclaration = null;
         
+        // If we have an index, find the declaration by index (for editing existing)
         if (declarationIndex !== undefined && req.session.data['declarations'] && req.session.data['declarations'][declarationIndex]) {
             existingDeclaration = req.session.data['declarations'][declarationIndex];
+        }
+        // If we have a trust name, find the declaration by trust name (for editing existing)
+        else if (trustName && req.session.data['declarations']) {
+            existingDeclaration = req.session.data['declarations'].find(declaration => 
+                declaration.trust.name === trustName
+            );
+        }
+        
+        // Store the trust name in session for the form submission
+        if (trustName) {
+            req.session.data.selectedDeclarationTrust = {
+                name: trustName,
+                ref: '',
+                companies: ''
+            };
         }
         
         res.render(version + '/declaration-form', {
             data: req.session.data,
             existingDeclaration: existingDeclaration,
-            declarationIndex: declarationIndex
+            declarationIndex: declarationIndex,
+            trustName: trustName
         });
     });
 
@@ -1339,9 +1375,41 @@ module.exports = function (router) {
             }
         }
         
+        // Create unique list of outgoing trusts from academies
+        let uniqueOutgoingTrusts = [];
+        if (req.session.data['academies-to-transfer'] && req.session.data['academies-to-transfer'].length > 0) {
+            const trustNames = req.session.data['academies-to-transfer'].map(academy => academy.academyTrust);
+            uniqueOutgoingTrusts = [...new Set(trustNames)];
+        }
+        
+        // Process incoming trust status
+        let incomingTrustStatus = 'Not signed yet';
+        if (req.session.data['declarations'] && req.session.data.selectedTrust) {
+            const incomingDeclaration = req.session.data['declarations'].find(declaration => 
+                declaration.trust.name === req.session.data.selectedTrust.name
+            );
+            if (incomingDeclaration) {
+                incomingTrustStatus = incomingDeclaration.status || 'Signed';
+            }
+        }
+        
+        // Process outgoing trusts status
+        let outgoingTrustsStatus = {};
+        if (req.session.data['declarations'] && uniqueOutgoingTrusts.length > 0) {
+            uniqueOutgoingTrusts.forEach(trustName => {
+                const declaration = req.session.data['declarations'].find(declaration => 
+                    declaration.trust.name === trustName
+                );
+                outgoingTrustsStatus[trustName] = declaration ? (declaration.status || 'Signed') : 'Not signed yet';
+            });
+        }
+        
         res.render(version + '/declaration-summary', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            uniqueOutgoingTrusts: uniqueOutgoingTrusts,
+            incomingTrustStatus: incomingTrustStatus,
+            outgoingTrustsStatus: outgoingTrustsStatus
         });
     });
 
