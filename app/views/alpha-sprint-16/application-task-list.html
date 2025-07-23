@@ -260,29 +260,6 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="members-summary" aria-describedby="members-status">
-            Members
-          </a>
-          <div id="task-7-hint" class="govuk-task-list__hint">
-            <span class="hint-name">
-              <strong>{{ processTaskOwners('members-status') }}</strong>
-            </span>
-          </div>
-        </div>
-        <div class="govuk-task-list__status" id="members-status">
-          {% if data['members-status'] %}
-            <strong class="govuk-tag govuk-tag--green">
-              Completed
-            </strong>
-          {% else %}
-            <strong class="govuk-tag govuk-tag--blue">
-              Incomplete
-            </strong>
-          {% endif %}
-        </div>
-      </li>
-      <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="governance-status">
             Governance 
           </a>
