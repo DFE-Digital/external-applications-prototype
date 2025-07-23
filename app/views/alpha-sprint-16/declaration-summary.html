@@ -15,48 +15,61 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
     
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="declaration">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-9" id="declaration">
       Declaration from academy trust chair
     </h1>
 
-    <p class="govuk-body eat-transfer__task-owner-box">
-      {{ taskOwnerDisplay }} <a class="govuk-link" href="task-owner-update?task=declaration">Change</a>
-    </p>
-
-    {% if not data['declarations'] or data['declarations'].length === 0 %}
-    <div class="govuk-inset-text">
-      No declaration has been added.
-    </div>
-    <a href="declaration-trust-search" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-      Add declaration from academy trust chair
-    </a>
-    {% else %}
+    <h2 class="govuk-heading-m">Declaration forms for the incoming trust</h2>
+    {% if data.selectedTrust and data.selectedTrust.name %}
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-      {% for declaration in data['declarations'] %}
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          Declaration {{ loop.index }}
+          {{ data.selectedTrust.name }}
         </dt>
         <dd class="govuk-summary-list__value">
-          <p class="govuk-body"><strong>{{ declaration.trust.name }}</strong></p>
-          <p class="govuk-body govuk-!-margin-bottom-0">Date: {{ declaration.dateOfDeclaration.day }}/{{ declaration.dateOfDeclaration.month }}/{{ declaration.dateOfDeclaration.year }}</p>
+          <strong class="govuk-tag {% if incomingTrustStatus === 'Signed' %}govuk-tag--green{% else %}govuk-tag--blue{% endif %}">
+            {{ incomingTrustStatus }}
+          </strong>
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="declaration-form?index={{ loop.index0 }}">
-            View details<span class="govuk-visually-hidden"> declaration {{ loop.index }}</span>
+          <a class="govuk-link" href="declaration-form?trust={{ data.selectedTrust.name | urlencode }}">
+            View details<span class="govuk-visually-hidden"> declaration for {{ data.selectedTrust.name }}</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+    {% else %}
+    <p class="govuk-body">You need to add an incoming trust in the <a class="govuk-link" href="incoming-trust-summary">Trust details</a> task first.</p>
+    {% endif %}
+
+    <h2 class="govuk-heading-m">Declaration forms for the outgoing trusts</h2>
+    {% if uniqueOutgoingTrusts and uniqueOutgoingTrusts.length > 0 %}
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      {% for trust in uniqueOutgoingTrusts %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ trust }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <strong class="govuk-tag {% if outgoingTrustsStatus[trust] === 'Signed' %}govuk-tag--green{% else %}govuk-tag--blue{% endif %}">
+            {{ outgoingTrustsStatus[trust] }}
+          </strong>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="declaration-form?trust={{ trust | urlencode }}">
+            View details<span class="govuk-visually-hidden"> declaration for {{ trust }}</span>
           </a>
         </dd>
       </div>
       {% endfor %}
     </dl>
-    <a href="declaration-trust-search" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
-      Add declaration from academy trust chair
-    </a>
+    {% else %}
+    <p class="govuk-body">You need to add academies in the <a class="govuk-link" href="academies-to-transfer">Academies to transfer</a> task first.</p>
     {% endif %}
 
     <form action="application-task-list" method="post">
       <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
-      <div class="govuk-form-group">
+      <div class="govuk-form-group govuk-!-margin-top-9">
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="declaration-status" name="declaration-status" type="checkbox" value="Complete" {% if data['declaration-status'] %}checked{% endif %}>
