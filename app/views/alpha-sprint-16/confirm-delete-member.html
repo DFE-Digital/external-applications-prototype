@@ -13,33 +13,39 @@
 {% block content %}
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
     
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-      Are you sure you want to remove this member?
-    </h1>
-
-    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Member name
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ data['members-to-add'][data.index].name }}
-        </dd>
-      </div>
-    </dl>
-
     <form action="members-summary" method="post">
+      
+      {{ govukRadios({
+        name: "confirm-delete-member",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Members</span>
+            Are you sure you want to remove ' + data['members-to-add'][data.index].name + '?',
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes, remove member",
+            checked: data["confirm-delete-member"] === "yes"
+          },
+          {
+            value: "no",
+            text: "No, keep member",
+            checked: data["confirm-delete-member"] === "no"
+          }
+        ]
+      }) }}
+
       <input type="hidden" name="delete-member" value="{{ data.index }}">
       
-      <div class="govuk-button-group">
-        {{ govukButton({
-          text: "Yes, remove member",
-          classes: "govuk-button--warning"
-        }) }}
-        <a href="members-summary" class="govuk-link">Cancel</a>
-      </div>
+      {{ govukButton({
+        text: "Continue"
+      }) }}
       
     </form>
   </div>
