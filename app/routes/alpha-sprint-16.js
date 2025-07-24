@@ -1279,6 +1279,25 @@ module.exports = function (router) {
         res.status(200).json({ success: true });
     });
 
+    // GET handler for downloading governance structure files
+    router.get('/' + version + '/download-governance-file/:index', function (req, res) {
+        const fileIndex = parseInt(req.params.index);
+        
+        if (req.session.data['governance-structure-files'] && req.session.data['governance-structure-files'][fileIndex]) {
+            const file = req.session.data['governance-structure-files'][fileIndex];
+            
+            // Set headers for file download
+            res.setHeader('Content-Type', file.type || 'application/octet-stream');
+            res.setHeader('Content-Disposition', `attachment; filename="${file.name}"`);
+            
+            // For prototype purposes, create a simple text response
+            // In a real application, this would serve the actual file from storage
+            res.send(`This is a prototype file download for: ${file.name}\n\nFile size: ${(file.size / 1024 / 1024).toFixed(2)} MB\nFile type: ${file.type}\n\nThis is a simulated file download for demonstration purposes.`);
+        } else {
+            res.status(404).send('File not found');
+        }
+    });
+
     // POST handler for deleting governance structure files
     router.post('/' + version + '/delete-governance-file', function (req, res) {
         const fileIndex = parseInt(req.body['file-index']);
