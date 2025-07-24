@@ -1525,14 +1525,18 @@ module.exports = function (router) {
         
         // Process outgoing trusts status
         let outgoingTrustsStatus = {};
-        if (req.session.data['declarations'] && uniqueOutgoingTrusts.length > 0) {
+        if (uniqueOutgoingTrusts.length > 0) {
             uniqueOutgoingTrusts.forEach(trustName => {
-                const declaration = req.session.data['declarations'].find(declaration => 
+                const declaration = req.session.data['declarations'] ? req.session.data['declarations'].find(declaration => 
                     declaration.trust.name === trustName
-                );
+                ) : null;
                 outgoingTrustsStatus[trustName] = declaration ? (declaration.status || 'Signed') : 'Not signed yet';
             });
         }
+        
+        console.log('Debug - uniqueOutgoingTrusts:', uniqueOutgoingTrusts);
+        console.log('Debug - outgoingTrustsStatus:', outgoingTrustsStatus);
+        console.log('Debug - declarations:', req.session.data['declarations']);
         
         res.render(version + '/declaration-summary', {
             data: req.session.data,
