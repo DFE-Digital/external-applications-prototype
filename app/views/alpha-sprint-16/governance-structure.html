@@ -32,7 +32,9 @@
           {% if data['governance-structure-files'] and data['governance-structure-files'].length > 0 %}
             {% for file in data['governance-structure-files'] %}
               <p class="govuk-body">
-                <strong>{{ file.name }}</strong>
+                <a href="download-governance-file/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                  <strong>{{ file.name }}</strong>
+                </a>
               </p>
               <p class="govuk-body govuk-!-font-size-14">
                 File size: {{ (file.size / 1024 / 1024).toFixed(2) }} MB
