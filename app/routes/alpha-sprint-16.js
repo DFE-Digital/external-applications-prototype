@@ -347,8 +347,6 @@ module.exports = function (router) {
                 'reason-and-benefits-trust-status': 'reason-and-benefits-trust',
                 'school-improvement': 'school-improvement',
                 'school-improvement-status': 'school-improvement',
-                'governance-structure': 'governance-structure',
-                'governance-structure-status': 'governance-structure',
                 'high-quality-and-inclusive-education-status': 'high-quality-and-inclusive-education'
             };
             
@@ -614,9 +612,6 @@ module.exports = function (router) {
                 break;
             case 'school-improvement':
                 redirectUrl = 'school-improvement';
-                break;
-            case 'governance-structure':
-                redirectUrl = 'governance-structure';
                 break;
             case 'high-quality-and-inclusive-education':
                 redirectUrl = 'high-quality-and-inclusive-education';
