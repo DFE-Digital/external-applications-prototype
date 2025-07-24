@@ -511,6 +511,49 @@
       {% endif %}
     </div>
 
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Governance structure</h2>
+        {% if data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="governance-structure">
+              Change<span class="govuk-visually-hidden"> governance structure</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not data['governance-structure-file'] %}
+          <div class="govuk-inset-text">
+            No governance structure information has been added.
+          </div>
+        {% else %}
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                What will be the trust's governance structure and how will it be implemented?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body">
+                  <strong>{{ data['governance-structure-file'] }}</strong>
+                </p>
+                {% if data['governance-structure-file-size'] %}
+                  <p class="govuk-body govuk-!-font-size-14">
+                    File size: {{ (data['governance-structure-file-size'] / 1024 / 1024).toFixed(2) }} MB
+                  </p>
+                {% endif %}
+                {% if data['governance-structure-file-type'] %}
+                  <p class="govuk-body govuk-!-font-size-14">
+                    File type: {{ data['governance-structure-file-type'] }}
+                  </p>
+                {% endif %}
+              </dd>
+            </div>
+          </dl>
+        {% endif %}
+      </div>
+    </div>
+
     
     {% if data.application.status !== 'Submitted' %}
       <h2 class="govuk-heading-m">Now submit your application</h2>

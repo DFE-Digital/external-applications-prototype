@@ -8,6 +8,23 @@ module.exports = function (router) {
 
     versionMiddleware(router, version);
 
+    // Add file upload middleware for governance structure
+    router.use('/' + version + '/governance-structure-model-handler', (req, res, next) => {
+        // For this prototype, we'll simulate file upload handling
+        // In a real application, you would use multer or similar middleware
+        if (req.headers['content-type'] && req.headers['content-type'].includes('multipart/form-data')) {
+            // Simulate file upload processing
+            req.files = {
+                'governance-structure-file': {
+                    name: 'governance-structure-document.pdf',
+                    size: 1024000, // 1MB
+                    mimetype: 'application/pdf'
+                }
+            };
+        }
+        next();
+    });
+
 
     // Handle academy search results page
     router.get('/' + version + '/academies-to-transfer-search-results', function (req, res) {
@@ -328,6 +345,8 @@ module.exports = function (router) {
                 'reason-and-benefits-trust-status': 'reason-and-benefits-trust',
                 'school-improvement': 'school-improvement',
                 'school-improvement-status': 'school-improvement',
+                'governance-structure': 'governance-structure',
+                'governance-structure-status': 'governance-structure',
                 'high-quality-and-inclusive-education-status': 'high-quality-and-inclusive-education'
             };
             
@@ -593,6 +612,9 @@ module.exports = function (router) {
                 break;
             case 'school-improvement':
                 redirectUrl = 'school-improvement';
+                break;
+            case 'governance-structure':
+                redirectUrl = 'governance-structure';
                 break;
             case 'high-quality-and-inclusive-education':
                 redirectUrl = 'high-quality-and-inclusive-education';
@@ -1168,6 +1190,64 @@ module.exports = function (router) {
         
         // Redirect to the school improvement summary page
         res.redirect('school-improvement');
+    });
+
+    // GET handler for governance structure
+    router.get('/' + version + '/governance-structure', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Load contributors from application data if not already in session
+        if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
+            req.session.data['contributors'] = application.contributors;
+        }
+        
+        // Process task owners
+        let taskOwnerDisplay = 'Task owner: not assigned';
+        if (req.session.data.taskOwners?.['governance-structure']) {
+            const owners = Array.isArray(req.session.data.taskOwners['governance-structure']) 
+                ? req.session.data.taskOwners['governance-structure'] 
+                : [req.session.data.taskOwners['governance-structure']];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
+        res.render(version + '/governance-structure', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // POST handler for governance structure model
+    router.post('/' + version + '/governance-structure-model-handler', function (req, res) {
+        // Handle file upload for governance structure
+        if (req.files && req.files['governance-structure-file']) {
+            const uploadedFile = req.files['governance-structure-file'];
+            
+            // Store the file information in session
+            req.session.data['governance-structure-file'] = uploadedFile.name;
+            req.session.data['governance-structure-file-size'] = uploadedFile.size;
+            req.session.data['governance-structure-file-type'] = uploadedFile.mimetype;
+            
+            // In a real application, you would save the file to a secure location
+            // For this prototype, we'll just store the file information
+        }
+        
+        // Redirect to the governance structure summary page
+        res.redirect('governance-structure');
     });
 
     // GET handler for check your answers
