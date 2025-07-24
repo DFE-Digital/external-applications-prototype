@@ -19,6 +19,7 @@
       {% set academyName = selectedAcademy[0] %}
       {% set academyUrn = selectedAcademy[1] %}
       {% set academyPostcode = selectedAcademy[2] %}
+      {% set academyTrust = selectedAcademy[3] %}
 
       {{ govukRadios({
         idPrefix: "confirm-academy",
@@ -36,6 +37,7 @@
             <h2 class="govuk-heading-m">' + academyName + '</h2>
             <p class="govuk-body">URN: ' + academyUrn + '</p>
             <p class="govuk-body">Postcode: ' + academyPostcode + '</p>
+            <p class="govuk-body">Trust: ' + academyTrust + '</p>
           </div>'
         },
         items: [
