@@ -14,6 +14,34 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
+    {% if data['file-upload-success'] %}
+      <div id="upload-success-banner" class="govuk-notification-banner govuk-notification-banner--success" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Success
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">File uploaded successfully</p>
+          <p class="govuk-body">Your governance structure document has been uploaded.</p>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if data['file-delete-success'] %}
+      <div id="delete-success-banner" class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Important
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">File deleted successfully</p>
+          <p class="govuk-body">{{ data['deleted-file-name'] }} has been removed.</p>
+        </div>
+      </div>
+    {% endif %}
+
     <form action="governance-structure-model-handler" method="post" enctype="multipart/form-data">
 
         {{ govukFileUpload({
@@ -39,12 +67,110 @@
         }) }}
 
         {{ govukButton({
-          text: "Continue"
+          text: "Upload file"
         }) }}
 
       </form>
+
+    {% if data['governance-structure-files'] and data['governance-structure-files'].length > 0 %}
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">Uploaded files</h2>
+      
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File name</th>
+            <th scope="col" class="govuk-table__header">File size</th>
+            <th scope="col" class="govuk-table__header">File type</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for file in data['governance-structure-files'] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <strong>{{ file.name }}</strong>
+              </td>
+              <td class="govuk-table__cell">
+                {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+              </td>
+              <td class="govuk-table__cell">
+                {{ file.type }}
+              </td>
+              <td class="govuk-table__cell">
+                <form action="delete-governance-file" method="post" style="display: inline;">
+                  <input type="hidden" name="file-index" value="{{ loop.index0 }}">
+                  {{ govukButton({
+                    text: "Delete",
+                    classes: "govuk-button--warning govuk-button--small",
+                    type: "submit"
+                  }) }}
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    <div class="govuk-button-group govuk-!-margin-top-9">
+      <form action="governance-structure" method="post">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+    </div>
     
   </div>
 </div>
+
+<script>
+  // Auto-hide banners after 4 seconds and clear session flags
+  document.addEventListener('DOMContentLoaded', function() {
+    const uploadBanner = document.getElementById('upload-success-banner');
+    const deleteBanner = document.getElementById('delete-success-banner');
+    
+    if (uploadBanner) {
+      setTimeout(function() {
+        uploadBanner.style.display = 'none';
+        // Clear the upload success flag after hiding
+        clearUploadSuccessFlag();
+      }, 4000);
+    }
+    
+    if (deleteBanner) {
+      setTimeout(function() {
+        deleteBanner.style.display = 'none';
+        // Clear the delete success flag after hiding
+        clearDeleteSuccessFlag();
+      }, 4000);
+    }
+  });
+
+  // Function to clear upload success flag
+  function clearUploadSuccessFlag() {
+    fetch('clear-upload-success-flag', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+  }
+
+  // Function to clear delete success flag
+  function clearDeleteSuccessFlag() {
+    fetch('clear-delete-success-flag', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+  }
+
+  // Clear flags when user navigates away from the page
+  window.addEventListener('beforeunload', function() {
+    clearUploadSuccessFlag();
+    clearDeleteSuccessFlag();
+  });
+</script>
 
 {% endblock %} 

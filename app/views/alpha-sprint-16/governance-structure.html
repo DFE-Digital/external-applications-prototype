@@ -29,27 +29,28 @@
           What will be the trust's governance structure and how will it be implemented?
         </dt>
         <dd class="govuk-summary-list__value">
-          {% if data['governance-structure-file'] %}
-            <p class="govuk-body">
-              <strong>{{ data['governance-structure-file'] }}</strong>
-            </p>
-            {% if data['governance-structure-file-size'] %}
-              <p class="govuk-body govuk-!-font-size-14">
-                File size: {{ (data['governance-structure-file-size'] / 1024 / 1024).toFixed(2) }} MB
+          {% if data['governance-structure-files'] and data['governance-structure-files'].length > 0 %}
+            {% for file in data['governance-structure-files'] %}
+              <p class="govuk-body">
+                <strong>{{ file.name }}</strong>
               </p>
-            {% endif %}
-            {% if data['governance-structure-file-type'] %}
               <p class="govuk-body govuk-!-font-size-14">
-                File type: {{ data['governance-structure-file-type'] }}
+                File size: {{ (file.size / 1024 / 1024).toFixed(2) }} MB
               </p>
-            {% endif %}
+              <p class="govuk-body govuk-!-font-size-14">
+                File type: {{ file.type }}
+              </p>
+              {% if not loop.last %}
+                <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+              {% endif %}
+            {% endfor %}
           {% else %}
-            <p class="govuk-body">No file uploaded</p>
+            <p class="govuk-body">No files uploaded</p>
           {% endif %}
         </dd>
         <dd class="govuk-summary-list__actions">
           <a class="govuk-link" href="governance-structure-model">
-            Change<span class="govuk-visually-hidden"> governance structure file</span>
+            Change<span class="govuk-visually-hidden"> governance structure files</span>
           </a>
         </dd>
       </div>

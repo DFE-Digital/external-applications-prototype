@@ -1239,17 +1239,67 @@ module.exports = function (router) {
         if (req.files && req.files['governance-structure-file']) {
             const uploadedFile = req.files['governance-structure-file'];
             
-            // Store the file information in session
-            req.session.data['governance-structure-file'] = uploadedFile.name;
-            req.session.data['governance-structure-file-size'] = uploadedFile.size;
-            req.session.data['governance-structure-file-type'] = uploadedFile.mimetype;
+            // Initialize files array if it doesn't exist
+            if (!req.session.data['governance-structure-files']) {
+                req.session.data['governance-structure-files'] = [];
+            }
+            
+            // Add the new file to the array
+            req.session.data['governance-structure-files'].push({
+                name: uploadedFile.name,
+                size: uploadedFile.size,
+                type: uploadedFile.mimetype
+            });
+            
+            // Set success flag for banner
+            req.session.data['file-upload-success'] = true;
+            
+            // Clear deletion success flag
+            req.session.data['file-delete-success'] = false;
+            delete req.session.data['deleted-file-name'];
             
             // In a real application, you would save the file to a secure location
             // For this prototype, we'll just store the file information
         }
         
-        // Redirect to the governance structure summary page
-        res.redirect('governance-structure');
+        // Redirect to the governance structure model page to show the file table
+        res.redirect('governance-structure-model');
+    });
+
+    // POST handler for clearing upload success flag
+    router.post('/' + version + '/clear-upload-success-flag', function (req, res) {
+        req.session.data['file-upload-success'] = false;
+        res.status(200).json({ success: true });
+    });
+
+    // POST handler for clearing delete success flag
+    router.post('/' + version + '/clear-delete-success-flag', function (req, res) {
+        req.session.data['file-delete-success'] = false;
+        delete req.session.data['deleted-file-name'];
+        res.status(200).json({ success: true });
+    });
+
+    // POST handler for deleting governance structure files
+    router.post('/' + version + '/delete-governance-file', function (req, res) {
+        const fileIndex = parseInt(req.body['file-index']);
+        
+        if (req.session.data['governance-structure-files'] && req.session.data['governance-structure-files'][fileIndex]) {
+            // Get the file name before removing it for the success message
+            const deletedFileName = req.session.data['governance-structure-files'][fileIndex].name;
+            
+            // Remove the file at the specified index
+            req.session.data['governance-structure-files'].splice(fileIndex, 1);
+            
+            // Set success flag for deletion banner
+            req.session.data['file-delete-success'] = true;
+            req.session.data['deleted-file-name'] = deletedFileName;
+            
+            // Clear upload success flag
+            req.session.data['file-upload-success'] = false;
+        }
+        
+        // Redirect back to the governance structure model page
+        res.redirect('governance-structure-model');
     });
 
     // GET handler for check your answers
