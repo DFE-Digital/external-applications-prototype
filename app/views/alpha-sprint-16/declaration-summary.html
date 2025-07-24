@@ -54,7 +54,7 @@
         </dt>
         <dd class="govuk-summary-list__value">
           <strong class="govuk-tag {% if outgoingTrustsStatus[trust] === 'Signed' %}govuk-tag--green{% else %}govuk-tag--blue{% endif %}">
-            {{ outgoingTrustsStatus[trust] }}
+            {{ outgoingTrustsStatus[trust] or 'Not signed yet' }}
           </strong>
         </dd>
         <dd class="govuk-summary-list__actions">
