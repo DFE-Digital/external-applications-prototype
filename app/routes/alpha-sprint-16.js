@@ -337,8 +337,6 @@ module.exports = function (router) {
                 'incoming-trust': 'incomingTrust',
                 'finance': 'finance',
                 'declaration': 'declaration',
-                'members': 'members',
-                'members-status': 'members',
                 'risks': 'risks',
                 'reason-and-benefits-academies': 'reason-and-benefits-academies',
                 'reason-and-benefits-trust': 'reason-and-benefits-trust',
