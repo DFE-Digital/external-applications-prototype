@@ -110,6 +110,26 @@
           {% endfor %}
         </tbody>
       </table>
+    {% else %}
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">Uploaded files</h2>
+      
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File name</th>
+            <th scope="col" class="govuk-table__header">File size</th>
+            <th scope="col" class="govuk-table__header">File type</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td colspan="4" class="govuk-table__cell govuk-body govuk-!-text-align-center">
+              No files uploaded yet
+            </td>
+          </tr>
+        </tbody>
+      </table>
     {% endif %}
 
     <div class="govuk-button-group govuk-!-margin-top-9">
