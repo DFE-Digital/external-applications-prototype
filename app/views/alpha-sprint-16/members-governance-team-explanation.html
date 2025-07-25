@@ -1,0 +1,41 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Tell us about anyone who is considering joining the governance team" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="members-summary" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">Members</span>
+            Tell us about anyone who is considering joining the governance team',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          maxlength: 4000,
+          id: "members-governance-team-explanation",
+          name: "members-governance-team-explanation",
+          value: data["members-governance-team-explanation"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

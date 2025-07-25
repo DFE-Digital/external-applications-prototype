@@ -614,9 +614,6 @@ module.exports = function (router) {
             case 'high-quality-and-inclusive-education':
                 redirectUrl = 'high-quality-and-inclusive-education';
                 break;
-            case 'members':
-                redirectUrl = 'members-summary';
-                break;
             default:
                 redirectUrl = 'application-task-list?ref=' + req.session.data.application.reference;
         }
@@ -1314,6 +1311,62 @@ module.exports = function (router) {
         res.redirect('governance-structure-model');
     });
 
+    // POST handler for governance team confirmation
+    router.post('/' + version + '/governance-team-confirmation-handler', function (req, res) {
+        // Save the governance team confirmed data to session
+        req.session.data['governance-team-confirmed'] = req.body['governance-team-confirmed'];
+        
+        // If the answer is "No", go to the explanation page
+        if (req.body['governance-team-confirmed'] === 'No') {
+            return res.redirect('governance-team-explanation');
+        }
+        
+        // If the answer is "Yes", go back to the governance structure summary
+        if (req.body['governance-team-confirmed'] === 'Yes') {
+            return res.redirect('governance-structure');
+        }
+        
+        // Default fallback
+        return res.redirect('governance-structure');
+    });
+
+    // POST handler for governance team explanation
+    router.post('/' + version + '/governance-team-explanation', function (req, res) {
+        // Save the governance team explanation data to session
+        req.session.data['governance-team-explanation'] = req.body['governance-team-explanation'];
+        
+        // Redirect to the governance structure summary page
+        res.redirect('governance-structure');
+    });
+
+    // POST handler for members governance team confirmation
+    router.post('/' + version + '/members-governance-team-confirmation-handler', function (req, res) {
+        // Save the members governance team confirmed data to session
+        req.session.data['members-governance-team-confirmed'] = req.body['members-governance-team-confirmed'];
+        
+        // If the answer is "No", go to the explanation page
+        if (req.body['members-governance-team-confirmed'] === 'No') {
+            return res.redirect('members-governance-team-explanation');
+        }
+        
+        // If the answer is "Yes", go back to the members summary
+        if (req.body['members-governance-team-confirmed'] === 'Yes') {
+            return res.redirect('members-summary');
+        }
+        
+        // Default fallback
+        return res.redirect('members-summary');
+    });
+
+    // POST handler for members governance team explanation
+    router.post('/' + version + '/members-governance-team-explanation', function (req, res) {
+        // Save the members governance team explanation data to session
+        req.session.data['members-governance-team-explanation'] = req.body['members-governance-team-explanation'];
+        
+        // Redirect to the members summary page
+        res.redirect('members-summary');
+    });
+
     // GET handler for check your answers
     router.get('/' + version + '/check-your-answers', function (req, res) {
         const ref = req.session.data.application.reference;
@@ -1582,18 +1635,7 @@ module.exports = function (router) {
     // Members routes
     // GET handler for members summary
     router.get('/' + version + '/members-summary', function (req, res) {
-        // Set up task owner display
-        let taskOwnerDisplay = 'No task owner assigned';
-        if (req.session.data.taskOwners?.members) {
-            const owners = Array.isArray(req.session.data.taskOwners.members)
-                ? req.session.data.taskOwners.members
-                : [req.session.data.taskOwners.members];
-            taskOwnerDisplay = owners.join(', ');
-        }
-
-        res.render(version + '/members-summary', {
-            taskOwnerDisplay: taskOwnerDisplay
-        });
+        res.render(version + '/members-summary');
     });
 
     // Handle members summary form submission
