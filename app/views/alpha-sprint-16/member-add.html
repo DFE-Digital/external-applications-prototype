@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Add a member by name" %}
+{% set pageName="Full name of the member" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -16,7 +16,7 @@
   <div class="govuk-grid-column-two-thirds">
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-      Add a member by name
+      Full name of the member
     </h1>
 
     <p class="govuk-body">
@@ -26,17 +26,10 @@
     <form action="member-confirmation" method="post">
       
       <div class="govuk-form-group">
-        <label class="govuk-label" for="member-first-name">
-          First name
+        <label class="govuk-label" for="member-full-name">
+          Full name
         </label>
-        <input class="govuk-input" id="member-first-name" name="member-first-name" type="text" value="{{ data['member-first-name'] }}">
-      </div>
-
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="member-last-name">
-          Last name
-        </label>
-        <input class="govuk-input" id="member-last-name" name="member-last-name" type="text" value="{{ data['member-last-name'] }}">
+        <input class="govuk-input" id="member-full-name" name="member-full-name" type="text" value="{{ data['member-full-name'] }}">
       </div>
 
       <div class="govuk-button-group">

@@ -1691,25 +1691,20 @@ module.exports = function (router) {
         // Handle member future role and save complete member data
         if (req.body['member-future-role'] !== undefined) {
             const futureRole = req.body['member-future-role'];
-            const firstName = req.session.data['member-first-name'];
-            const lastName = req.session.data['member-last-name'];
-            const name = `${firstName} ${lastName}`.trim();
+            const fullName = req.session.data['member-full-name'];
 
             // Find the member in the array and update their data
             if (req.session.data['members-to-add']) {
-                const memberIndex = req.session.data['members-to-add'].findIndex(m => m.name === name);
+                const memberIndex = req.session.data['members-to-add'].findIndex(m => m.name === fullName);
                 if (memberIndex !== -1) {
                     req.session.data['members-to-add'][memberIndex].currentResponsibilities = req.session.data['member-current-responsibilities'];
-                    req.session.data['members-to-add'][memberIndex].pastResponsibilities = req.session.data['member-past-responsibilities'];
                     req.session.data['members-to-add'][memberIndex].futureRole = futureRole;
                 }
             }
 
             // Clear temporary session data
-            delete req.session.data['member-first-name'];
-            delete req.session.data['member-last-name'];
+            delete req.session.data['member-full-name'];
             delete req.session.data['member-current-responsibilities'];
-            delete req.session.data['member-past-responsibilities'];
             delete req.session.data['member-future-role'];
         }
 
@@ -1723,14 +1718,11 @@ module.exports = function (router) {
 
     // Handle member add form
     router.post('/' + version + '/member-confirmation', function (req, res) {
-        const firstName = req.body['member-first-name'];
-        const lastName = req.body['member-last-name'];
-        const name = `${firstName} ${lastName}`.trim();
+        const fullName = req.body['member-full-name'];
 
         res.render(version + '/member-confirmation', {
-            'member-first-name': firstName,
-            'member-last-name': lastName,
-            'member-name': name
+            'member-full-name': fullName,
+            'member-name': fullName
         });
     });
 
@@ -1739,9 +1731,7 @@ module.exports = function (router) {
         const confirmed = req.body['member-confirmed'];
         
         if (confirmed === 'Yes') {
-            const firstName = req.session.data['member-first-name'];
-            const lastName = req.session.data['member-last-name'];
-            const name = `${firstName} ${lastName}`.trim();
+            const fullName = req.session.data['member-full-name'];
 
             // Initialize members-to-add array if it doesn't exist
             if (!req.session.data['members-to-add']) {
@@ -1750,31 +1740,19 @@ module.exports = function (router) {
 
             // Add the member to the array
             req.session.data['members-to-add'].push({
-                name: name,
-                firstName: firstName,
-                lastName: lastName
+                name: fullName
             });
         }
 
         res.render(version + '/member-current-responsibilities');
     });
 
-    // Handle member current responsibilities
-    router.post('/' + version + '/member-past-responsibilities', function (req, res) {
+    // Handle member future role
+    router.post('/' + version + '/member-future-role', function (req, res) {
         const currentResponsibilities = req.body['member-current-responsibilities'];
         
         // Save to session for the current member being added
         req.session.data['member-current-responsibilities'] = currentResponsibilities;
-
-        res.render(version + '/member-past-responsibilities');
-    });
-
-    // Handle member past responsibilities
-    router.post('/' + version + '/member-future-role', function (req, res) {
-        const pastResponsibilities = req.body['member-past-responsibilities'];
-        
-        // Save to session for the current member being added
-        req.session.data['member-past-responsibilities'] = pastResponsibilities;
 
         res.render(version + '/member-future-role');
     });

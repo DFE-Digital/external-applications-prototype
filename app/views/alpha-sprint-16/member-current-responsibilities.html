@@ -15,12 +15,12 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     
-    <form action="member-past-responsibilities" method="post">
+    <form action="member-future-role" method="post">
       
       {{ govukCharacterCount({
         label: {
           html: '<span class="govuk-caption-l">Members</span>
-          What roles and responsibilities have they had in the past 5 years?',
+          What roles and responsibilities has ' + data['member-full-name'] + ' had in the past 5 years?',
           classes: "govuk-label--l",
           isPageHeading: true
         },

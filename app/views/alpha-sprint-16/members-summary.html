@@ -104,21 +104,6 @@
                 </dd>
               </div>
               {% endif %}
-              {% if member.pastResponsibilities %}
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  What is {{ member.name }}'s past responsibilities?
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <p class="govuk-body">{{ member.pastResponsibilities }}</p>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="member-past-responsibilities?member={{ loop.index0 }}">
-                    Change<span class="govuk-visually-hidden"> past responsibilities for {{ member.name }}</span>
-                  </a>
-                </dd>
-              </div>
-              {% endif %}
               {% if member.futureRole %}
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
