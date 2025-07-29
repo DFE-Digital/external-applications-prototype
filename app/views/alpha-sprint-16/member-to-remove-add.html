@@ -23,20 +23,13 @@
       Enter the full name of the current member who will be removed from the trust after the transfer.
     </p>
 
-    <form action="member-to-remove-confirmation" method="post">
+    <form action="members-summary" method="post">
       
       <div class="govuk-form-group">
-        <label class="govuk-label" for="member-to-remove-first-name">
-          First name
+        <label class="govuk-label" for="member-to-remove-full-name">
+          Full name
         </label>
-        <input class="govuk-input" id="member-to-remove-first-name" name="member-to-remove-first-name" type="text" value="{{ data['member-to-remove-first-name'] }}">
-      </div>
-
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="member-to-remove-last-name">
-          Last name
-        </label>
-        <input class="govuk-input" id="member-to-remove-last-name" name="member-to-remove-last-name" type="text" value="{{ data['member-to-remove-last-name'] }}">
+        <input class="govuk-input" id="member-to-remove-full-name" name="member-to-remove-full-name" type="text" value="{{ data['member-to-remove-full-name'] }}">
       </div>
 
       <div class="govuk-button-group">

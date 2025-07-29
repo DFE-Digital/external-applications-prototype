@@ -1369,6 +1369,15 @@ module.exports = function (router) {
 
     // GET handler for check your answers
     router.get('/' + version + '/check-your-answers', function (req, res) {
+        // Ensure application data exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'] || 'Not set',
+                leadApplicant: 'Not set',
+                status: 'Draft'
+            };
+        }
+        
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
@@ -1382,7 +1391,7 @@ module.exports = function (router) {
         
         res.render(version + '/check-your-answers', {
             data: req.session.data,
-            application: application
+            application: application || req.session.data.application
         });
     });
 
@@ -1661,31 +1670,19 @@ module.exports = function (router) {
             }
         }
 
-        // Handle member to remove confirmation and save
-        if (req.body['member-to-remove-confirmed'] !== undefined) {
-            const confirmed = req.body['member-to-remove-confirmed'];
-            
-            if (confirmed === 'Yes') {
-                const firstName = req.session.data['member-to-remove-first-name'];
-                const lastName = req.session.data['member-to-remove-last-name'];
-                const name = `${firstName} ${lastName}`.trim();
+        // Handle member to remove add form submission
+        if (req.body['member-to-remove-full-name'] !== undefined) {
+            const fullName = req.body['member-to-remove-full-name'];
 
-                // Initialize members-to-remove array if it doesn't exist
-                if (!req.session.data['members-to-remove']) {
-                    req.session.data['members-to-remove'] = [];
-                }
-
-                // Add the member to the array
-                req.session.data['members-to-remove'].push({
-                    name: name,
-                    firstName: firstName,
-                    lastName: lastName
-                });
+            // Initialize members-to-remove array if it doesn't exist
+            if (!req.session.data['members-to-remove']) {
+                req.session.data['members-to-remove'] = [];
             }
 
-            // Clear temporary session data
-            delete req.session.data['member-to-remove-first-name'];
-            delete req.session.data['member-to-remove-last-name'];
+            // Add the member to the array
+            req.session.data['members-to-remove'].push({
+                name: fullName
+            });
         }
 
         // Handle member future role and save complete member data
@@ -1757,19 +1754,6 @@ module.exports = function (router) {
         res.render(version + '/member-future-role');
     });
 
-    // Handle member to remove add form
-    router.post('/' + version + '/member-to-remove-confirmation', function (req, res) {
-        const firstName = req.body['member-to-remove-first-name'];
-        const lastName = req.body['member-to-remove-last-name'];
-        const name = `${firstName} ${lastName}`.trim();
-
-        res.render(version + '/member-to-remove-confirmation', {
-            'member-to-remove-first-name': firstName,
-            'member-to-remove-last-name': lastName,
-            'member-to-remove-name': name
-        });
-    });
-
     // Handle member deletion confirmation
     router.get('/' + version + '/confirm-delete-member', function (req, res) {
         const memberIndex = parseInt(req.query.index);
@@ -1791,4 +1775,3 @@ module.exports = function (router) {
     });
 
 }
-
