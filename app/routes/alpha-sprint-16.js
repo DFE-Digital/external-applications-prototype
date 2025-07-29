@@ -1647,6 +1647,16 @@ module.exports = function (router) {
         res.render(version + '/members-summary');
     });
 
+    // GET handler for member-add - clear previous member data
+    router.get('/' + version + '/member-add', function (req, res) {
+        // Clear all member-related session data to prevent showing previous member's information
+        delete req.session.data['member-full-name'];
+        delete req.session.data['member-current-responsibilities'];
+        delete req.session.data['member-future-role'];
+        delete req.session.data['member-confirmed'];
+        res.render(version + '/member-add');
+    });
+
     // Handle members summary form submission
     router.post('/' + version + '/members-summary', function (req, res) {
         // Handle completion status
