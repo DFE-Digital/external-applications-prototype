@@ -469,7 +469,7 @@
                 {% if member.currentResponsibilities %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    Current responsibilities for {{ member.name }}
+                    What roles and responsibilities has {{ member.name }} had in the past 5 years?
                   </dt>
                   <dd class="govuk-summary-list__value">
                     <p class="govuk-body">{{ member.currentResponsibilities }}</p>
@@ -503,12 +503,12 @@
 
         {% if data['members-to-remove'] and data['members-to-remove'].length > 0 %}
           <div class="govuk-summary-card__content">
-            <h3 class="govuk-heading-s">Name of the current members who will be removed?</h3>
+            <h3 class="govuk-heading-s">Current members who will be leaving</h3>
             <dl class="govuk-summary-list">
               {% for member in data['members-to-remove'] %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    Member to remove {{ loop.index }}
+                    Person to leave {{ loop.index }}
                   </dt>
                   <dd class="govuk-summary-list__value">
                     <p class="govuk-body">{{ member.name }}</p>
