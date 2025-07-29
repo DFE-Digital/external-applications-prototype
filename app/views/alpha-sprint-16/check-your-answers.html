@@ -582,6 +582,26 @@
                 {% endif %}
               </dd>
             </div>
+            {% if data['governance-team-confirmed'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Has the trust confirmed everyone who will be on the governance team after the transfer?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body">{{ data['governance-team-confirmed'] }}</p>
+              </dd>
+            </div>
+            {% if data['governance-team-confirmed'] === 'No' and data['governance-team-explanation'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Tell us about anyone who is considering joining the governance team
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body">{{ data['governance-team-explanation'] }}</p>
+              </dd>
+            </div>
+            {% endif %}
+            {% endif %}
           </dl>
         {% endif %}
       </div>
