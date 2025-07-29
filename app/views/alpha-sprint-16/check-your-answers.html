@@ -456,6 +456,16 @@
                     <p class="govuk-body">{{ member.name }}</p>
                   </dd>
                 </div>
+                {% if member.isExistingMember is defined %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Is {{ member.name }} an existing member or a new one?
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{% if member.isExistingMember %}Yes{% else %}No{% endif %}</p>
+                  </dd>
+                </div>
+                {% endif %}
                 {% if member.currentResponsibilities %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">

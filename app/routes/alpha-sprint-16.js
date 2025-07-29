@@ -1339,6 +1339,11 @@ module.exports = function (router) {
         res.redirect('governance-structure');
     });
 
+    // GET handler for governance team explanation
+    router.get('/' + version + '/governance-team-explanation', function (req, res) {
+        res.render(version + '/governance-team-explanation');
+    });
+
     // POST handler for members governance team confirmation
     router.post('/' + version + '/members-governance-team-confirmation-handler', function (req, res) {
         // Save the members governance team confirmed data to session
@@ -1745,13 +1750,34 @@ module.exports = function (router) {
                 req.session.data['members-to-add'] = [];
             }
 
-            // Add the member to the array
+            // Add the member to the array with confirmation status
             req.session.data['members-to-add'].push({
-                name: fullName
+                name: fullName,
+                isExistingMember: true
             });
-        }
+            
+            res.render(version + '/member-current-responsibilities');
+        } else if (confirmed === 'No') {
+            // If user selects "No", still continue to current responsibilities
+            // This means they're adding a new member, not an existing one
+            const fullName = req.session.data['member-full-name'];
 
-        res.render(version + '/member-current-responsibilities');
+            // Initialize members-to-add array if it doesn't exist
+            if (!req.session.data['members-to-add']) {
+                req.session.data['members-to-add'] = [];
+            }
+
+            // Add the member to the array with confirmation status
+            req.session.data['members-to-add'].push({
+                name: fullName,
+                isExistingMember: false
+            });
+            
+            res.render(version + '/member-current-responsibilities');
+        } else {
+            // Default fallback
+            res.redirect('members-summary');
+        }
     });
 
     // Handle member future role

@@ -89,10 +89,25 @@
                   </a>
                 </dd>
               </div>
+              {% if member.isExistingMember is defined %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Is {{ member.name }} an existing member or a new one?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{% if member.isExistingMember %}Yes{% else %}No{% endif %}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="member-confirmation">
+                    Change<span class="govuk-visually-hidden"> member confirmation for {{ member.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
               {% if member.currentResponsibilities %}
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  What is {{ member.name }}'s current responsibilities?
+                  What roles and responsibilities has {{ member.name }} had in the past 5 years?
                 </dt>
                 <dd class="govuk-summary-list__value">
                   <p class="govuk-body">{{ member.currentResponsibilities }}</p>
