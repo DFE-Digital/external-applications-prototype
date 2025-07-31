@@ -139,40 +139,30 @@
 </div>
 
 <script>
-  // Auto-hide banners after 4 seconds and clear session flags
+  // Clear banner flags when page loads (for refresh)
   document.addEventListener('DOMContentLoaded', function() {
-    const uploadBanner = document.getElementById('upload-success-banner');
-    const deleteBanner = document.getElementById('delete-success-banner');
-    
-    if (uploadBanner) {
-      setTimeout(function() {
-        uploadBanner.style.display = 'none';
-        // Clear the upload success flag after hiding
-        clearUploadSuccessFlag();
-      }, 4000);
-    }
-    
-    if (deleteBanner) {
-      setTimeout(function() {
-        deleteBanner.style.display = 'none';
-        // Clear the delete success flag after hiding
-        clearDeleteSuccessFlag();
-      }, 4000);
+    clearBannerFlags();
+  });
+
+  // Clear banner flags when continue button is clicked (for navigation)
+  document.addEventListener('DOMContentLoaded', function() {
+    const continueForm = document.querySelector('form[action="governance-structure"]');
+    if (continueForm) {
+      continueForm.addEventListener('submit', function() {
+        clearBannerFlags();
+      });
     }
   });
 
-  // Function to clear upload success flag
-  function clearUploadSuccessFlag() {
+  // Function to clear both upload and delete success flags
+  function clearBannerFlags() {
     fetch('clear-upload-success-flag', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       }
     });
-  }
-
-  // Function to clear delete success flag
-  function clearDeleteSuccessFlag() {
+    
     fetch('clear-delete-success-flag', {
       method: 'POST',
       headers: {
@@ -180,12 +170,6 @@
       }
     });
   }
-
-  // Clear flags when user navigates away from the page
-  window.addEventListener('beforeunload', function() {
-    clearUploadSuccessFlag();
-    clearDeleteSuccessFlag();
-  });
 </script>
 
 {% endblock %} 
