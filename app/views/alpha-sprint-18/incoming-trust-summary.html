@@ -1,0 +1,120 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Trust details summary" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to application task list",
+    href: "application-task-list?ref=" + data.application.reference,
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="incoming-trust">
+      Trust details
+    </h1>
+
+    <p class="govuk-body eat-transfer__task-owner-box">
+      {{ taskOwnerDisplay }} <a class="govuk-link" href="task-owner-update?task=incomingTrust">Change</a>
+    </p>
+
+    {% if not data['new-trust'] or data['new-trust'].length === 0 %}
+    <div class="govuk-inset-text">
+      No trust details have been added.
+    </div>
+    <a href="incoming-trust-new-trust-question" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+      Add trust details
+    </a>
+    {% else %}
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          New trust being formed
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ "Yes" if data['new-trust'] === 'yes' else "No" }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="incoming-trust-new-trust-question">
+            Change<span class="govuk-visually-hidden"> new trust answer</span>
+          </a>
+        </dd>
+      </div>
+
+      {% if data['new-trust'] === 'yes' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Trust name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['proposed-trust-name'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="incoming-trust-proposed-trust-name">
+            Change<span class="govuk-visually-hidden"> trust name</span>
+          </a>
+        </dd>
+      </div>
+      {% else %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Preferred trust identified
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ "Yes" if data['preferred-trust'] === 'yes' else "No" }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="incoming-trust-preferred-trust-question">
+            Change<span class="govuk-visually-hidden"> preferred trust answer</span>
+          </a>
+        </dd>
+      </div>
+
+      {% if data['preferred-trust'] === 'yes' and data['selected-trust'] %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Selected trust
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <p class="govuk-body">{{ data.selectedTrust.name }}</p>
+          <p class="govuk-body">TRN: {{ data.selectedTrust.ref }}</p>
+          <p class="govuk-body govuk-!-margin-bottom-0">UKPRN: {{ data.selectedTrust.companies }}</p>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="incoming-trust-search">
+            Change<span class="govuk-visually-hidden"> selected trust</span>
+          </a>
+        </dd>
+      </div>
+      {% endif %}
+      {% endif %}
+    </dl>
+    {% endif %}
+
+    <form action="application-task-list" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="incoming-trust-status" name="incoming-trust-status" type="checkbox" value="Complete" {% if data['incoming-trust-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="incoming-trust-status">
+              Mark this section as complete, you can still make changes later
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

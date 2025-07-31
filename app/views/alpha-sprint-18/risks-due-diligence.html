@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="What due diligence activities have been carried out" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="risks-summary" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">Risks</span>
+            What due diligence activities have been carried out on the transferring academies?',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            text: "Describe the due diligence activities that have been undertaken"
+          },
+          maxlength: 4000,
+          id: "risks-due-diligence",
+          name: "risks-due-diligence",
+          value: data["risks-due-diligence"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

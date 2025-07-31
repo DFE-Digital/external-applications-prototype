@@ -1,0 +1,46 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Academy search results" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form class="form" action="academies-to-transfer-confirmation" method="post">
+      <!-- Debug output -->
+      <pre>{{ data.academies | dump }}</pre>
+
+      {{ govukRadios({
+        idPrefix: "selected-academy",
+        name: "selected-academy",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Details of academies</span>
+            Select an academy',
+            classes: "govuk-fieldset__legend--xl",
+            isPageHeading: true
+          }
+        },
+        hint: {
+          text: "The following academies match your search"
+        },
+        items: radioItems
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

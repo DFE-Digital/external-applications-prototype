@@ -1,0 +1,55 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Confirm incoming trust" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form class="form" action="incoming-trust-confirmation-handler" method="post">
+      {{ govukRadios({
+        classes: "govuk-radios",
+        idPrefix: "confirm-trust",
+        name: "confirm-trust",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Incoming trust</span>
+            Is this the right trust?',
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+          }
+        },
+        hint: {
+          html: '<div class="govuk-inset-text">
+            <h2 class="govuk-heading-m">' + selectedTrust.name + '</h2>
+            <p class="govuk-body">TRN: ' + selectedTrust.ref + '</p>
+            <p class="govuk-body">UKPRN: ' + selectedTrust.companies + '</p>
+          </div>'
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %} 

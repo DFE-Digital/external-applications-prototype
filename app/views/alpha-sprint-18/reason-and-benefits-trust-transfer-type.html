@@ -1,0 +1,62 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="What type of transfer it is" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="reason-and-benefits-trust-transfer-type-handler" method="post">
+
+        {{ govukRadios({
+          name: "reason-and-benefits-trust-transfer-type",
+          fieldset: {
+            legend: {
+              html: '<span class="govuk-caption-l">Reason and benefits</span>
+              What type of transfer it is?',
+              classes: "govuk-fieldset__legend--l",
+              isPageHeading: true
+            }
+          },
+          items: [
+            {
+              value: "Academies joining a SAT",
+              text: "Academies joining a SAT",
+              checked: data["reason-and-benefits-trust-transfer-type"] === "Academies joining a SAT"
+            },
+            {
+              value: "SATs joining a MAT",
+              text: "SATs joining a MAT",
+              checked: data["reason-and-benefits-trust-transfer-type"] === "SATs joining a MAT"
+            },
+            {
+              value: "2 MATS merging",
+              text: "2 MATS merging",
+              checked: data["reason-and-benefits-trust-transfer-type"] === "2 MATS merging"
+            },
+            {
+              value: "An academy from a MAT joining another MAT",
+              text: "An academy from a MAT joining another MAT",
+              checked: data["reason-and-benefits-trust-transfer-type"] === "An academy from a MAT joining another MAT"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

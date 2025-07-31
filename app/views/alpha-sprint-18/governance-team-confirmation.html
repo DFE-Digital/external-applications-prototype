@@ -1,0 +1,52 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Has the trust confirmed everyone who will be on the governance team after the transfer?" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="governance-team-confirmation-handler" method="post">
+
+        {{ govukRadios({
+          name: "governance-team-confirmed",
+          fieldset: {
+            legend: {
+              html: '<span class="govuk-caption-l">Governance structure</span>
+              Has the trust confirmed everyone who will be on the governance team after the transfer?',
+              classes: "govuk-fieldset__legend--l",
+              isPageHeading: true
+            }
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes",
+              checked: data["governance-team-confirmed"] === "Yes"
+            },
+            {
+              value: "No",
+              text: "No",
+              checked: data["governance-team-confirmed"] === "No"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

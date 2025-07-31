@@ -1,0 +1,45 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Full name of the member" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to Members",
+    href: "members-summary",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+      Full name of the member
+    </h1>
+
+    <p class="govuk-body">
+      Enter the full name of the member who will be part of the trust after the transfer.
+    </p>
+
+    <form action="member-confirmation" method="post">
+      
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="member-full-name">
+          Full name
+        </label>
+        <input class="govuk-input" id="member-full-name" name="member-full-name" type="text" value="{{ data['member-full-name'] }}">
+      </div>
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %} 
