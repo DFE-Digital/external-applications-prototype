@@ -19,11 +19,7 @@
       Members
     </h1>
 
-    <div class="govuk-inset-text eat-transfer__task-owner-box">
-      {{ taskOwnerDisplay }} <a class="govuk-link" href="task-owner-update?task=members">Change</a>
-    </div>
-
-    <h2 class="govuk-heading-m">Who will be the Members of the trust after the transfer?</h2>
+    <h2 class="govuk-heading-m">Members after the transfer</h2>
     
     <div class="govuk-hint">
       The trust must have at least 3 members and should have 5 or more.
@@ -32,7 +28,7 @@
     
     {% if not data['members-to-add'] or data['members-to-add'].length === 0 %}
       <div class="govuk-inset-text">
-        No members have been added. Use the 'Add member' button below to add members.
+        No members have been added.
       </div>
     {% else %}
       {% for member in data['members-to-add'] %}
@@ -60,10 +56,25 @@
                   </a>
                 </dd>
               </div>
+              {% if member.isExistingMember is defined %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Is {{ member.name }} an existing member or a new one?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{% if member.isExistingMember %}Yes{% else %}No{% endif %}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="member-confirmation">
+                    Change<span class="govuk-visually-hidden"> member confirmation for {{ member.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
               {% if member.currentResponsibilities %}
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  What is {{ member.name }}'s current responsibilities?
+                  What roles and responsibilities has {{ member.name }} had in the past 5 years?
                 </dt>
                 <dd class="govuk-summary-list__value">
                   <p class="govuk-body">{{ member.currentResponsibilities }}</p>
@@ -75,28 +86,23 @@
                 </dd>
               </div>
               {% endif %}
-              {% if member.pastResponsibilities %}
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  What is {{ member.name }}'s past responsibilities?
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <p class="govuk-body">{{ member.pastResponsibilities }}</p>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="member-past-responsibilities?member={{ loop.index0 }}">
-                    Change<span class="govuk-visually-hidden"> past responsibilities for {{ member.name }}</span>
-                  </a>
-                </dd>
-              </div>
-              {% endif %}
               {% if member.futureRole %}
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  What will {{ member.name }}'s role and responsibilities be as a member?
+                  Will {{ member.name }} also have any of these roles?
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  <p class="govuk-body">{{ member.futureRole }}</p>
+                  {% if member.futureRole is string %}
+                    <p class="govuk-body">{{ member.futureRole }}</p>
+                  {% else %}
+                    <ul class="govuk-list govuk-list--bullet">
+                      {% for role in member.futureRole %}
+                        {% if role and role !== '_unchecked' %}
+                          <li>{{ role }}</li>
+                        {% endif %}
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
                 </dd>
                 <dd class="govuk-summary-list__actions">
                   <a class="govuk-link" href="member-future-role?member={{ loop.index0 }}">
@@ -115,25 +121,25 @@
       Add member
     </a>
 
-    <h2 class="govuk-heading-m">Name of the current members who will be removed?</h2>
+    <h2 class="govuk-heading-m">Current members who will be leaving</h2>
     
     {% if not data['members-to-remove'] or data['members-to-remove'].length === 0 %}
       <div class="govuk-inset-text">
-        No members have been marked for removal. Use the 'Add member to remove' button below to add members who will be removed.
+        No members have been marked for removal.
       </div>
     {% else %}
       <dl class="govuk-summary-list">
         {% for member in data['members-to-remove'] %}
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              Member to remove {{ loop.index }}
+              Person to leave {{ loop.index }}
             </dt>
             <dd class="govuk-summary-list__value">
               <p class="govuk-body">{{ member.name }}</p>
             </dd>
             <dd class="govuk-summary-list__actions">
               <a class="govuk-link" href="confirm-delete-member-to-remove?index={{ loop.index0 }}">
-                Remove<span class="govuk-visually-hidden"> member to remove {{ loop.index }}</span>
+                Remove<span class="govuk-visually-hidden"> person to leave {{ loop.index }}</span>
               </a>
             </dd>
           </div>
@@ -142,7 +148,7 @@
     {% endif %}
 
     <a href="member-to-remove-add" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
-      Add member to remove
+      Add person
     </a>
 
     <form action="application-task-list" method="post">

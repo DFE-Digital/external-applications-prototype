@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Current responsibilities" %}
+{% set pageName="What roles and responsibilities have they had in the past 5 years?" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -15,17 +15,23 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     
-    <form action="member-past-responsibilities" method="post">
+    <form action="member-future-role" method="post">
       
       {{ govukCharacterCount({
         label: {
           html: '<span class="govuk-caption-l">Members</span>
-          What is ' + data['member-first-name'] + ' ' + data['member-last-name'] + '\'s current responsibilities?',
+          What roles and responsibilities has ' + data['member-full-name'] + ' had in the past 5 years?',
           classes: "govuk-label--l",
           isPageHeading: true
         },
         hint: {
-          text: "Provide details about their current role, responsibilities, and any relevant experience."
+          html: '<p class="govuk-body">Include:</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>any employment, self-employment, non-exec roles</li>
+            <li>dates</li>
+            <li>names of any schools, academy trusts or other educational institutions</li>
+            <li>explanation of how the roles demonstrate expertise and skills needed for their role as members</li>
+          </ul>'
         },
         maxlength: 4000,
         id: "member-current-responsibilities",

@@ -8,6 +8,23 @@ module.exports = function (router) {
 
     versionMiddleware(router, version);
 
+    // Add file upload middleware for governance structure
+    router.use('/' + version + '/governance-structure-model-handler', (req, res, next) => {
+        // For this prototype, we'll simulate file upload handling
+        // In a real application, you would use multer or similar middleware
+        if (req.headers['content-type'] && req.headers['content-type'].includes('multipart/form-data')) {
+            // Simulate file upload processing
+            req.files = {
+                'governance-structure-file': {
+                    name: 'governance-structure-document.pdf',
+                    size: 1024000, // 1MB
+                    mimetype: 'application/pdf'
+                }
+            };
+        }
+        next();
+    });
+
 
     // Handle academy search results page
     router.get('/' + version + '/academies-to-transfer-search-results', function (req, res) {
@@ -320,8 +337,6 @@ module.exports = function (router) {
                 'incoming-trust': 'incomingTrust',
                 'finance': 'finance',
                 'declaration': 'declaration',
-                'members': 'members',
-                'members-status': 'members',
                 'risks': 'risks',
                 'reason-and-benefits-academies': 'reason-and-benefits-academies',
                 'reason-and-benefits-trust': 'reason-and-benefits-trust',
@@ -598,9 +613,6 @@ module.exports = function (router) {
                 break;
             case 'high-quality-and-inclusive-education':
                 redirectUrl = 'high-quality-and-inclusive-education';
-                break;
-            case 'members':
-                redirectUrl = 'members-summary';
                 break;
             default:
                 redirectUrl = 'application-task-list?ref=' + req.session.data.application.reference;
@@ -1172,8 +1184,177 @@ module.exports = function (router) {
         res.redirect('school-improvement');
     });
 
+    // GET handler for governance structure
+    router.get('/' + version + '/governance-structure', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Load contributors from application data if not already in session
+        if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
+            req.session.data['contributors'] = application.contributors;
+        }
+        
+        // Process task owners
+        let taskOwnerDisplay = 'Task owner: not assigned';
+        if (req.session.data.taskOwners?.['governance-structure']) {
+            const owners = Array.isArray(req.session.data.taskOwners['governance-structure']) 
+                ? req.session.data.taskOwners['governance-structure'] 
+                : [req.session.data.taskOwners['governance-structure']];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
+        res.render(version + '/governance-structure', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay
+        });
+    });
+
+    // POST handler for governance structure model
+    router.post('/' + version + '/governance-structure-model-handler', function (req, res) {
+        // Handle file upload for governance structure
+        if (req.files && req.files['governance-structure-file']) {
+            const uploadedFile = req.files['governance-structure-file'];
+            
+            // Initialize files array if it doesn't exist
+            if (!req.session.data['governance-structure-files']) {
+                req.session.data['governance-structure-files'] = [];
+            }
+            
+            // Add the new file to the array
+            req.session.data['governance-structure-files'].push({
+                name: uploadedFile.name,
+                size: uploadedFile.size,
+                type: uploadedFile.mimetype
+            });
+            
+            // Set success flag for banner
+            req.session.data['file-upload-success'] = true;
+            
+            // Clear deletion success flag
+            req.session.data['file-delete-success'] = false;
+            delete req.session.data['deleted-file-name'];
+            
+            // In a real application, you would save the file to a secure location
+            // For this prototype, we'll just store the file information
+        }
+        
+        // Redirect to the governance structure model page to show the file table
+        res.redirect('governance-structure-model');
+    });
+
+    // POST handler for clearing upload success flag
+    router.post('/' + version + '/clear-upload-success-flag', function (req, res) {
+        req.session.data['file-upload-success'] = false;
+        res.status(200).json({ success: true });
+    });
+
+    // POST handler for clearing delete success flag
+    router.post('/' + version + '/clear-delete-success-flag', function (req, res) {
+        req.session.data['file-delete-success'] = false;
+        delete req.session.data['deleted-file-name'];
+        res.status(200).json({ success: true });
+    });
+
+    // GET handler for downloading governance structure files
+    router.get('/' + version + '/download-governance-file/:index', function (req, res) {
+        const fileIndex = parseInt(req.params.index);
+        
+        if (req.session.data['governance-structure-files'] && req.session.data['governance-structure-files'][fileIndex]) {
+            const file = req.session.data['governance-structure-files'][fileIndex];
+            
+            // Set headers for file download
+            res.setHeader('Content-Type', file.type || 'application/octet-stream');
+            res.setHeader('Content-Disposition', `attachment; filename="${file.name}"`);
+            
+            // For prototype purposes, create a simple text response
+            // In a real application, this would serve the actual file from storage
+            res.send(`This is a prototype file download for: ${file.name}\n\nFile size: ${(file.size / 1024 / 1024).toFixed(2)} MB\nFile type: ${file.type}\n\nThis is a simulated file download for demonstration purposes.`);
+        } else {
+            res.status(404).send('File not found');
+        }
+    });
+
+    // POST handler for deleting governance structure files
+    router.post('/' + version + '/delete-governance-file', function (req, res) {
+        const fileIndex = parseInt(req.body['file-index']);
+        
+        if (req.session.data['governance-structure-files'] && req.session.data['governance-structure-files'][fileIndex]) {
+            // Get the file name before removing it for the success message
+            const deletedFileName = req.session.data['governance-structure-files'][fileIndex].name;
+            
+            // Remove the file at the specified index
+            req.session.data['governance-structure-files'].splice(fileIndex, 1);
+            
+            // Set success flag for deletion banner
+            req.session.data['file-delete-success'] = true;
+            req.session.data['deleted-file-name'] = deletedFileName;
+            
+            // Clear upload success flag
+            req.session.data['file-upload-success'] = false;
+        }
+        
+        // Redirect back to the governance structure model page
+        res.redirect('governance-structure-model');
+    });
+
+    // POST handler for governance team confirmation
+    router.post('/' + version + '/governance-team-confirmation-handler', function (req, res) {
+        // Save the governance team confirmed data to session
+        req.session.data['governance-team-confirmed'] = req.body['governance-team-confirmed'];
+        
+        // If the answer is "No", go to the explanation page
+        if (req.body['governance-team-confirmed'] === 'No') {
+            return res.redirect('governance-team-explanation');
+        }
+        
+        // If the answer is "Yes", go back to the governance structure summary
+        if (req.body['governance-team-confirmed'] === 'Yes') {
+            return res.redirect('governance-structure');
+        }
+        
+        // Default fallback
+        return res.redirect('governance-structure');
+    });
+
+    // POST handler for governance team explanation
+    router.post('/' + version + '/governance-team-explanation', function (req, res) {
+        // Save the governance team explanation data to session
+        req.session.data['governance-team-explanation'] = req.body['governance-team-explanation'];
+        
+        // Redirect to the governance structure summary page
+        res.redirect('governance-structure');
+    });
+
+    // GET handler for governance team explanation
+    router.get('/' + version + '/governance-team-explanation', function (req, res) {
+        res.render(version + '/governance-team-explanation');
+    });
+
     // GET handler for check your answers
     router.get('/' + version + '/check-your-answers', function (req, res) {
+        // Ensure application data exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'] || 'Not set',
+                leadApplicant: 'Not set',
+                status: 'Draft'
+            };
+        }
+        
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
@@ -1187,7 +1368,7 @@ module.exports = function (router) {
         
         res.render(version + '/check-your-answers', {
             data: req.session.data,
-            application: application
+            application: application || req.session.data.application
         });
     });
 
@@ -1440,18 +1621,17 @@ module.exports = function (router) {
     // Members routes
     // GET handler for members summary
     router.get('/' + version + '/members-summary', function (req, res) {
-        // Set up task owner display
-        let taskOwnerDisplay = 'No task owner assigned';
-        if (req.session.data.taskOwners?.members) {
-            const owners = Array.isArray(req.session.data.taskOwners.members)
-                ? req.session.data.taskOwners.members
-                : [req.session.data.taskOwners.members];
-            taskOwnerDisplay = owners.join(', ');
-        }
+        res.render(version + '/members-summary');
+    });
 
-        res.render(version + '/members-summary', {
-            taskOwnerDisplay: taskOwnerDisplay
-        });
+    // GET handler for member-add - clear previous member data
+    router.get('/' + version + '/member-add', function (req, res) {
+        // Clear all member-related session data to prevent showing previous member's information
+        delete req.session.data['member-full-name'];
+        delete req.session.data['member-current-responsibilities'];
+        delete req.session.data['member-future-role'];
+        delete req.session.data['member-confirmed'];
+        res.render(version + '/member-add');
     });
 
     // Handle members summary form submission
@@ -1477,55 +1657,38 @@ module.exports = function (router) {
             }
         }
 
-        // Handle member to remove confirmation and save
-        if (req.body['member-to-remove-confirmed'] !== undefined) {
-            const confirmed = req.body['member-to-remove-confirmed'];
-            
-            if (confirmed === 'Yes') {
-                const firstName = req.session.data['member-to-remove-first-name'];
-                const lastName = req.session.data['member-to-remove-last-name'];
-                const name = `${firstName} ${lastName}`.trim();
+        // Handle member to remove add form submission
+        if (req.body['member-to-remove-full-name'] !== undefined) {
+            const fullName = req.body['member-to-remove-full-name'];
 
-                // Initialize members-to-remove array if it doesn't exist
-                if (!req.session.data['members-to-remove']) {
-                    req.session.data['members-to-remove'] = [];
-                }
-
-                // Add the member to the array
-                req.session.data['members-to-remove'].push({
-                    name: name,
-                    firstName: firstName,
-                    lastName: lastName
-                });
+            // Initialize members-to-remove array if it doesn't exist
+            if (!req.session.data['members-to-remove']) {
+                req.session.data['members-to-remove'] = [];
             }
 
-            // Clear temporary session data
-            delete req.session.data['member-to-remove-first-name'];
-            delete req.session.data['member-to-remove-last-name'];
+            // Add the member to the array
+            req.session.data['members-to-remove'].push({
+                name: fullName
+            });
         }
 
         // Handle member future role and save complete member data
         if (req.body['member-future-role'] !== undefined) {
             const futureRole = req.body['member-future-role'];
-            const firstName = req.session.data['member-first-name'];
-            const lastName = req.session.data['member-last-name'];
-            const name = `${firstName} ${lastName}`.trim();
+            const fullName = req.session.data['member-full-name'];
 
             // Find the member in the array and update their data
             if (req.session.data['members-to-add']) {
-                const memberIndex = req.session.data['members-to-add'].findIndex(m => m.name === name);
+                const memberIndex = req.session.data['members-to-add'].findIndex(m => m.name === fullName);
                 if (memberIndex !== -1) {
                     req.session.data['members-to-add'][memberIndex].currentResponsibilities = req.session.data['member-current-responsibilities'];
-                    req.session.data['members-to-add'][memberIndex].pastResponsibilities = req.session.data['member-past-responsibilities'];
                     req.session.data['members-to-add'][memberIndex].futureRole = futureRole;
                 }
             }
 
             // Clear temporary session data
-            delete req.session.data['member-first-name'];
-            delete req.session.data['member-last-name'];
+            delete req.session.data['member-full-name'];
             delete req.session.data['member-current-responsibilities'];
-            delete req.session.data['member-past-responsibilities'];
             delete req.session.data['member-future-role'];
         }
 
@@ -1539,14 +1702,11 @@ module.exports = function (router) {
 
     // Handle member add form
     router.post('/' + version + '/member-confirmation', function (req, res) {
-        const firstName = req.body['member-first-name'];
-        const lastName = req.body['member-last-name'];
-        const name = `${firstName} ${lastName}`.trim();
+        const fullName = req.body['member-full-name'];
 
         res.render(version + '/member-confirmation', {
-            'member-first-name': firstName,
-            'member-last-name': lastName,
-            'member-name': name
+            'member-full-name': fullName,
+            'member-name': fullName
         });
     });
 
@@ -1555,57 +1715,51 @@ module.exports = function (router) {
         const confirmed = req.body['member-confirmed'];
         
         if (confirmed === 'Yes') {
-            const firstName = req.session.data['member-first-name'];
-            const lastName = req.session.data['member-last-name'];
-            const name = `${firstName} ${lastName}`.trim();
+            const fullName = req.session.data['member-full-name'];
 
             // Initialize members-to-add array if it doesn't exist
             if (!req.session.data['members-to-add']) {
                 req.session.data['members-to-add'] = [];
             }
 
-            // Add the member to the array
+            // Add the member to the array with confirmation status
             req.session.data['members-to-add'].push({
-                name: name,
-                firstName: firstName,
-                lastName: lastName
+                name: fullName,
+                isExistingMember: true
             });
-        }
+            
+            res.render(version + '/member-current-responsibilities');
+        } else if (confirmed === 'No') {
+            // If user selects "No", still continue to current responsibilities
+            // This means they're adding a new member, not an existing one
+            const fullName = req.session.data['member-full-name'];
 
-        res.render(version + '/member-current-responsibilities');
+            // Initialize members-to-add array if it doesn't exist
+            if (!req.session.data['members-to-add']) {
+                req.session.data['members-to-add'] = [];
+            }
+
+            // Add the member to the array with confirmation status
+            req.session.data['members-to-add'].push({
+                name: fullName,
+                isExistingMember: false
+            });
+            
+            res.render(version + '/member-current-responsibilities');
+        } else {
+            // Default fallback
+            res.redirect('members-summary');
+        }
     });
 
-    // Handle member current responsibilities
-    router.post('/' + version + '/member-past-responsibilities', function (req, res) {
+    // Handle member future role
+    router.post('/' + version + '/member-future-role', function (req, res) {
         const currentResponsibilities = req.body['member-current-responsibilities'];
         
         // Save to session for the current member being added
         req.session.data['member-current-responsibilities'] = currentResponsibilities;
 
-        res.render(version + '/member-past-responsibilities');
-    });
-
-    // Handle member past responsibilities
-    router.post('/' + version + '/member-future-role', function (req, res) {
-        const pastResponsibilities = req.body['member-past-responsibilities'];
-        
-        // Save to session for the current member being added
-        req.session.data['member-past-responsibilities'] = pastResponsibilities;
-
         res.render(version + '/member-future-role');
-    });
-
-    // Handle member to remove add form
-    router.post('/' + version + '/member-to-remove-confirmation', function (req, res) {
-        const firstName = req.body['member-to-remove-first-name'];
-        const lastName = req.body['member-to-remove-last-name'];
-        const name = `${firstName} ${lastName}`.trim();
-
-        res.render(version + '/member-to-remove-confirmation', {
-            'member-to-remove-first-name': firstName,
-            'member-to-remove-last-name': lastName,
-            'member-to-remove-name': name
-        });
     });
 
     // Handle member deletion confirmation
@@ -1629,4 +1783,3 @@ module.exports = function (router) {
     });
 
 }
-

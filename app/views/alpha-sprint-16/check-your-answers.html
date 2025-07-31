@@ -17,17 +17,17 @@
     
     <div class="govuk-inset-text govuk-!-margin-bottom-9">
       <p>
-        Application reference: <strong>{{ data.application.reference }}</strong>
+        Application reference: <strong>{{ data.application.reference if data.application else 'Not set' }}</strong>
       </p>
       <p>
-        Lead applicant: <strong>{{ data.application.leadApplicant }}</strong>
+        Lead applicant: <strong>{{ data.application.leadApplicant if data.application else 'Not set' }}</strong>
       </p>
     </div>
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Details of academies</h2>
-        {% if data.application.status !== 'Submitted' %}
+        {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="academies-to-transfer">
               Change<span class="govuk-visually-hidden"> details of academies</span>
@@ -61,7 +61,7 @@
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Reason and benefits (Academies)</h2>
-        {% if data.application.status !== 'Submitted' %}
+        {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="reason-and-benefits-academies">
               Change<span class="govuk-visually-hidden"> reason and benefits (academies)</span>
@@ -116,7 +116,7 @@
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Risks</h2>
-        {% if data.application.status !== 'Submitted' %}
+        {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="risks-summary">
               Change<span class="govuk-visually-hidden"> risks</span>
@@ -229,7 +229,7 @@
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Trust details</h2>
-        {% if data.application.status !== 'Submitted' %}
+        {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="incoming-trust-summary">
               Change<span class="govuk-visually-hidden"> trust details</span>
@@ -293,7 +293,7 @@
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Reason and benefits (Trust)</h2>
-        {% if data.application.status !== 'Submitted' %}
+        {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="reason-and-benefits-trust">
               Change<span class="govuk-visually-hidden"> reason and benefits (trust)</span>
@@ -350,7 +350,7 @@
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">High-quality and inclusive education</h2>
-        {% if data.application.status !== 'Submitted' %}
+        {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="high-quality-and-inclusive-education">
               Change<span class="govuk-visually-hidden"> high-quality and inclusive education</span>
@@ -394,7 +394,7 @@
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">School improvement</h2>
-        {% if data.application.status !== 'Submitted' %}
+        {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="school-improvement">
               Change<span class="govuk-visually-hidden"> school improvement</span>
@@ -427,7 +427,7 @@
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Members</h2>
-        {% if data.application.status !== 'Submitted' %}
+        {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="members-summary">
               Change<span class="govuk-visually-hidden"> members</span>
@@ -456,33 +456,43 @@
                     <p class="govuk-body">{{ member.name }}</p>
                   </dd>
                 </div>
+                {% if member.isExistingMember is defined %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Is {{ member.name }} an existing member or a new one?
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{% if member.isExistingMember %}Yes{% else %}No{% endif %}</p>
+                  </dd>
+                </div>
+                {% endif %}
                 {% if member.currentResponsibilities %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    Current responsibilities for {{ member.name }}
+                    What roles and responsibilities has {{ member.name }} had in the past 5 years?
                   </dt>
                   <dd class="govuk-summary-list__value">
                     <p class="govuk-body">{{ member.currentResponsibilities }}</p>
                   </dd>
                 </div>
                 {% endif %}
-                {% if member.pastResponsibilities %}
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Past responsibilities for {{ member.name }}
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    <p class="govuk-body">{{ member.pastResponsibilities }}</p>
-                  </dd>
-                </div>
-                {% endif %}
                 {% if member.futureRole %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    Future role for {{ member.name }}
+                    Will {{ member.name }} also have any of these roles?
                   </dt>
                   <dd class="govuk-summary-list__value">
-                    <p class="govuk-body">{{ member.futureRole }}</p>
+                    {% if member.futureRole is string %}
+                      <p class="govuk-body">{{ member.futureRole }}</p>
+                    {% else %}
+                      <ul class="govuk-list govuk-list--bullet">
+                        {% for role in member.futureRole %}
+                          {% if role and role !== '_unchecked' %}
+                            <li>{{ role }}</li>
+                          {% endif %}
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
                   </dd>
                 </div>
                 {% endif %}
@@ -493,12 +503,12 @@
 
         {% if data['members-to-remove'] and data['members-to-remove'].length > 0 %}
           <div class="govuk-summary-card__content">
-            <h3 class="govuk-heading-s">Name of the current members who will be removed?</h3>
+            <h3 class="govuk-heading-s">Current members who will be leaving</h3>
             <dl class="govuk-summary-list">
               {% for member in data['members-to-remove'] %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    Member to remove {{ loop.index }}
+                    Person to leave {{ loop.index }}
                   </dt>
                   <dd class="govuk-summary-list__value">
                     <p class="govuk-body">{{ member.name }}</p>
@@ -511,11 +521,84 @@
       {% endif %}
     </div>
 
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Governance structure</h2>
+        {% if data.application and data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="governance-structure">
+              Change<span class="govuk-visually-hidden"> governance structure</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not data['governance-structure-files'] or data['governance-structure-files'].length === 0 %}
+          <div class="govuk-inset-text">
+            No governance structure information has been added.
+          </div>
+        {% else %}
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Governance structure after the transfer
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {% if data['governance-structure-files'] and data['governance-structure-files'].length > 0 %}
+                  {% for file in data['governance-structure-files'] %}
+                    <p class="govuk-body">
+                      <a href="download-governance-file/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                        <strong>{{ file.name }}</strong>
+                      </a>
+                    </p>
+                    <p class="govuk-body govuk-!-font-size-14">
+                      File size: {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+                    </p>
+                    <p class="govuk-body govuk-!-font-size-14">
+                      File type: {{ file.type }}
+                    </p>
+                    {% if not loop.last %}
+                      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  <p class="govuk-body">No files uploaded</p>
+                {% endif %}
+              </dd>
+            </div>
+          </dl>
+        {% endif %}
+
+        {% if data['governance-team-confirmed'] %}
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Has the trust confirmed everyone who will be on the governance team after the transfer?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body">{{ data['governance-team-confirmed'] }}</p>
+              </dd>
+            </div>
+            {% if data['governance-team-confirmed'] === 'No' and data['governance-team-explanation'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Tell us about anyone who is considering joining the governance team
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body">{{ data['governance-team-explanation'] }}</p>
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+        {% endif %}
+      </div>
+    </div>
+
     
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Declaration from academy trust chair</h2>
-        {% if data.application.status !== 'Submitted' %}
+        {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
             <a class="govuk-link" href="declaration-summary">
               Change<span class="govuk-visually-hidden"> declaration from academy trust chair</span>
@@ -548,7 +631,7 @@
     </div>
 
     
-    {% if data.application.status !== 'Submitted' %}
+    {% if data.application and data.application.status !== 'Submitted' %}
       <h2 class="govuk-heading-m">Now submit your application</h2>
       <p class="govuk-body">By submitting this application you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
 
