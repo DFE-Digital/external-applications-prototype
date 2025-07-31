@@ -1,0 +1,51 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Confirm trust" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form class="form" action="declaration-trust-confirmation-handler" method="post">
+      {{ govukRadios({
+        classes: "govuk-radios",
+        idPrefix: "confirm-trust",
+        name: "confirm-trust",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Declaration from academy trust chair</span>
+            Is this the right trust?',
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+          }
+        },
+        hint: {
+          html: hintHtml
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %} 

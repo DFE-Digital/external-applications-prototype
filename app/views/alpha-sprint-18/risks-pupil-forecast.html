@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Provide a 3 year forecast of pupil numbers" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="risks-summary" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">Risks</span>
+            Provide a 3 year forecast of pupil numbers and plans to improve this',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            text: "Include your forecast and any plans to improve pupil numbers"
+          },
+          maxlength: 4000,
+          id: "risks-pupil-forecast",
+          name: "risks-pupil-forecast",
+          value: data["risks-pupil-forecast"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 
