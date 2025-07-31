@@ -1344,34 +1344,6 @@ module.exports = function (router) {
         res.render(version + '/governance-team-explanation');
     });
 
-    // POST handler for members governance team confirmation
-    router.post('/' + version + '/members-governance-team-confirmation-handler', function (req, res) {
-        // Save the members governance team confirmed data to session
-        req.session.data['members-governance-team-confirmed'] = req.body['members-governance-team-confirmed'];
-        
-        // If the answer is "No", go to the explanation page
-        if (req.body['members-governance-team-confirmed'] === 'No') {
-            return res.redirect('members-governance-team-explanation');
-        }
-        
-        // If the answer is "Yes", go back to the members summary
-        if (req.body['members-governance-team-confirmed'] === 'Yes') {
-            return res.redirect('members-summary');
-        }
-        
-        // Default fallback
-        return res.redirect('members-summary');
-    });
-
-    // POST handler for members governance team explanation
-    router.post('/' + version + '/members-governance-team-explanation', function (req, res) {
-        // Save the members governance team explanation data to session
-        req.session.data['members-governance-team-explanation'] = req.body['members-governance-team-explanation'];
-        
-        // Redirect to the members summary page
-        res.redirect('members-summary');
-    });
-
     // GET handler for check your answers
     router.get('/' + version + '/check-your-answers', function (req, res) {
         // Ensure application data exists

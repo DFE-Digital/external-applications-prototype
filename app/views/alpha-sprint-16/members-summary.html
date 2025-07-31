@@ -19,39 +19,6 @@
       Members
     </h1>
 
-    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Has the trust confirmed everyone who will be on the governance team after the transfer?
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {% if data['members-governance-team-confirmed'] %}
-            <p class="govuk-body">{{ data['members-governance-team-confirmed'] }}</p>
-          {% endif %}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="members-governance-team-confirmation">
-            Change<span class="govuk-visually-hidden"> governance team confirmation</span>
-          </a>
-        </dd>
-      </div>
-      {% if data['members-governance-team-confirmed'] === 'No' and data['members-governance-team-explanation'] %}
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Tell us about anyone who is considering joining the governance team
-        </dt>
-        <dd class="govuk-summary-list__value">
-          <p class="govuk-body">{{ data['members-governance-team-explanation'] }}</p>
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="members-governance-team-explanation">
-            Change<span class="govuk-visually-hidden"> governance team explanation</span>
-          </a>
-        </dd>
-      </div>
-      {% endif %}
-    </dl>
-
     <h2 class="govuk-heading-m">Members after the transfer</h2>
     
     <div class="govuk-hint">
