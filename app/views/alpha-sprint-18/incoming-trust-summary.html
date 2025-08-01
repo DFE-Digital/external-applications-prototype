@@ -13,15 +13,11 @@
 {% block content %}
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+  <div class="govuk-grid-column-two-thirds">
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="incoming-trust">
       Trust details
     </h1>
-
-    <p class="govuk-body eat-transfer__task-owner-box">
-      {{ taskOwnerDisplay }} <a class="govuk-link" href="task-owner-update?task=incomingTrust">Change</a>
-    </p>
 
     {% if not data['new-trust'] or data['new-trust'].length === 0 %}
     <div class="govuk-inset-text">
