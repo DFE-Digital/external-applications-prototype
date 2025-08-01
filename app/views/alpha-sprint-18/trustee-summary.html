@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Members" %}
+{% set pageName="Trustees" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -15,29 +15,28 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
     
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="members">
-      Members
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="trustees">
+      Trustees
     </h1>
 
-    <h2 class="govuk-heading-m">Members after the transfer</h2>
+    <h2 class="govuk-heading-m">Trustees after the transfer</h2>
     
     <p class="govuk-body">
-      The trust must have at least 3 members and should have 5 or more.
-      Members must not be employees of the trust.
+      The trust must have trustees who will be responsible for governance after the transfer.
     </p>
     
-    {% if not data['members-to-add'] or data['members-to-add'].length === 0 %}
+    {% if not data['trustees-to-add'] or data['trustees-to-add'].length === 0 %}
       <div class="govuk-inset-text">
-        No members have been added.
+        No trustees have been added.
       </div>
     {% else %}
-      {% for member in data['members-to-add'] %}
+      {% for trustee in data['trustees-to-add'] %}
         <div class="govuk-summary-card">
           <div class="govuk-summary-card__title-wrapper">
-            <h3 class="govuk-summary-card__title">Member {{ loop.index }}</h3>
+            <h3 class="govuk-summary-card__title">Trustee {{ loop.index }}</h3>
             <div class="govuk-summary-card__actions">
-              <a class="govuk-link" href="confirm-delete-member?index={{ loop.index0 }}">
-                Remove<span class="govuk-visually-hidden"> member {{ loop.index }}</span>
+              <a class="govuk-link" href="confirm-delete-trustee?index={{ loop.index0 }}">
+                Remove<span class="govuk-visually-hidden"> trustee {{ loop.index }}</span>
               </a>
             </div>
           </div>
@@ -48,55 +47,55 @@
                   Name
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  <p class="govuk-body">{{ member.name }}</p>
+                  <p class="govuk-body">{{ trustee.name }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="member-add?edit={{ loop.index0 }}">
-                    Change<span class="govuk-visually-hidden"> member {{ loop.index }} name</span>
+                  <a class="govuk-link" href="trustee-add?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> trustee {{ loop.index }} name</span>
                   </a>
                 </dd>
               </div>
-              {% if member.isExistingMember is defined %}
+              {% if trustee.isExistingTrustee is defined %}
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  Is {{ member.name }} an existing member or a new one?
+                  Is {{ trustee.name }} an existing trustee or a new one?
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  <p class="govuk-body">{% if member.isExistingMember %}Yes{% else %}No{% endif %}</p>
+                  <p class="govuk-body">{% if trustee.isExistingTrustee %}Yes{% else %}No{% endif %}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="member-confirmation">
-                    Change<span class="govuk-visually-hidden"> member confirmation for {{ member.name }}</span>
-                  </a>
-                </dd>
-              </div>
-              {% endif %}
-              {% if member.currentResponsibilities %}
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  What roles and responsibilities has {{ member.name }} had in the past 5 years?
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <p class="govuk-body">{{ member.currentResponsibilities }}</p>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="member-current-responsibilities?member={{ loop.index0 }}">
-                    Change<span class="govuk-visually-hidden"> current responsibilities for {{ member.name }}</span>
+                  <a class="govuk-link" href="trustee-confirmation">
+                    Change<span class="govuk-visually-hidden"> trustee confirmation for {{ trustee.name }}</span>
                   </a>
                 </dd>
               </div>
               {% endif %}
-              {% if member.futureRole %}
+              {% if trustee.currentResponsibilities %}
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  Will {{ member.name }} also have any of these roles?
+                  What roles and responsibilities has {{ trustee.name }} had in the past 5 years?
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  {% if member.futureRole is string %}
-                    <p class="govuk-body">{{ member.futureRole }}</p>
+                  <p class="govuk-body">{{ trustee.currentResponsibilities }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="trustee-current-responsibilities?trustee={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> current responsibilities for {{ trustee.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              {% if trustee.futureRole %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Will {{ trustee.name }} also have any of these roles?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {% if trustee.futureRole is string %}
+                    <p class="govuk-body">{{ trustee.futureRole }}</p>
                   {% else %}
                     <ul class="govuk-list govuk-list--bullet">
-                      {% for role in member.futureRole %}
+                      {% for role in trustee.futureRole %}
                         {% if role and role !== '_unchecked' %}
                           <li>{{ role }}</li>
                         {% endif %}
@@ -105,8 +104,8 @@
                   {% endif %}
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="member-future-role?member={{ loop.index0 }}">
-                    Change<span class="govuk-visually-hidden"> future role for {{ member.name }}</span>
+                  <a class="govuk-link" href="trustee-future-role?trustee={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> future role for {{ trustee.name }}</span>
                   </a>
                 </dd>
               </div>
@@ -117,28 +116,28 @@
       {% endfor %}
     {% endif %}
 
-    <a href="member-add" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
-      Add member
+    <a href="trustee-add" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
+      Add trustee
     </a>
 
-    <h2 class="govuk-heading-m">Current members who will be leaving</h2>
+    <h2 class="govuk-heading-m">Current trustees who will be leaving</h2>
     
-    {% if not data['members-to-remove'] or data['members-to-remove'].length === 0 %}
+    {% if not data['trustees-to-remove'] or data['trustees-to-remove'].length === 0 %}
       <div class="govuk-inset-text">
-        No members have been marked for removal.
+        No trustees have been marked for removal.
       </div>
     {% else %}
       <dl class="govuk-summary-list">
-        {% for member in data['members-to-remove'] %}
+        {% for trustee in data['trustees-to-remove'] %}
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
               Person to leave {{ loop.index }}
             </dt>
             <dd class="govuk-summary-list__value">
-              <p class="govuk-body">{{ member.name }}</p>
+              <p class="govuk-body">{{ trustee.name }}</p>
             </dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="confirm-delete-member-to-remove?index={{ loop.index0 }}">
+              <a class="govuk-link" href="confirm-delete-trustee-to-remove?index={{ loop.index0 }}">
                 Remove<span class="govuk-visually-hidden"> person to leave {{ loop.index }}</span>
               </a>
             </dd>
@@ -147,7 +146,7 @@
       </dl>
     {% endif %}
 
-    <a href="member-to-remove-add" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
+    <a href="trustee-to-remove-add" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
       Add person
     </a>
 
@@ -156,8 +155,8 @@
       <div class="govuk-form-group">
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
           <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="members-status" name="members-status" type="checkbox" value="Complete" {% if data['members-status'] %}checked{% endif %}>
-            <label class="govuk-label govuk-checkboxes__label" for="members-status">
+            <input class="govuk-checkboxes__input" id="trustee-status" name="trustee-status" type="checkbox" value="Complete" {% if data['trustee-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="trustee-status">
               Mark this section as complete, you can still make changes later
             </label>
           </div>

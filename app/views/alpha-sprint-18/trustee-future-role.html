@@ -1,0 +1,67 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Future role and responsibilities" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to Current responsibilities",
+    href: "trustee-current-responsibilities",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    
+    <form action="trustee-summary" method="post">
+      
+      {{ govukCheckboxes({
+        name: "trustee-future-role",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Trustees</span>
+            Will ' + data['trustee-full-name'] + ' also have any of these roles?',
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        hint: {
+          text: "Select all that apply."
+        },
+        items: [
+          {
+            value: "Chair of Trustees",
+            text: "Chair of Trustees",
+            checked: data["trustee-future-role"] and data["trustee-future-role"].includes("Chair of Trustees")
+          },
+          {
+            value: "Vice Chair",
+            text: "Vice Chair",
+            checked: data["trustee-future-role"] and data["trustee-future-role"].includes("Vice Chair")
+          },
+          {
+            value: "Part of a local governing body",
+            text: "Part of a local governing body",
+            checked: data["trustee-future-role"] and data["trustee-future-role"].includes("Part of a local governing body")
+          },
+          {
+            value: "None of these",
+            text: "None of these",
+            checked: data["trustee-future-role"] and data["trustee-future-role"].includes("None of these")
+          }
+        ]
+      }) }}
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

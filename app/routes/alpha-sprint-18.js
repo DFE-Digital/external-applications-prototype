@@ -345,7 +345,8 @@ module.exports = function (router) {
                 'reason-and-benefits-trust-status': 'reason-and-benefits-trust',
                 'school-improvement': 'school-improvement',
                 'school-improvement-status': 'school-improvement',
-                'high-quality-and-inclusive-education-status': 'high-quality-and-inclusive-education'
+                'high-quality-and-inclusive-education-status': 'high-quality-and-inclusive-education',
+                'trustee-status': 'trustee'
             };
             
             const taskOwnerField = taskOwnerMap[taskKey];
@@ -1621,7 +1622,16 @@ module.exports = function (router) {
     // Members routes
     // GET handler for members summary
     router.get('/' + version + '/members-summary', function (req, res) {
-        res.render(version + '/members-summary');
+        res.render(version + '/members-summary', {
+            data: req.session.data
+        });
+    });
+
+    // GET handler for trustee summary
+    router.get('/' + version + '/trustee-summary', function (req, res) {
+        res.render(version + '/trustee-summary', {
+            data: req.session.data
+        });
     });
 
     // GET handler for member-add - clear previous member data
@@ -1779,6 +1789,171 @@ module.exports = function (router) {
 
         res.render(version + '/confirm-delete-member-to-remove', {
             index: memberIndex
+        });
+    });
+
+    // GET handler for trustee summary
+    router.get('/' + version + '/trustee-summary', function (req, res) {
+        res.render(version + '/trustee-summary', {
+            data: req.session.data
+        });
+    });
+
+    // GET handler for trustee-add - clear previous trustee data
+    router.get('/' + version + '/trustee-add', function (req, res) {
+        // Clear all trustee-related session data to prevent showing previous trustee's information
+        delete req.session.data['trustee-full-name'];
+        delete req.session.data['trustee-current-responsibilities'];
+        delete req.session.data['trustee-future-role'];
+        delete req.session.data['trustee-confirmed'];
+        res.render(version + '/trustee-add');
+    });
+
+    // Handle trustees summary form submission
+    router.post('/' + version + '/trustee-summary', function (req, res) {
+        // Handle completion status
+        if (req.body['trustee-status'] !== undefined) {
+            req.session.data['trustee-status'] = req.body['trustee-status'] === 'Complete';
+        }
+
+        // Handle trustee deletion
+        if (req.body['delete-trustee'] !== undefined) {
+            const trusteeIndex = parseInt(req.body['delete-trustee']);
+            if (req.session.data['trustees-to-add'] && req.session.data['trustees-to-add'][trusteeIndex]) {
+                req.session.data['trustees-to-add'].splice(trusteeIndex, 1);
+            }
+        }
+
+        // Handle trustee to remove deletion
+        if (req.body['delete-trustee-to-remove'] !== undefined) {
+            const trusteeIndex = parseInt(req.body['delete-trustee-to-remove']);
+            if (req.session.data['trustees-to-remove'] && req.session.data['trustees-to-remove'][trusteeIndex]) {
+                req.session.data['trustees-to-remove'].splice(trusteeIndex, 1);
+            }
+        }
+
+        // Handle trustee to remove add form submission
+        if (req.body['trustee-to-remove-full-name'] !== undefined) {
+            const fullName = req.body['trustee-to-remove-full-name'];
+
+            // Initialize trustees-to-remove array if it doesn't exist
+            if (!req.session.data['trustees-to-remove']) {
+                req.session.data['trustees-to-remove'] = [];
+            }
+
+            // Add the trustee to the array
+            req.session.data['trustees-to-remove'].push({
+                name: fullName
+            });
+        }
+
+        // Handle trustee future role and save complete trustee data
+        if (req.body['trustee-future-role'] !== undefined) {
+            const futureRole = req.body['trustee-future-role'];
+            const fullName = req.session.data['trustee-full-name'];
+
+            // Find the trustee in the array and update their data
+            if (req.session.data['trustees-to-add']) {
+                const trusteeIndex = req.session.data['trustees-to-add'].findIndex(t => t.name === fullName);
+                if (trusteeIndex !== -1) {
+                    req.session.data['trustees-to-add'][trusteeIndex].currentResponsibilities = req.session.data['trustee-current-responsibilities'];
+                    req.session.data['trustees-to-add'][trusteeIndex].futureRole = futureRole;
+                }
+            }
+
+            // Clear temporary session data
+            delete req.session.data['trustee-full-name'];
+            delete req.session.data['trustee-current-responsibilities'];
+            delete req.session.data['trustee-future-role'];
+        }
+
+        // Redirect based on the action
+        if (req.body['trustee-status'] !== undefined) {
+            res.redirect('application-task-list');
+        } else {
+            res.redirect('trustee-summary');
+        }
+    });
+
+    // Handle trustee add form
+    router.post('/' + version + '/trustee-confirmation', function (req, res) {
+        const fullName = req.body['trustee-full-name'];
+
+        res.render(version + '/trustee-confirmation', {
+            'trustee-full-name': fullName,
+            'trustee-name': fullName
+        });
+    });
+
+    // Handle trustee confirmation and save trustee
+    router.post('/' + version + '/trustee-current-responsibilities', function (req, res) {
+        const confirmed = req.body['trustee-confirmed'];
+        
+        if (confirmed === 'Yes') {
+            const fullName = req.session.data['trustee-full-name'];
+
+            // Initialize trustees-to-add array if it doesn't exist
+            if (!req.session.data['trustees-to-add']) {
+                req.session.data['trustees-to-add'] = [];
+            }
+
+            // Add the trustee to the array with confirmation status
+            req.session.data['trustees-to-add'].push({
+                name: fullName,
+                isExistingTrustee: true
+            });
+            
+            res.render(version + '/trustee-current-responsibilities');
+        } else if (confirmed === 'No') {
+            // If user selects "No", still continue to current responsibilities
+            // This means they're adding a new trustee, not an existing one
+            const fullName = req.session.data['trustee-full-name'];
+
+            // Initialize trustees-to-add array if it doesn't exist
+            if (!req.session.data['trustees-to-add']) {
+                req.session.data['trustees-to-add'] = [];
+            }
+
+            // Add the trustee to the array with confirmation status
+            req.session.data['trustees-to-add'].push({
+                name: fullName,
+                isExistingTrustee: false
+            });
+            
+            res.render(version + '/trustee-current-responsibilities');
+        } else {
+            // Default fallback
+            res.redirect('trustee-summary');
+        }
+    });
+
+    // Handle trustee future role
+    router.post('/' + version + '/trustee-future-role', function (req, res) {
+        const currentResponsibilities = req.body['trustee-current-responsibilities'];
+        
+        // Save to session for the current trustee being added
+        req.session.data['trustee-current-responsibilities'] = currentResponsibilities;
+
+        res.render(version + '/trustee-future-role');
+    });
+
+    // Handle trustee deletion confirmation
+    router.get('/' + version + '/confirm-delete-trustee', function (req, res) {
+        const trusteeIndex = parseInt(req.query.index);
+        req.session.data['delete-trustee-index'] = trusteeIndex;
+
+        res.render(version + '/confirm-delete-trustee', {
+            index: trusteeIndex
+        });
+    });
+
+    // Handle trustee to remove deletion confirmation
+    router.get('/' + version + '/confirm-delete-trustee-to-remove', function (req, res) {
+        const trusteeIndex = parseInt(req.query.index);
+        req.session.data['delete-trustee-to-remove-index'] = trusteeIndex;
+
+        res.render(version + '/confirm-delete-trustee-to-remove', {
+            index: trusteeIndex
         });
     });
 
