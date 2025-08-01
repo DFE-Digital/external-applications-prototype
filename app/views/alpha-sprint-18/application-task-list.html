@@ -1,36 +1,37 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Your application" %}
+{% set pageName="Application task list" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to Applications",
+    href: "applications",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
 
 {% block content %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Back to dashboard</a>
+    
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-      Your application 
+      Application task list
     </h1>
-  </div>
-  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
-    <div class="govuk-inset-text govuk-!-margin-bottom-9">
-      <p>
-        Application reference: <strong>{{ data.application.reference }}</strong>
-      </p>
-      <p>
-        Lead applicant: <strong>{{ data.application.leadApplicant }}</strong>
-      </p>
-    </div>
-
-    <h2 class="govuk-heading-m govuk-!-margin-top-9">About transferring academies</h2>
-    <ul class="govuk-task-list">
+    <ol class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="academies-to-transfer-summary" aria-describedby="details-of-academies-  status">
-            Details of academies
+          <a class="govuk-link govuk-task-list__link" href="academies-to-transfer-summary" aria-describedby="academies-to-transfer-status">
+            Academies to transfer
           </a>
+          <div id="task-1-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
-        <div class="govuk-task-list__status" id="details-of-academies-  status">
+        <div class="govuk-task-list__status" id="academies-to-transfer-status">
           {% if data['academies-to-transfer-status'] %}
             <strong class="govuk-tag govuk-tag--green">
               Completed
@@ -45,8 +46,13 @@
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="reason-and-benefits-academies" aria-describedby="reason-and-benefits-academies-status">
-            Reason and benefits
+            Reason and benefits (academies)
           </a>
+          <div id="task-2-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="reason-and-benefits-academies-status">
           {% if data['reason-and-benefits-academies-status'] %}
@@ -65,6 +71,11 @@
           <a class="govuk-link govuk-task-list__link" href="risks-summary" aria-describedby="risks-status">
             Risks
           </a>
+          <div id="task-3-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="risks-status">
           {% if data['risks-status'] %}
@@ -78,15 +89,16 @@
           {% endif %}
         </div>
       </li>
-    </ul>
-
-    <h2 class="govuk-heading-m govuk-!-margin-top-9">About the incoming trust</h2>
-    <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="incoming-trust-summary" aria-describedby="incoming-trust-status">
-            Trust details
+            Incoming trust
           </a>
+          <div id="task-4-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="incoming-trust-status">
           {% if data['incoming-trust-status'] %}
@@ -103,11 +115,11 @@
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="reason-and-benefits-trust" aria-describedby="reason-and-benefits-trust-status">
-            Reason and benefits
+            Reason and benefits (trust)
           </a>
-          <div id="task-2-hint" class="govuk-task-list__hint">
+          <div id="task-5-hint" class="govuk-task-list__hint">
             <span class="hint-name">
-              <strong>{{ processTaskOwners('reason-and-benefits-trust-status') }}</strong>
+              <strong>Arden Laney</strong>
             </span>
           </div>
         </div>
@@ -128,6 +140,11 @@
           <a class="govuk-link govuk-task-list__link" href="high-quality-and-inclusive-education" aria-describedby="high-quality-and-inclusive-education-status">
             High-quality and inclusive education
           </a>
+          <div id="task-6-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="high-quality-and-inclusive-education-status">
           {% if data['high-quality-and-inclusive-education-status'] %}
@@ -144,8 +161,13 @@
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="school-improvement" aria-describedby="school-improvement-status">
-            School improvement 
+            School improvement
           </a>
+          <div id="task-7-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="school-improvement-status">
           {% if data['school-improvement-status'] %}
@@ -161,9 +183,14 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="finance-and-operations-status">
+          <a class="govuk-link govuk-task-list__link" href="finance-summary" aria-describedby="finance-and-operations-status">
             Finance and operations
           </a>
+          <div id="task-8-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="finance-and-operations-status">
           {% if data['finance-and-operations-status'] %}
@@ -179,9 +206,14 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="leadership-and-work-force-status">
-            Leadership and work force 
+          <a class="govuk-link govuk-task-list__link" href="leadership-and-workforce-summary" aria-describedby="leadership-and-work-force-status">
+            Leadership and workforce
           </a>
+          <div id="task-9-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="leadership-and-work-force-status">
           {% if data['leadership-and-work-force-status'] %}
@@ -200,6 +232,11 @@
           <a class="govuk-link govuk-task-list__link" href="members-summary" aria-describedby="members-status">
             Members
           </a>
+          <div id="task-10-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="members-status">
           {% if data['members-status'] %}
@@ -218,6 +255,11 @@
           <a class="govuk-link govuk-task-list__link" href="trustee-summary" aria-describedby="trustee-status">
             Trustees
           </a>
+          <div id="task-11-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="trustee-status">
           {% if data['trustee-status'] %}
@@ -233,12 +275,17 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="governance-structure" aria-describedby="governance-status">
+          <a class="govuk-link govuk-task-list__link" href="governance-structure-model" aria-describedby="governance-status">
             Governance structure
           </a>
+          <div id="task-12-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="governance-status">
-          {% if data['governance-structure-status'] %}
+          {% if data['governance-status'] %}
             <strong class="govuk-tag govuk-tag--green">
               Completed
             </strong>
@@ -249,16 +296,16 @@
           {% endif %}
         </div>
       </li>
-    </ul>
-
-
-    <h2 class="govuk-heading-m govuk-!-margin-top-9">Consent and consultations</h2>
-    <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="diocesan-consent-status">
-            Diocesan consent 
+          <a class="govuk-link govuk-task-list__link" href="diocesan-consent-summary" aria-describedby="diocesan-consent-status">
+            Diocesan consent
           </a>
+          <div id="task-13-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="diocesan-consent-status">
           {% if data['diocesan-consent-status'] %}
@@ -274,9 +321,14 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="board-resolutions-status">
+          <a class="govuk-link govuk-task-list__link" href="board-resolutions-summary" aria-describedby="board-resolutions-status">
             Board resolutions
           </a>
+          <div id="task-14-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="board-resolutions-status">
           {% if data['board-resolutions-status'] %}
@@ -292,9 +344,14 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="results-of-consultations-and-other-stakeholder-engagements-status">
+          <a class="govuk-link govuk-task-list__link" href="results-of-consultations-and-other-stakeholder-engagements-summary" aria-describedby="results-of-consultations-and-other-stakeholder-engagements-status">
             Results of consultations and other stakeholder engagements
           </a>
+          <div id="task-15-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="results-of-consultations-and-other-stakeholder-engagements-status">
           {% if data['results-of-consultations-and-other-stakeholder-engagements-status'] %}
@@ -308,16 +365,16 @@
           {% endif %}
         </div>
       </li>
-    </ul>
-
-    <h2 class="govuk-heading-m govuk-!-margin-top-9">Declaration</h2>
-
-    <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="declaration-summary" aria-describedby="declaration-status">
-            Declaration from academy trust chair
+          <a class="govuk-link govuk-task-list__link" href="declaration" aria-describedby="declaration-status">
+            Declaration
           </a>
+          <div id="task-16-hint" class="govuk-task-list__hint">
+            <span class="hint-name">
+              <strong>Arden Laney</strong>
+            </span>
+          </div>
         </div>
         <div class="govuk-task-list__status" id="declaration-status">
           {% if data['declaration-status'] %}
@@ -331,22 +388,8 @@
           {% endif %}
         </div>
       </li>
-    </ul>
+    </ol>
 
-    <div class="govuk-button-group govuk-!-margin-top-9">
-      <form action="check-your-answers" method="post">
-        <button class="govuk-button" type="submit">Preview application</button>
-      </form>
-    </div>
-    
-  </div>
-  <div class="govuk-grid-column-one-third govuk-!-margin-bottom-6">
-    <h2 class="govuk-heading-m govuk-!-margin-top-6">Inviting contributors</h2>
-
-    <p class="govuk-body">
-      You can invite other people to complete parts of this application.
-    </p>
-    <a href="contributors-home" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Invite contributors</a>
   </div>
 </div>
 

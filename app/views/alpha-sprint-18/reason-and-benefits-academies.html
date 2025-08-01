@@ -1,11 +1,11 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Reason and benefits" %}
+{% set pageName="Reason and benefits (academies)" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back to application task list",
-    href: "application-task-list?ref=" + data.application.reference,
+    text: "Back to Application task list",
+    href: "application-task-list",
     classes: "govuk-!-margin-top-6"
   }) }}
 {% endblock %}
@@ -15,71 +15,52 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="reason-and-benefits-academies">
-      Reason and benefits
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+      Reason and benefits (academies)
     </h1>
 
-    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          What are the strategic needs of the transferring academies and their local areas?
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ data['reason-and-benefits-academies-strategic-needs'] }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="reason-and-benefits-academies-strategic-needs">
-            Change<span class="govuk-visually-hidden"> strategic needs</span>
-          </a>
-        </dd>
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Reason and benefits (academies)</h2>
+        <ul class="govuk-summary-card__actions">
+          <li class="govuk-summary-card__action">
+            <a class="govuk-link" href="reason-and-benefits-academies">
+              Change<span class="govuk-visually-hidden"> reason and benefits (academies)</span>
+            </a>
+          </li>
+        </ul>
       </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          How will the transferring academies help maintain and improve existing academies in the trust?
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ data['reason-and-benefits-academies-maintain-improve'] }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="reason-and-benefits-academies-maintain-improve">
-            Change<span class="govuk-visually-hidden"> how will the transferring academies help maintain and improve existing academies</span>
-          </a>
-        </dd>
+      <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list">
+          {% if data['reason-and-benefits-academies'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Reason and benefits (academies)
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body">{{ data['reason-and-benefits-academies'] }}</p>
+              </dd>
+            </div>
+          {% else %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Reason and benefits (academies)
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body">No reason and benefits (academies) information provided</p>
+              </dd>
+            </div>
+          {% endif %}
+        </dl>
       </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          How will the transferring academies benefit the trust?
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ data['reason-and-benefits-academies-benefit-trust'] }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" href="reason-and-benefits-academies-benefit-trust">
-            Change<span class="govuk-visually-hidden"> how will the transferring academies benefit the trust</span>
-          </a>
-        </dd>
-      </div>
-    </dl>
-    
+    </div>
 
-    <form action="application-task-list" method="post">
-      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
-      <div class="govuk-form-group">
-        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-          <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="reason-and-benefits-academies-status" name="reason-and-benefits-academies-status" type="checkbox" value="Complete" {% if data['reason-and-benefits-academies-status'] %}checked{% endif %}>
-            <label class="govuk-label govuk-checkboxes__label" for="reason-and-benefits-academies-status">
-              Mark this section as complete, you can still make changes later
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="govuk-button-group">
-        {{ govukButton({
-          text: "Continue"
-        }) }}
-      </div>
-    </form>
+    <div class="govuk-button-group">
+      <a href="application-task-list" class="govuk-button">
+        Continue to application task list
+      </a>
+    </div>
+
   </div>
 </div>
 
