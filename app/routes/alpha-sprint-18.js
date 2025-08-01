@@ -1806,7 +1806,9 @@ module.exports = function (router) {
         delete req.session.data['trustee-current-responsibilities'];
         delete req.session.data['trustee-future-role'];
         delete req.session.data['trustee-confirmed'];
-        res.render(version + '/trustee-add');
+        res.render(version + '/trustee-add', {
+            data: req.session.data
+        });
     });
 
     // Handle trustees summary form submission
@@ -1867,6 +1869,28 @@ module.exports = function (router) {
             delete req.session.data['trustee-future-role'];
         }
 
+        // Handle trustee local governing body and save complete trustee data
+        if (req.body['trustee-local-governing-body'] !== undefined) {
+            const localGoverningBody = req.body['trustee-local-governing-body'];
+            const fullName = req.session.data['trustee-full-name'];
+
+            // Find the trustee in the array and update their data
+            if (req.session.data['trustees-to-add']) {
+                const trusteeIndex = req.session.data['trustees-to-add'].findIndex(t => t.name === fullName);
+                if (trusteeIndex !== -1) {
+                    req.session.data['trustees-to-add'][trusteeIndex].currentResponsibilities = req.session.data['trustee-current-responsibilities'];
+                    req.session.data['trustees-to-add'][trusteeIndex].futureRole = req.session.data['trustee-future-role'];
+                    req.session.data['trustees-to-add'][trusteeIndex].localGoverningBody = localGoverningBody;
+                }
+            }
+
+            // Clear temporary session data
+            delete req.session.data['trustee-full-name'];
+            delete req.session.data['trustee-current-responsibilities'];
+            delete req.session.data['trustee-future-role'];
+            delete req.session.data['trustee-local-governing-body'];
+        }
+
         // Redirect based on the action
         if (req.body['trustee-status'] !== undefined) {
             res.redirect('application-task-list');
@@ -1878,10 +1902,10 @@ module.exports = function (router) {
     // Handle trustee add form
     router.post('/' + version + '/trustee-confirmation', function (req, res) {
         const fullName = req.body['trustee-full-name'];
+        req.session.data['trustee-full-name'] = fullName;
 
         res.render(version + '/trustee-confirmation', {
-            'trustee-full-name': fullName,
-            'trustee-name': fullName
+            data: req.session.data
         });
     });
 
@@ -1903,7 +1927,9 @@ module.exports = function (router) {
                 isExistingTrustee: true
             });
             
-            res.render(version + '/trustee-current-responsibilities');
+            res.render(version + '/trustee-current-responsibilities', {
+                data: req.session.data
+            });
         } else if (confirmed === 'No') {
             // If user selects "No", still continue to current responsibilities
             // This means they're adding a new trustee, not an existing one
@@ -1920,7 +1946,9 @@ module.exports = function (router) {
                 isExistingTrustee: false
             });
             
-            res.render(version + '/trustee-current-responsibilities');
+            res.render(version + '/trustee-current-responsibilities', {
+                data: req.session.data
+            });
         } else {
             // Default fallback
             res.redirect('trustee-summary');
@@ -1934,7 +1962,23 @@ module.exports = function (router) {
         // Save to session for the current trustee being added
         req.session.data['trustee-current-responsibilities'] = currentResponsibilities;
 
-        res.render(version + '/trustee-future-role');
+        res.render(version + '/trustee-future-role', {
+            data: req.session.data
+        });
+    });
+
+    // Handle trustee local governing body question
+    router.post('/' + version + '/trustee-local-governing-body', function (req, res) {
+        const futureRole = req.body['trustee-future-role'];
+        const localGoverningBody = req.body['trustee-local-governing-body'];
+        
+        // Save to session for the current trustee being added
+        req.session.data['trustee-future-role'] = futureRole;
+        req.session.data['trustee-local-governing-body'] = localGoverningBody;
+
+        res.render(version + '/trustee-local-governing-body', {
+            data: req.session.data
+        });
     });
 
     // Handle trustee deletion confirmation

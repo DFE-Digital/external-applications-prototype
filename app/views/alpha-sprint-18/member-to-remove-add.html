@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Add a member to remove" %}
+{% set pageName="Full name of the member who will be leaving" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -16,11 +16,11 @@
   <div class="govuk-grid-column-two-thirds">
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-      Add a member to remove
+      Full name of the member who will be leaving
     </h1>
 
     <p class="govuk-body">
-      Enter the full name of the current member who will be removed from the trust after the transfer.
+      Enter the full name of the current member who will be leaving the trust after the transfer.
     </p>
 
     <form action="members-summary" method="post">

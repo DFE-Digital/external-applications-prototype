@@ -15,43 +15,22 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     
-    <form action="trustee-summary" method="post">
+    <form action="trustee-local-governing-body" method="post">
       
-      {{ govukCheckboxes({
-        name: "trustee-future-role",
-        fieldset: {
-          legend: {
-            html: '<span class="govuk-caption-l">Trustees</span>
-            Will ' + data['trustee-full-name'] + ' also have any of these roles?',
-            classes: "govuk-fieldset__legend--l",
-            isPageHeading: true
-          }
+      {{ govukCharacterCount({
+        label: {
+          html: '<span class="govuk-caption-l">Trustees</span>
+          What will ' + data['trustee-full-name'] + ' role and responsibility be as a trustee?',
+          classes: "govuk-label--l",
+          isPageHeading: true
         },
         hint: {
-          text: "Select all that apply."
+          text: "Include the skills and experience they will bring to the board. For example, chair of a committee, senior executive leader or parent."
         },
-        items: [
-          {
-            value: "Chair of Trustees",
-            text: "Chair of Trustees",
-            checked: data["trustee-future-role"] and data["trustee-future-role"].includes("Chair of Trustees")
-          },
-          {
-            value: "Vice Chair",
-            text: "Vice Chair",
-            checked: data["trustee-future-role"] and data["trustee-future-role"].includes("Vice Chair")
-          },
-          {
-            value: "Part of a local governing body",
-            text: "Part of a local governing body",
-            checked: data["trustee-future-role"] and data["trustee-future-role"].includes("Part of a local governing body")
-          },
-          {
-            value: "None of these",
-            text: "None of these",
-            checked: data["trustee-future-role"] and data["trustee-future-role"].includes("None of these")
-          }
-        ]
+        maxlength: 4000,
+        id: "trustee-future-role",
+        name: "trustee-future-role",
+        value: data["trustee-future-role"]
       }) }}
 
       <div class="govuk-button-group">

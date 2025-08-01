@@ -22,7 +22,11 @@
     <h2 class="govuk-heading-m">Trustees after the transfer</h2>
     
     <p class="govuk-body">
-      The trust must have trustees who will be responsible for governance after the transfer.
+      Trustees must have the right skills, knowledge and experience.
+    </p>
+    
+    <p class="govuk-body">
+      All trusts should have at least 2 places for parents, carers or other individuals with parental responsibilities in their governance structure. These places are either at board level or 2 places on each local governing body.
     </p>
     
     {% if not data['trustees-to-add'] or data['trustees-to-add'].length === 0 %}
@@ -88,24 +92,29 @@
               {% if trustee.futureRole %}
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  Will {{ trustee.name }} also have any of these roles?
+                  What will {{ trustee.name }} role and responsibility be as a trustee?
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  {% if trustee.futureRole is string %}
-                    <p class="govuk-body">{{ trustee.futureRole }}</p>
-                  {% else %}
-                    <ul class="govuk-list govuk-list--bullet">
-                      {% for role in trustee.futureRole %}
-                        {% if role and role !== '_unchecked' %}
-                          <li>{{ role }}</li>
-                        {% endif %}
-                      {% endfor %}
-                    </ul>
-                  {% endif %}
+                  <p class="govuk-body">{{ trustee.futureRole }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                   <a class="govuk-link" href="trustee-future-role?trustee={{ loop.index0 }}">
                     Change<span class="govuk-visually-hidden"> future role for {{ trustee.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              {% if trustee.localGoverningBody %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Will {{ trustee.name }} also be a member of the local governing body?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ trustee.localGoverningBody }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="trustee-local-governing-body?trustee={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> local governing body for {{ trustee.name }}</span>
                   </a>
                 </dd>
               </div>

@@ -1,0 +1,54 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Will they also be a member of the local governing body?" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to Future role and responsibilities",
+    href: "trustee-future-role",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    <form action="trustee-summary" method="post">
+      
+      {{ govukRadios({
+        name: "trustee-local-governing-body",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Trustees</span>
+            Will ' + data['trustee-full-name'] + ' also be a member of the local governing body?',
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        items: [
+          {
+            value: "Yes",
+            text: "Yes",
+            checked: data["trustee-local-governing-body"] === "Yes"
+          },
+          {
+            value: "No",
+            text: "No",
+            checked: data["trustee-local-governing-body"] === "No"
+          }
+        ]
+      }) }}
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %} 
