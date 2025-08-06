@@ -960,6 +960,11 @@ module.exports = function (router) {
 
     // GET handler for reason and benefits academies
     router.get('/' + version + '/reason-and-benefits-academies', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['reason-and-benefits-academies-strategic-needs'];
+        delete req.session.data['reason-and-benefits-academies-maintain-improve'];
+        delete req.session.data['reason-and-benefits-academies-benefit-trust'];
+        
         // Initialize application data if not exists
         if (!req.session.data.application) {
             req.session.data.application = {
@@ -1021,6 +1026,10 @@ module.exports = function (router) {
 
     // GET handler for reason and benefits trust
     router.get('/' + version + '/reason-and-benefits-trust', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['reason-and-benefits-trust-strategic-needs'];
+        delete req.session.data['reason-and-benefits-trust-maintain-improve'];
+        
         // Initialize application data if not exists
         if (!req.session.data.application) {
             req.session.data.application = {
@@ -1100,6 +1109,10 @@ module.exports = function (router) {
 
     // GET handler for high-quality and inclusive education summary
     router.get('/' + version + '/high-quality-and-inclusive-education', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['high-quality-and-inclusive-education-quality'];
+        delete req.session.data['high-quality-and-inclusive-education-inclusive'];
+        
         // Initialize application data if not exists
         if (!req.session.data.application) {
             req.session.data.application = {
@@ -1139,6 +1152,9 @@ module.exports = function (router) {
 
     // GET handler for school improvement
     router.get('/' + version + '/school-improvement', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['school-improvement-model'];
+        
         // Initialize application data if not exists
         if (!req.session.data.application) {
             req.session.data.application = {
@@ -1342,6 +1358,9 @@ module.exports = function (router) {
 
     // GET handler for governance team explanation
     router.get('/' + version + '/governance-team-explanation', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['governance-team-explanation'];
+        
         res.render(version + '/governance-team-explanation');
     });
 
@@ -1636,12 +1655,21 @@ module.exports = function (router) {
 
     // GET handler for member-add - clear previous member data
     router.get('/' + version + '/member-add', function (req, res) {
-        // Clear all member-related session data to prevent showing previous member's information
+        // Clear form fields to ensure clean state when entering input fields
         delete req.session.data['member-full-name'];
         delete req.session.data['member-current-responsibilities'];
         delete req.session.data['member-future-role'];
         delete req.session.data['member-confirmed'];
+        
         res.render(version + '/member-add');
+    });
+
+    // GET handler for member-to-remove-add - clear previous member data
+    router.get('/' + version + '/member-to-remove-add', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['member-to-remove-full-name'];
+        
+        res.render(version + '/member-to-remove-add');
     });
 
     // Handle members summary form submission
@@ -1680,6 +1708,9 @@ module.exports = function (router) {
             req.session.data['members-to-remove'].push({
                 name: fullName
             });
+
+            // Clear the form field after storing the data
+            delete req.session.data['member-to-remove-full-name'];
         }
 
         // Handle member future role and save complete member data
@@ -1801,14 +1832,24 @@ module.exports = function (router) {
 
     // GET handler for trustee-add - clear previous trustee data
     router.get('/' + version + '/trustee-add', function (req, res) {
-        // Clear all trustee-related session data to prevent showing previous trustee's information
+        // Clear form fields to ensure clean state when entering input fields
         delete req.session.data['trustee-full-name'];
         delete req.session.data['trustee-current-responsibilities'];
         delete req.session.data['trustee-future-role'];
         delete req.session.data['trustee-confirmed'];
+        delete req.session.data['trustee-local-governing-body'];
+        
         res.render(version + '/trustee-add', {
             data: req.session.data
         });
+    });
+
+    // GET handler for trustee-to-remove-add - clear previous trustee data
+    router.get('/' + version + '/trustee-to-remove-add', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['trustee-to-remove-full-name'];
+        
+        res.render(version + '/trustee-to-remove-add');
     });
 
     // Handle trustees summary form submission
@@ -1847,6 +1888,9 @@ module.exports = function (router) {
             req.session.data['trustees-to-remove'].push({
                 name: fullName
             });
+
+            // Clear the form field after storing the data
+            delete req.session.data['trustee-to-remove-full-name'];
         }
 
         // Handle trustee future role and save complete trustee data
