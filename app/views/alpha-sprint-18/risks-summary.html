@@ -4,8 +4,8 @@
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back to Application task list",
-    href: "application-task-list",
+    text: "Back to application task list",
+    href: "application-task-list?ref=" + data.application.reference,
     classes: "govuk-!-margin-top-6"
   }) }}
 {% endblock %}
@@ -15,52 +15,157 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="risks">
       Risks
     </h1>
 
-    <div class="govuk-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Risks</h2>
-        <ul class="govuk-summary-card__actions">
-          <li class="govuk-summary-card__action">
-            <a class="govuk-link" href="risks">
-              Change<span class="govuk-visually-hidden"> risks</span>
-            </a>
-          </li>
-        </ul>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          What due diligence activities have been carried out on the transferring academies?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['risks-due-diligence'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="risks-due-diligence">
+            Change<span class="govuk-visually-hidden"> due diligence activities</span>
+          </a>
+        </dd>
       </div>
-      <div class="govuk-summary-card__content">
-        <dl class="govuk-summary-list">
-          {% if data['risks'] %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Risks
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <p class="govuk-body">{{ data['risks'] }}</p>
-              </dd>
-            </div>
-          {% else %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Risks
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <p class="govuk-body">No risks identified</p>
-              </dd>
-            </div>
-          {% endif %}
-        </dl>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Are pupil numbers in any transferring academy expected to drop below 85% of the school capacity?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['risks-pupil-numbers'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="risks-pupil-numbers">
+            Change<span class="govuk-visually-hidden"> pupil numbers</span>
+          </a>
+        </dd>
       </div>
-    </div>
+      {% if data['risks-pupil-numbers'] === 'Yes' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Provide a 3 year forecast of pupil numbers and plans to improve this
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['risks-pupil-forecast'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="risks-pupil-forecast">
+            Change<span class="govuk-visually-hidden"> pupil forecast</span>
+          </a>
+        </dd>
+      </div>
+      {% endif %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Do any transferring academy have an in-year deficit or overall deficit?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['risks-financial-deficit'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="risks-financial-deficit">
+            Change<span class="govuk-visually-hidden"> financial deficit</span>
+          </a>
+        </dd>
+      </div>
+      {% if data['risks-financial-deficit'] === 'Yes' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Provide a 3 year financial forecast for the academy and your plans to bring the academy into surplus
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['risks-financial-forecast'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="risks-financial-forecast">
+            Change<span class="govuk-visually-hidden"> financial forecast</span>
+          </a>
+        </dd>
+      </div>
+      {% endif %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Are any transferring academy's finances currently pooled?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['risks-finances-pooled'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="risks-finances-pooled">
+            Change<span class="govuk-visually-hidden"> finances pooled</span>
+          </a>
+        </dd>
+      </div>
+      {% if data['risks-finances-pooled'] === 'Yes' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          How much of the reserves and funding allocated to the academies will transfer over?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['risks-reserves-transfer'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="risks-reserves-transfer">
+            Change<span class="govuk-visually-hidden"> reserves transfer</span>
+          </a>
+        </dd>
+      </div>
+      {% endif %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Are there other risks related to the transferring academies?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['risks-other-risks'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="risks-other-risks">
+            Change<span class="govuk-visually-hidden"> other risks</span>
+          </a>
+        </dd>
+      </div>
+      {% if data['risks-other-risks'] === 'Yes' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          What are the risks and the plans to manage them?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['risks-risk-management'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="risks-risk-management">
+            Change<span class="govuk-visually-hidden"> risk management</span>
+          </a>
+        </dd>
+      </div>
+      {% endif %}
+    </dl>
+    
 
-    <div class="govuk-button-group">
-      <a href="application-task-list" class="govuk-button">
-        Continue to application task list
-      </a>
-    </div>
-
+    <form action="application-task-list" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="risks-status" name="risks-status" type="checkbox" value="Complete" {% if data['risks-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="risks-status">
+              Mark this section as complete, you can still make changes later
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
   </div>
 </div>
 

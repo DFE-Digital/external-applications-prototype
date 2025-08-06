@@ -1,0 +1,63 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set pageName="Assign task to someone" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "application-task-list?ref=" + data.application.reference
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {% if task == 'academies' %}
+      <span class="govuk-caption-l">Details of academies</span>
+    {% elif task == 'incomingTrust' %}
+      <span class="govuk-caption-l">Incoming trust</span>
+    {% elif task == 'reason-and-benefits-academies' %}
+      <span class="govuk-caption-l">Reason and benefits</span>
+    {% elif task == 'reason-and-benefits-trust' %}
+      <span class="govuk-caption-l">Reason and benefits</span>
+    {% elif task == 'risks' %}
+      <span class="govuk-caption-l">Risks</span>
+    {% elif task == 'school-improvement' %}
+      <span class="govuk-caption-l">School improvement</span>
+    {% endif %}
+
+    <h1 class="govuk-heading-xl">
+      Assign task to someone
+    </h1>
+
+    <form action="task-owner-update-handler?task={{ task }}" method="post">
+      {{ govukCheckboxes({
+        name: "task-owner",
+        fieldset: {
+          legend: {
+            text: "Select all that apply",
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        items: checkboxItems,
+        values: currentTaskOwnerEmails
+      }) }}
+
+      {{ govukButton({
+        text: "Save and continue"
+      }) }}
+    </form>
+
+    <p class="govuk-body govuk-!-margin-bottom-6">
+      Can't see the person you want to assign the task to? <a href="contributors-home" class="govuk-link">Invite them to the application</a>.
+    </p>
+    
+  </div>
+</div>
+
+{% endblock %} 

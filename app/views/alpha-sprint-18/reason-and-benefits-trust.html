@@ -1,11 +1,11 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Reason and benefits (trust)" %}
+{% set pageName="Reason and benefits" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back to Application task list",
-    href: "application-task-list",
+    text: "Back to application task list",
+    href: "application-task-list?ref=" + data.application.reference,
     classes: "govuk-!-margin-top-6"
   }) }}
 {% endblock %}
@@ -15,52 +15,73 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-      Reason and benefits (trust)
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="reason-and-benefits-trust">
+      Reason and benefits
     </h1>
 
-    <div class="govuk-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Reason and benefits (trust)</h2>
-        <ul class="govuk-summary-card__actions">
-          <li class="govuk-summary-card__action">
-            <a class="govuk-link" href="reason-and-benefits-trust">
-              Change<span class="govuk-visually-hidden"> reason and benefits (trust)</span>
-            </a>
-          </li>
-        </ul>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          What are the strategic needs of the trust?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['reason-and-benefits-trust-strategic-needs'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="reason-and-benefits-trust-strategic-needs">
+            Change<span class="govuk-visually-hidden"> strategic needs</span>
+          </a>
+        </dd>
       </div>
-      <div class="govuk-summary-card__content">
-        <dl class="govuk-summary-list">
-          {% if data['reason-and-benefits-trust'] %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Reason and benefits (trust)
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <p class="govuk-body">{{ data['reason-and-benefits-trust'] }}</p>
-              </dd>
-            </div>
-          {% else %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Reason and benefits (trust)
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <p class="govuk-body">No reason and benefits (trust) information provided</p>
-              </dd>
-            </div>
-          {% endif %}
-        </dl>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          How will the trust support the developmental needs of the transferring academies?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['reason-and-benefits-trust-maintain-improve'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="reason-and-benefits-trust-maintain-improve">
+            Change<span class="govuk-visually-hidden"> how will the trust support the developmental needs</span>
+          </a>
+        </dd>
       </div>
-    </div>
+      <!-- Temporarily hidden: What type of transfer it is?
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          What type of transfer it is?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['reason-and-benefits-trust-transfer-type'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="reason-and-benefits-trust-transfer-type">
+            Change<span class="govuk-visually-hidden"> what type of transfer it is</span>
+          </a>
+        </dd>
+      </div>
+      -->
+    </dl>
+    
 
-    <div class="govuk-button-group">
-      <a href="application-task-list" class="govuk-button">
-        Continue to application task list
-      </a>
-    </div>
-
+    <form action="application-task-list" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="reason-and-benefits-trust-status" name="reason-and-benefits-trust-status" type="checkbox" value="Complete" {% if data['reason-and-benefits-trust-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="reason-and-benefits-trust-status">
+              Mark this section as complete, you can still make changes later
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
   </div>
 </div>
 
