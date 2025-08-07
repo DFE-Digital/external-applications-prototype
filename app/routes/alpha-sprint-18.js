@@ -960,11 +960,6 @@ module.exports = function (router) {
 
     // GET handler for reason and benefits academies
     router.get('/' + version + '/reason-and-benefits-academies', function (req, res) {
-        // Clear form fields to ensure clean state when entering input fields
-        delete req.session.data['reason-and-benefits-academies-strategic-needs'];
-        delete req.session.data['reason-and-benefits-academies-maintain-improve'];
-        delete req.session.data['reason-and-benefits-academies-benefit-trust'];
-        
         // Initialize application data if not exists
         if (!req.session.data.application) {
             req.session.data.application = {
@@ -1026,10 +1021,6 @@ module.exports = function (router) {
 
     // GET handler for reason and benefits trust
     router.get('/' + version + '/reason-and-benefits-trust', function (req, res) {
-        // Clear form fields to ensure clean state when entering input fields
-        delete req.session.data['reason-and-benefits-trust-strategic-needs'];
-        delete req.session.data['reason-and-benefits-trust-maintain-improve'];
-        
         // Initialize application data if not exists
         if (!req.session.data.application) {
             req.session.data.application = {
@@ -1109,10 +1100,6 @@ module.exports = function (router) {
 
     // GET handler for high-quality and inclusive education summary
     router.get('/' + version + '/high-quality-and-inclusive-education', function (req, res) {
-        // Clear form fields to ensure clean state when entering input fields
-        delete req.session.data['high-quality-and-inclusive-education-quality'];
-        delete req.session.data['high-quality-and-inclusive-education-inclusive'];
-        
         // Initialize application data if not exists
         if (!req.session.data.application) {
             req.session.data.application = {
@@ -1152,9 +1139,6 @@ module.exports = function (router) {
 
     // GET handler for school improvement
     router.get('/' + version + '/school-improvement', function (req, res) {
-        // Clear form fields to ensure clean state when entering input fields
-        delete req.session.data['school-improvement-model'];
-        
         // Initialize application data if not exists
         if (!req.session.data.application) {
             req.session.data.application = {
