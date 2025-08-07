@@ -436,7 +436,7 @@
         {% endif %}
       </div>
       
-      {% if not data['members-to-add'] and not data['members-to-remove'] %}
+      {% if not data['members-to-add'] or (data['members-to-add'] and data['members-to-add'].length === 0) and not data['members-to-remove'] or (data['members-to-remove'] and data['members-to-remove'].length === 0) %}
         <div class="govuk-summary-card__content">
           <div class="govuk-inset-text">
             No members information has been added.
@@ -533,7 +533,7 @@
         {% endif %}
       </div>
       
-      {% if not data['trustees-to-add'] and not data['trustees-to-remove'] %}
+      {% if not data['trustees-to-add'] or (data['trustees-to-add'] and data['trustees-to-add'].length === 0) and not data['trustees-to-remove'] or (data['trustees-to-remove'] and data['trustees-to-remove'].length === 0) %}
         <div class="govuk-summary-card__content">
           <div class="govuk-inset-text">
             No trustees information has been added.
