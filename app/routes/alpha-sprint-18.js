@@ -1679,12 +1679,18 @@ module.exports = function (router) {
             req.session.data['members-status'] = req.body['members-status'] === 'Complete';
         }
 
-        // Handle member deletion
-        if (req.body['delete-member'] !== undefined) {
+        // Handle member deletion confirmation
+        if (req.body['confirm-delete-member'] !== undefined) {
+            const confirmDelete = req.body['confirm-delete-member'];
             const memberIndex = parseInt(req.body['delete-member']);
-            if (req.session.data['members-to-add'] && req.session.data['members-to-add'][memberIndex]) {
+            
+            if (confirmDelete === 'yes' && req.session.data['members-to-add'] && req.session.data['members-to-add'][memberIndex]) {
+                // Remove the member if confirmed
+                const memberName = req.session.data['members-to-add'][memberIndex].name;
                 req.session.data['members-to-add'].splice(memberIndex, 1);
+                req.session.data['member-removed'] = memberName;
             }
+            // If confirmDelete === 'no', do nothing - keep the member
         }
 
         // Handle member to remove deletion
@@ -1823,6 +1829,22 @@ module.exports = function (router) {
         });
     });
 
+    // Handle member to remove deletion confirmation POST
+    router.post('/' + version + '/confirm-delete-member-to-remove', function (req, res) {
+        const confirmDelete = req.body['confirm-delete-member-to-remove'];
+        const memberIndex = parseInt(req.body['delete-member-to-remove']);
+        
+        if (confirmDelete === 'yes' && req.session.data['members-to-remove'] && req.session.data['members-to-remove'][memberIndex]) {
+            // Remove the member if confirmed
+            const memberName = req.session.data['members-to-remove'][memberIndex].name;
+            req.session.data['members-to-remove'].splice(memberIndex, 1);
+            req.session.data['member-to-remove-removed'] = memberName;
+        }
+        // If confirmDelete === 'no', do nothing - keep the member
+        
+        res.redirect('members-summary');
+    });
+
     // GET handler for trustee summary
     router.get('/' + version + '/trustee-summary', function (req, res) {
         res.render(version + '/trustee-summary', {
@@ -1859,12 +1881,18 @@ module.exports = function (router) {
             req.session.data['trustee-status'] = req.body['trustee-status'] === 'Complete';
         }
 
-        // Handle trustee deletion
-        if (req.body['delete-trustee'] !== undefined) {
+        // Handle trustee deletion confirmation
+        if (req.body['confirm-delete-trustee'] !== undefined) {
+            const confirmDelete = req.body['confirm-delete-trustee'];
             const trusteeIndex = parseInt(req.body['delete-trustee']);
-            if (req.session.data['trustees-to-add'] && req.session.data['trustees-to-add'][trusteeIndex]) {
+            
+            if (confirmDelete === 'yes' && req.session.data['trustees-to-add'] && req.session.data['trustees-to-add'][trusteeIndex]) {
+                // Remove the trustee if confirmed
+                const trusteeName = req.session.data['trustees-to-add'][trusteeIndex].name;
                 req.session.data['trustees-to-add'].splice(trusteeIndex, 1);
+                req.session.data['trustee-removed'] = trusteeName;
             }
+            // If confirmDelete === 'no', do nothing - keep the trustee
         }
 
         // Handle trustee to remove deletion
@@ -2043,6 +2071,22 @@ module.exports = function (router) {
         res.render(version + '/confirm-delete-trustee-to-remove', {
             index: trusteeIndex
         });
+    });
+
+    // Handle trustee to remove deletion confirmation POST
+    router.post('/' + version + '/confirm-delete-trustee-to-remove', function (req, res) {
+        const confirmDelete = req.body['confirm-delete-trustee-to-remove'];
+        const trusteeIndex = parseInt(req.body['delete-trustee-to-remove']);
+        
+        if (confirmDelete === 'yes' && req.session.data['trustees-to-remove'] && req.session.data['trustees-to-remove'][trusteeIndex]) {
+            // Remove the trustee if confirmed
+            const trusteeName = req.session.data['trustees-to-remove'][trusteeIndex].name;
+            req.session.data['trustees-to-remove'].splice(trusteeIndex, 1);
+            req.session.data['trustee-to-remove-removed'] = trusteeName;
+        }
+        // If confirmDelete === 'no', do nothing - keep the trustee
+        
+        res.redirect('trustee-summary');
     });
 
 }
