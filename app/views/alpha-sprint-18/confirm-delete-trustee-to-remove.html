@@ -1,11 +1,11 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Confirm delete member to remove" %}
+{% set pageName="Confirm delete trustee to remove" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back to Members",
-    href: "members-summary",
+    text: "Back to Trustees",
+    href: "trustee-summary",
     classes: "govuk-!-margin-top-6"
   }) }}
 {% endblock %}
@@ -15,14 +15,14 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
     
-    <form action="confirm-delete-member-to-remove" method="post">
+    <form action="confirm-delete-trustee-to-remove" method="post">
       
       {{ govukRadios({
-        name: "confirm-delete-member-to-remove",
+        name: "confirm-delete-trustee-to-remove",
         fieldset: {
           legend: {
-            html: '<span class="govuk-caption-l">Members</span>
-            Are you sure you want to remove ' + data['members-to-remove'][data.index].name + '?',
+            html: '<span class="govuk-caption-l">Trustees</span>
+            Are you sure you want to remove ' + data['trustees-to-remove'][data.index].name + '?',
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
@@ -31,17 +31,17 @@
           {
             value: "yes",
             text: "Yes, remove from list",
-            checked: data["confirm-delete-member-to-remove"] === "yes"
+            checked: data["confirm-delete-trustee-to-remove"] === "yes"
           },
           {
             value: "no",
             text: "No, keep on list",
-            checked: data["confirm-delete-member-to-remove"] === "no"
+            checked: data["confirm-delete-trustee-to-remove"] === "no"
           }
         ]
       }) }}
 
-      <input type="hidden" name="delete-member-to-remove" value="{{ data.index }}">
+      <input type="hidden" name="delete-trustee-to-remove" value="{{ data.index }}">
       
       {{ govukButton({
         text: "Continue"

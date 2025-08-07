@@ -15,7 +15,7 @@
 {% block content %}
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+  <div class="govuk-grid-column-two-thirds">
     {% if success %}
       {% set html %}
         <h3 class="govuk-notification-banner__heading">
@@ -49,10 +49,6 @@
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="academies-to-transfer">
       Details of academies
     </h1>
-
-    <p class="govuk-body eat-transfer__task-owner-box">
-      {{ taskOwnerDisplay }} <a class="govuk-link" href="task-owner-update?task=academies">Change</a>
-    </p>
 
     {% if not data['academies-to-transfer'] or data['academies-to-transfer'].length === 0 %}
       <div class="govuk-inset-text">

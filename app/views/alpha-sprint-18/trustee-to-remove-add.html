@@ -1,11 +1,11 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Full name of the member who will be leaving" %}
+{% set pageName="Full name of the trustee who will be leaving" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back to Members",
-    href: "members-summary",
+    text: "Back to Trustees",
+    href: "trustee-summary",
     classes: "govuk-!-margin-top-6"
   }) }}
 {% endblock %}
@@ -16,20 +16,20 @@
   <div class="govuk-grid-column-two-thirds">
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-      Full name of the member who will be leaving
+      Full name of the trustee who will be leaving
     </h1>
 
     <p class="govuk-body">
-      Enter the full name of the current member who will be leaving the trust after the transfer.
+      Enter the full name of the current trustee who will be leaving the trust after the transfer.
     </p>
 
-    <form action="members-summary" method="post">
+    <form action="trustee-summary" method="post">
       
       <div class="govuk-form-group">
-        <label class="govuk-label" for="member-to-remove-full-name">
+        <label class="govuk-label" for="trustee-to-remove-full-name">
           Full name
         </label>
-        <input class="govuk-input" id="member-to-remove-full-name" name="member-to-remove-full-name" type="text" value="{{ data['member-to-remove-full-name'] }}">
+        <input class="govuk-input" id="trustee-to-remove-full-name" name="trustee-to-remove-full-name" type="text" value="{{ data['trustee-to-remove-full-name'] }}">
       </div>
 
       <div class="govuk-button-group">

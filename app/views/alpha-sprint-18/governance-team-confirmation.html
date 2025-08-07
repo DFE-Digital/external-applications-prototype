@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Has the trust confirmed everyone who will be on the governance team after the transfer?" %}
+{% set pageName="Has the trust appointed all the roles in its governance structure?" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -21,10 +21,13 @@
           fieldset: {
             legend: {
               html: '<span class="govuk-caption-l">Governance structure</span>
-              Has the trust confirmed everyone who will be on the governance team after the transfer?',
+              Has the trust appointed all the roles in its governance structure?',
               classes: "govuk-fieldset__legend--l",
               isPageHeading: true
             }
+          },
+          hint: {
+            text: "This includes members, trustees and governance professionals."
           },
           items: [
             {

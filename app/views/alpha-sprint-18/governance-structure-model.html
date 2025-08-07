@@ -22,8 +22,7 @@
           </h2>
         </div>
         <div class="govuk-notification-banner__content">
-          <p class="govuk-notification-banner__heading">File uploaded successfully</p>
-          <p class="govuk-body">Your governance structure document has been uploaded.</p>
+          <p class="govuk-notification-banner__heading">Your file was uploaded</p>
         </div>
       </div>
     {% endif %}
@@ -36,8 +35,7 @@
           </h2>
         </div>
         <div class="govuk-notification-banner__content">
-          <p class="govuk-notification-banner__heading">File deleted successfully</p>
-          <p class="govuk-body">{{ data['deleted-file-name'] }} has been removed.</p>
+          <p class="govuk-notification-banner__heading">Your file was deleted</p>
         </div>
       </div>
     {% endif %}
@@ -52,7 +50,16 @@
             isPageHeading: true
           },
           hint: {
-            html: '<p class="govuk-body">Upload a PDF of an A4 diagram. Give the file a clear, descriptive name.</p>'
+            html: '<p class="govuk-body">Upload a PDF of an A4 diagram and other information.</p>
+            <p class="govuk-body">The diagram should provide the structure and role of:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>members</li>
+              <li>trustees</li>
+              <li>committees and any sub committees</li>
+              <li>any local governing bodies</li>
+            </ul>
+            <p class="govuk-body">Also include any formal scheme of delegation and any information about how a proposed multi-academy trust structure will work in practice. In particular, how it will hold the chief executive officer or executive principals to account.</p>
+            <p class="govuk-body">Give the file a clear, descriptive name. Files up to 10MB are accepted.</p>'
           },
           id: "governance-structure-file",
           name: "governance-structure-file",

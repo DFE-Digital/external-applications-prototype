@@ -436,7 +436,7 @@
         {% endif %}
       </div>
       
-      {% if not data['members-to-add'] and not data['members-to-remove'] %}
+      {% if not data['members-to-add'] or (data['members-to-add'] and data['members-to-add'].length === 0) and not data['members-to-remove'] or (data['members-to-remove'] and data['members-to-remove'].length === 0) %}
         <div class="govuk-summary-card__content">
           <div class="govuk-inset-text">
             No members information has been added.
@@ -523,6 +523,113 @@
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Trustees</h2>
+        {% if data.application and data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="trustee-summary">
+              Change<span class="govuk-visually-hidden"> trustees</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      
+      {% if not data['trustees-to-add'] or (data['trustees-to-add'] and data['trustees-to-add'].length === 0) and not data['trustees-to-remove'] or (data['trustees-to-remove'] and data['trustees-to-remove'].length === 0) %}
+        <div class="govuk-summary-card__content">
+          <div class="govuk-inset-text">
+            No trustees information has been added.
+          </div>
+        </div>
+      {% else %}
+        {% if data['trustees-to-add'] and data['trustees-to-add'].length > 0 %}
+          <div class="govuk-summary-card__content">
+            <h3 class="govuk-heading-s">Who will be the Trustees of the trust after the transfer?</h3>
+            <dl class="govuk-summary-list">
+              {% for trustee in data['trustees-to-add'] %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Trustee {{ loop.index }}
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ trustee.name }}</p>
+                  </dd>
+                </div>
+                {% if trustee.isExistingTrustee is defined %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Is {{ trustee.name }} an existing trustee or a new one?
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{% if trustee.isExistingTrustee %}Yes{% else %}No{% endif %}</p>
+                  </dd>
+                </div>
+                {% endif %}
+                {% if trustee.currentResponsibilities %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    What roles and responsibilities has {{ trustee.name }} had in the past 5 years?
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ trustee.currentResponsibilities }}</p>
+                  </dd>
+                </div>
+                {% endif %}
+                {% if trustee.futureRole %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Will {{ trustee.name }} also have any of these roles?
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    {% if trustee.futureRole is string %}
+                      <p class="govuk-body">{{ trustee.futureRole }}</p>
+                    {% else %}
+                      <ul class="govuk-list govuk-list--bullet">
+                        {% for role in trustee.futureRole %}
+                          {% if role and role !== '_unchecked' %}
+                            <li>{{ role }}</li>
+                          {% endif %}
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                  </dd>
+                </div>
+                {% endif %}
+                {% if trustee.localGoverningBody %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Which local governing body will {{ trustee.name }} be a member of?
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ trustee.localGoverningBody }}</p>
+                  </dd>
+                </div>
+                {% endif %}
+              {% endfor %}
+            </dl>
+          </div>
+        {% endif %}
+
+        {% if data['trustees-to-remove'] and data['trustees-to-remove'].length > 0 %}
+          <div class="govuk-summary-card__content">
+            <h3 class="govuk-heading-s">Current trustees who will be leaving</h3>
+            <dl class="govuk-summary-list">
+              {% for trustee in data['trustees-to-remove'] %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Person to leave {{ loop.index }}
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ trustee.name }}</p>
+                  </dd>
+                </div>
+              {% endfor %}
+            </dl>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Governance structure</h2>
         {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
@@ -533,10 +640,35 @@
         {% endif %}
       </div>
       <div class="govuk-summary-card__content">
+        {% if data['governance-team-confirmed'] %}
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Has the trust appointed all the roles in its governance structure?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body">{{ data['governance-team-confirmed'] }}</p>
+              </dd>
+            </div>
+            {% if data['governance-team-confirmed'] === 'No' and data['governance-team-explanation'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Tell us about the trust's plans to fill gaps in skills and expertise
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <p class="govuk-body">{{ data['governance-team-explanation'] }}</p>
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+        {% endif %}
+
         {% if not data['governance-structure-files'] or data['governance-structure-files'].length === 0 %}
-          <div class="govuk-inset-text">
-            No governance structure information has been added.
-          </div>
+          {% if not data['governance-team-confirmed'] %}
+            <div class="govuk-inset-text">
+              No governance structure information has been added.
+            </div>
+          {% endif %}
         {% else %}
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
@@ -566,29 +698,6 @@
                 {% endif %}
               </dd>
             </div>
-          </dl>
-        {% endif %}
-
-        {% if data['governance-team-confirmed'] %}
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Has the trust confirmed everyone who will be on the governance team after the transfer?
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <p class="govuk-body">{{ data['governance-team-confirmed'] }}</p>
-              </dd>
-            </div>
-            {% if data['governance-team-confirmed'] === 'No' and data['governance-team-explanation'] %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Tell us about anyone who is considering joining the governance team
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <p class="govuk-body">{{ data['governance-team-explanation'] }}</p>
-              </dd>
-            </div>
-            {% endif %}
           </dl>
         {% endif %}
       </div>
