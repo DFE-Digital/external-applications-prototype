@@ -390,6 +390,70 @@ module.exports = function (router) {
         });
     });
 
+    // GET handler for outgoing trusts search
+    router.get('/' + version + '/outgoing-trusts-search', function (req, res) {
+        console.log('Outgoing trusts search route - trusts data:', data.trusts);
+        res.render(version + '/outgoing-trusts-search', {
+            data: req.session.data,
+            trusts: data.trusts
+        });
+    });
+
+
+
+    // POST handler for outgoing trusts confirmation
+    router.post('/' + version + '/outgoing-trusts-confirmation', function (req, res) {
+        const selectedTrustName = req.body['outgoing-trust-search'];
+        
+        // Find the selected trust details from the data
+        const selectedTrust = data.trusts.find(trust => trust.name === selectedTrustName);
+        
+        if (selectedTrust) {
+            // Store the selected trust details in session for the confirmation page
+            req.session.data['selected-outgoing-trust-name'] = selectedTrust.name;
+            req.session.data['selected-outgoing-trust-postcode'] = selectedTrust.postcode;
+            req.session.data['selected-outgoing-trust-company-house'] = selectedTrust.companyHouseNumber;
+            
+            res.render(version + '/outgoing-trusts-confirmation', {
+                data: req.session.data,
+                trustName: selectedTrust.name,
+                trustPostcode: selectedTrust.postcode,
+                trustCompanyHouse: selectedTrust.companyHouseNumber
+            });
+        } else {
+            // If trust not found, redirect back to search
+            return res.redirect('outgoing-trusts-search');
+        }
+    });
+
+    // POST handler for outgoing trusts confirmation
+    router.post('/' + version + '/outgoing-trusts-confirmation-handler', function (req, res) {
+        const trustConfirmed = req.body['trust-confirmed'];
+        
+        if (trustConfirmed === 'Yes') {
+            // Initialize outgoing-trusts array if it doesn't exist
+            if (!req.session.data['outgoing-trusts']) {
+                req.session.data['outgoing-trusts'] = [];
+            }
+            
+            // Add the confirmed trust to the outgoing-trusts array
+            req.session.data['outgoing-trusts'].push({
+                name: req.session.data['selected-outgoing-trust-name'],
+                postcode: req.session.data['selected-outgoing-trust-postcode'],
+                companyHouseNumber: req.session.data['selected-outgoing-trust-company-house']
+            });
+            
+            // Set outgoing trusts status to true
+            req.session.data['outgoing-trusts-status'] = true;
+            
+            // Redirect back to outgoing trusts summary
+            return res.redirect('outgoing-trusts-summary');
+        } else {
+            // If not confirmed, go back to search
+            return res.redirect('outgoing-trusts-search');
+        }
+    });
+
     // GET handler for preferred trust question
     router.get('/' + version + '/incoming-trust-preferred-trust-question', function (req, res) {
         res.render(version + '/incoming-trust-preferred-trust-question', {

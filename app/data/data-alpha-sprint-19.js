@@ -61,6 +61,58 @@ module.exports = {
             academyTrust: "Southern Multi-Academy Trust"
         }
     ],
+    'trusts': [
+        {
+            name: "London Education Trust",
+            postcode: "SW1A 1AA",
+            companyHouseNumber: "12345678"
+        },
+        {
+            name: "Northern Learning Trust",
+            postcode: "M1 1AA",
+            companyHouseNumber: "87654321"
+        },
+        {
+            name: "Southern Multi-Academy Trust",
+            postcode: "SO1 1AA",
+            companyHouseNumber: "11223344"
+        },
+        {
+            name: "Eastern Educational Trust",
+            postcode: "CB1 1AA",
+            companyHouseNumber: "55667788"
+        },
+        {
+            name: "Western Learning Partnership",
+            postcode: "BS1 1AA",
+            companyHouseNumber: "99887766"
+        },
+        {
+            name: "Central Academy Trust",
+            postcode: "B1 1AA",
+            companyHouseNumber: "44332211"
+        },
+        {
+            name: "Metropolitan Education Trust",
+            postcode: "L1 1AA",
+            companyHouseNumber: "66554433"
+        },
+        {
+            name: "Regional Learning Trust",
+            postcode: "LS1 1AA",
+            companyHouseNumber: "77889900"
+        },
+        {
+            name: "National Academy Partnership",
+            postcode: "S1 1AA",
+            companyHouseNumber: "11223344"
+        },
+        {
+            name: "United Learning Trust",
+            postcode: "M1 1AA",
+            companyHouseNumber: "55667788"
+        }
+    ],
     'members': [
         {
             name: "John Smith",

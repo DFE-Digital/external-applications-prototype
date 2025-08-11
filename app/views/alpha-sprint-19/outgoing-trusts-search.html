@@ -1,0 +1,102 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Search for outgoing trust" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<!-- Include accessible autocomplete library -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css">
+<script src="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
+
+<style>
+  /* Fix alignment and styling issues */
+  .autocomplete__wrapper {
+    width: 100%;
+  }
+  
+  .autocomplete__input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .autocomplete__dropdown-arrow-down {
+    right: 8px;
+  }
+  
+  /* Ensure dropdown aligns with input */
+  .autocomplete__menu {
+    width: 100% !important;
+    left: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .autocomplete__option {
+    padding: 8px 12px;
+    border-bottom: 1px solid #b1b4b6;
+  }
+  
+  .autocomplete__option:last-child {
+    border-bottom: none;
+  }
+  
+  /* Hide "No results found" when there are results */
+  .autocomplete__option--no-results {
+    display: none !important;
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form class="form" action="outgoing-trusts-confirmation" method="post">
+      <div class="govuk-form-group">
+        <h1 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--xl" for="create-new-project-academy-name">
+            <span class="govuk-caption-l">Trust details</span>
+            Search for the trust by name or reference number
+          </label>
+        </h1>
+
+        <div class="govuk-hint">
+          For example, search by trust name, postcode, or company house number
+        </div>
+        
+        <!-- Hidden select element that will be enhanced -->
+        <select id="outgoing-trust-search" name="outgoing-trust-search" style="display: none;">
+          <option value="">Select a trust</option>
+          {% for trust in trusts %}
+          <option value="{{ trust.name }}" data-postcode="{{ trust.postcode }}" data-company-house="{{ trust.companyHouseNumber }}">
+            {{ trust.name }} - {{ trust.postcode }} - {{ trust.companyHouseNumber }}
+          </option>
+          {% endfor %}
+        </select>
+        
+      </div>
+
+      {{ govukButton({
+        text: "Search"
+      }) }}
+    </form>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        accessibleAutocomplete.enhanceSelectElement({
+          selectElement: document.querySelector('#outgoing-trust-search'),
+          showAllValues: true,
+          minLength: 0,
+          autoselect: false,
+          confirmOnBlur: false
+        });
+      });
+    </script>
+
+  </div>
+</div>
+{% endblock %} 
