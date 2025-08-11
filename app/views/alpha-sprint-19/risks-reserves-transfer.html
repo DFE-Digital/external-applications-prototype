@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="How much of the reserves and funding will transfer over" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="risks-summary" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">Risks</span>
+            How much of the reserves and funding allocated to the academies will transfer over?',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            text: "Provide details about the reserves and funding that will transfer"
+          },
+          maxlength: 4000,
+          id: "risks-reserves-transfer",
+          name: "risks-reserves-transfer",
+          value: data["risks-reserves-transfer"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

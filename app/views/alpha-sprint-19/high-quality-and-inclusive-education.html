@@ -1,0 +1,73 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="High-quality and inclusive education" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to application task list",
+    href: "application-task-list?ref=" + data.application.reference,
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="high-quality-and-inclusive-education">
+      High-quality and inclusive education
+    </h1>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          How do the existing academies at the trust provide high quality and inclusive education?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['high-quality-and-inclusive-education-quality'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="high-quality-and-inclusive-education-quality">
+            Change<span class="govuk-visually-hidden"> how do the existing academies at the trust provide high quality and inclusive education</span>
+          </a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          How will the transfer impact the trust and transferring academies?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['high-quality-and-inclusive-education-inclusive'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="high-quality-and-inclusive-education-inclusive">
+            Change<span class="govuk-visually-hidden"> how will the transfer impact the trust and transferring academies</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+    
+
+    <form action="application-task-list" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="high-quality-and-inclusive-education-status" name="high-quality-and-inclusive-education-status" type="checkbox" value="Complete" {% if data['high-quality-and-inclusive-education-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="high-quality-and-inclusive-education-status">
+              Mark this section as complete, you can still make changes later
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

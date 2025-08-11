@@ -1,0 +1,109 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Governance structure" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to application task list",
+    href: "application-task-list?ref=" + data.application.reference,
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="governance-structure">
+      Governance structure
+    </h1>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Has the trust appointed all the roles in its governance structure?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {% if data['governance-team-confirmed'] %}
+            <p class="govuk-body">{{ data['governance-team-confirmed'] }}</p>
+          {% endif %}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="governance-team-confirmation">
+            Change<span class="govuk-visually-hidden"> governance team confirmation</span>
+          </a>
+        </dd>
+      </div>
+      {% if data['governance-team-confirmed'] === 'No' and data['governance-team-explanation'] %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Tell us about the trust's plans to fill gaps in skills and expertise
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <p class="govuk-body">{{ data['governance-team-explanation'] }}</p>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="governance-team-explanation">
+            Change<span class="govuk-visually-hidden"> governance team explanation</span>
+          </a>
+        </dd>
+      </div>
+      {% endif %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Governance structure after the transfer
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {% if data['governance-structure-files'] and data['governance-structure-files'].length > 0 %}
+            {% for file in data['governance-structure-files'] %}
+              <p class="govuk-body">
+                <a href="download-governance-file/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                  <strong>{{ file.name }}</strong>
+                </a>
+              </p>
+              <p class="govuk-body govuk-!-font-size-14">
+                File size: {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+              </p>
+              <p class="govuk-body govuk-!-font-size-14">
+                File type: {{ file.type }}
+              </p>
+              {% if not loop.last %}
+                <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <p class="govuk-body">No files uploaded</p>
+          {% endif %}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="governance-structure-model">
+            Manage<span class="govuk-visually-hidden"> governance structure files</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+    
+
+    <form action="application-task-list" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="governance-structure-status" name="governance-structure-status" type="checkbox" value="Complete" {% if data['governance-structure-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="governance-structure-status">
+              Mark this section as complete, you can still make changes later
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

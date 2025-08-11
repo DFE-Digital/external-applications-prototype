@@ -1,0 +1,41 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="How do the existing academies at the trust provide high quality and inclusive education" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="high-quality-and-inclusive-education-quality-handler" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">High-quality and inclusive education</span>
+            How do the existing academies at the trust provide high quality and inclusive education?',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          maxlength: 4000,
+          id: "high-quality-and-inclusive-education-quality",
+          name: "high-quality-and-inclusive-education-quality",
+          value: data["high-quality-and-inclusive-education-quality"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

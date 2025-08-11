@@ -1,0 +1,54 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Confirm delete trustee" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to Trustees",
+    href: "trustee-summary",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    <form action="trustee-summary" method="post">
+      
+      {{ govukRadios({
+        name: "confirm-delete-trustee",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Trustees</span>
+            Are you sure you want to remove ' + data['trustees-to-add'][data.index].name + '?',
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes, remove trustee",
+            checked: data["confirm-delete-trustee"] === "yes"
+          },
+          {
+            value: "no",
+            text: "No, keep trustee",
+            checked: data["confirm-delete-trustee"] === "no"
+          }
+        ]
+      }) }}
+
+      <input type="hidden" name="delete-trustee" value="{{ data.index }}">
+      
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

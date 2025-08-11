@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="How will the transfer impact the trust and transferring academies" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="high-quality-and-inclusive-education-inclusive-handler" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">High-quality and inclusive education</span>
+            How will the transfer impact the trust and transferring academies?',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            text: "For example, if the trust and academies have pupils with similar characteristics, how these pupils will be impacted"
+          },
+          maxlength: 4000,
+          id: "high-quality-and-inclusive-education-inclusive",
+          name: "high-quality-and-inclusive-education-inclusive",
+          value: data["high-quality-and-inclusive-education-inclusive"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="What are the risks and the plans to manage them" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="risks-summary" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">Risks</span>
+            What are the risks and the plans to manage them?',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            text: "Describe the risks and your plans to manage them"
+          },
+          maxlength: 4000,
+          id: "risks-risk-management",
+          name: "risks-risk-management",
+          value: data["risks-risk-management"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

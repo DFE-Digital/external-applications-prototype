@@ -1,0 +1,90 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Home" %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full govuk-!-margin-bottom-6">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-9">
+      Your applications
+    </h1>
+    <p class="govuk-body">If you start an application, you will be the lead applicant for it.</p>
+    <form action="application-task-list?ref=240315-ABC34" method="post">
+      <button class="govuk-button govuk-!-margin-bottom-9" type="submit">Start new application</button>
+    </form>
+    <h2 class="govuk-heading-l govuk-!-margin-bottom-3">
+      Applications in progress
+    </h2>
+
+    {% if data.userType === 'lead' %}
+    {% if newApplication %}
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Reference number</th>
+            <th scope="col" class="govuk-table__header">Date started</th>
+            <th scope="col" class="govuk-table__header">Status</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ newApplication.reference }}</td>
+              <td class="govuk-table__cell">{{ newApplication.dateStarted }}</td>
+              <td class="govuk-table__cell">
+                <strong class="govuk-tag govuk-tag--blue">
+                  {{ newApplication.status }}
+                </strong>
+              </td>
+              <td class="govuk-table__cell">
+                {% if newApplication.status === 'Submitted' %}
+                  <a href="check-your-answers?ref={{ newApplication.reference }}" class="govuk-link">View application</a>
+                {% else %}
+                <a href="application-task-list?ref={{ newApplication.reference }}" class="govuk-link">Continue application</a>
+                {% endif %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      {% else %}
+        <p class="govuk-body">You have no applications in progress.</p>
+      {% endif %}
+    {% else %}
+      {% if contributorApplication %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Reference number</th>
+              <th scope="col" class="govuk-table__header">Date started</th>
+              <th scope="col" class="govuk-table__header">Status</th>
+              <th scope="col" class="govuk-table__header">Action</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ contributorApplication.reference }}</td>
+              <td class="govuk-table__cell">{{ contributorApplication.dateStarted }}</td>
+              <td class="govuk-table__cell">
+                <strong class="govuk-tag govuk-tag--blue">
+                  {{ contributorApplication.status }}
+                </strong>
+              </td>
+              <td class="govuk-table__cell">
+                {% if contributorApplication.status === 'Submitted' %}
+                  <a href="check-your-answers?ref={{ contributorApplication.reference }}" class="govuk-link">View application</a>
+                {% else %}
+                  <a href="application-task-list?ref={{ contributorApplication.reference }}" class="govuk-link">Continue application</a>
+          {% endif %}
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    {% else %}
+      <p class="govuk-body">You have no applications in progress.</p>
+    {% endif %}
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Search for a trust" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form class="form" action="declaration-trust-search-results" method="post">
+      {{ govukInput({
+        label: {
+          html: '<span class="govuk-caption-l">Declaration from academy trust chair</span>
+          Search for the trust by name or reference number',
+          classes: "govuk-label--xl",
+          isPageHeading: true
+        },
+        hint: {
+          text: "For example, search by trust reference number (TRN) or UK provider reference number (UKPRN)"
+        },
+        id: "declaration-search",
+        name: "declaration-search"
+      }) }}
+
+      {{ govukButton({
+        text: "Search"
+      }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %} 

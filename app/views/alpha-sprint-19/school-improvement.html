@@ -1,0 +1,60 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="School improvement" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to application task list",
+    href: "application-task-list?ref=" + data.application.reference,
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="school-improvement">
+      School improvement
+    </h1>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          What will be the trust's school improvement model and how will it be actioned?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['school-improvement-model'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="school-improvement-model">
+            Change<span class="govuk-visually-hidden"> school improvement model</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+    
+
+    <form action="application-task-list" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="school-improvement-status" name="school-improvement-status" type="checkbox" value="Complete" {% if data['school-improvement-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="school-improvement-status">
+              Mark this section as complete, you can still make changes later
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} 
