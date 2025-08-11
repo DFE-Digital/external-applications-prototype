@@ -401,9 +401,23 @@ module.exports = function (router) {
 
 
 
-    // POST handler for outgoing trusts confirmation
+    // GET handler for outgoing trusts search
+    router.get('/' + version + '/outgoing-trusts-search', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        res.render(version + '/outgoing-trusts-search', {
+            data: req.session.data,
+            trusts: data.trusts,
+            editIndex: editIndex
+        });
+    });
+
+        // POST handler for outgoing trusts confirmation
     router.post('/' + version + '/outgoing-trusts-confirmation', function (req, res) {
         const selectedTrustName = req.body['outgoing-trust-search'];
+        const editIndex = req.query.edit; // Get from query parameter instead of body
+        
+
         
         // Find the selected trust details from the data
         const selectedTrust = data.trusts.find(trust => trust.name === selectedTrustName);
@@ -418,7 +432,8 @@ module.exports = function (router) {
                 data: req.session.data,
                 trustName: selectedTrust.name,
                 trustPostcode: selectedTrust.postcode,
-                trustCompanyHouse: selectedTrust.companyHouseNumber
+                trustCompanyHouse: selectedTrust.companyHouseNumber,
+                editIndex: editIndex // Pass edit index directly to template
             });
         } else {
             // If trust not found, redirect back to search
@@ -476,6 +491,9 @@ module.exports = function (router) {
     // POST handler for outgoing trusts confirmation
     router.post('/' + version + '/outgoing-trusts-confirmation-handler', function (req, res) {
         const trustConfirmed = req.body['trust-confirmed'];
+        const editIndex = req.body['edit-index'];
+        
+
         
         if (trustConfirmed === 'Yes') {
             // Initialize outgoing-trusts array if it doesn't exist
@@ -483,22 +501,232 @@ module.exports = function (router) {
                 req.session.data['outgoing-trusts'] = [];
             }
             
-            // Add the confirmed trust to the outgoing-trusts array
-            req.session.data['outgoing-trusts'].push({
+            const newTrust = {
                 name: req.session.data['selected-outgoing-trust-name'],
                 postcode: req.session.data['selected-outgoing-trust-postcode'],
                 companyHouseNumber: req.session.data['selected-outgoing-trust-company-house']
-            });
+            };
+            
+            // Check if we're editing an existing trust
+            if (editIndex !== undefined) {
+                const actualEditIndex = parseInt(editIndex);
+                
+                // Replace the existing trust at the specified index
+                if (req.session.data['outgoing-trusts'][actualEditIndex]) {
+                    req.session.data['outgoing-trusts'][actualEditIndex] = newTrust;
+                }
+            } else {
+                // Add a new trust to the array
+                req.session.data['outgoing-trusts'].push(newTrust);
+            }
             
             // Set outgoing trusts status to true
             req.session.data['outgoing-trusts-status'] = true;
             
-            // Redirect back to outgoing trusts summary
-            return res.redirect('outgoing-trusts-summary');
+            // Redirect to contact details page instead of summary
+            return res.redirect('outgoing-trusts-contact-details');
         } else {
             // If not confirmed, go back to search
             return res.redirect('outgoing-trusts-search');
         }
+    });
+
+    // GET handler for outgoing trusts contact details
+    router.get('/' + version + '/outgoing-trusts-contact-details', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        // Initialize default values
+        let contactName = '';
+        let role = '';
+        let contactNumber = '';
+        let emailAddress = '';
+        
+        // If editing, get existing values from the trust
+        if (editIndex !== undefined && req.session.data['outgoing-trusts']) {
+            const trust = req.session.data['outgoing-trusts'][parseInt(editIndex)];
+            if (trust) {
+                contactName = trust.contactName || '';
+                role = trust.role || '';
+                contactNumber = trust.contactNumber || '';
+                emailAddress = trust.emailAddress || '';
+            }
+        }
+        
+        res.render(version + '/outgoing-trusts-contact-details', {
+            data: req.session.data,
+            editIndex: editIndex,
+            contactName: contactName,
+            role: role,
+            contactNumber: contactNumber,
+            emailAddress: emailAddress
+        });
+    });
+
+    // POST handler for outgoing trusts contact details
+    router.post('/' + version + '/outgoing-trusts-contact-details-handler', function (req, res) {
+        const editIndex = req.body['edit-index'];
+        const trustName = req.body['trust-name'];
+        const trustPostcode = req.body['trust-postcode'];
+        const trustCompanyHouse = req.body['trust-company-house'];
+        
+        // Store contact details
+        const contactDetails = {
+            contactName: req.body['contact-name'],
+            role: req.body['role'],
+            contactNumber: req.body['contact-number'],
+            emailAddress: req.body['email-address']
+        };
+        
+        // Check if we're editing an existing trust
+        if (editIndex !== undefined) {
+            const actualEditIndex = parseInt(editIndex);
+            
+            // Update the existing trust with contact details
+            if (req.session.data['outgoing-trusts'][actualEditIndex]) {
+                req.session.data['outgoing-trusts'][actualEditIndex] = {
+                    ...req.session.data['outgoing-trusts'][actualEditIndex],
+                    ...contactDetails
+                };
+            }
+        } else {
+            // Find the trust by name and update it with contact details
+            const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
+                trust.name === trustName && 
+                trust.postcode === trustPostcode && 
+                trust.companyHouseNumber === trustCompanyHouse
+            );
+            
+            if (trustIndex !== -1) {
+                req.session.data['outgoing-trusts'][trustIndex] = {
+                    ...req.session.data['outgoing-trusts'][trustIndex],
+                    ...contactDetails
+                };
+            }
+        }
+        
+        // Redirect to trust closure page instead of summary
+        return res.redirect('outgoing-trusts-closure');
+    });
+
+    // GET handler for outgoing trusts closure
+    router.get('/' + version + '/outgoing-trusts-closure', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        // Initialize default value
+        let trustWillClose = '';
+        
+        // If editing, get existing value from the trust
+        if (editIndex !== undefined && req.session.data['outgoing-trusts']) {
+            const trust = req.session.data['outgoing-trusts'][parseInt(editIndex)];
+            if (trust) {
+                trustWillClose = trust.trustWillClose || '';
+            }
+        }
+        
+        res.render(version + '/outgoing-trusts-closure', {
+            data: req.session.data,
+            editIndex: editIndex,
+            'trust-will-close': trustWillClose
+        });
+    });
+
+    // POST handler for outgoing trusts closure
+    router.post('/' + version + '/outgoing-trusts-closure-handler', function (req, res) {
+        const editIndex = req.body['edit-index'];
+        const trustName = req.body['trust-name'];
+        const trustPostcode = req.body['trust-postcode'];
+        const trustCompanyHouse = req.body['trust-company-house'];
+        
+        // Store closure information
+        const closureInfo = {
+            trustWillClose: req.body['trust-will-close']
+        };
+        
+        // Check if we're editing an existing trust
+        if (editIndex !== undefined) {
+            const actualEditIndex = parseInt(editIndex);
+            
+            // Update the existing trust with closure info
+            if (req.session.data['outgoing-trusts'][actualEditIndex]) {
+                req.session.data['outgoing-trusts'][actualEditIndex] = {
+                    ...req.session.data['outgoing-trusts'][actualEditIndex],
+                    ...closureInfo
+                };
+            }
+        } else {
+            // Find the trust by name and update it with closure info
+            const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
+                trust.name === trustName && 
+                trust.postcode === trustPostcode && 
+                trust.companyHouseNumber === trustCompanyHouse
+            );
+            
+            if (trustIndex !== -1) {
+                req.session.data['outgoing-trusts'][trustIndex] = {
+                    ...req.session.data['outgoing-trusts'][trustIndex],
+                    ...closureInfo
+                };
+            }
+        }
+        
+        // Redirect to board resolution upload page instead of summary
+        return res.redirect('outgoing-trusts-board-resolution');
+    });
+
+    // GET handler for outgoing trusts board resolution
+    router.get('/' + version + '/outgoing-trusts-board-resolution', function (req, res) {
+        const trustIndex = req.query.edit;
+        
+        res.render(version + '/outgoing-trusts-board-resolution', {
+            data: req.session.data,
+            trustIndex: trustIndex
+        });
+    });
+
+    // POST handler for outgoing trusts board resolution
+    router.post('/' + version + '/outgoing-trusts-board-resolution-handler', function (req, res) {
+        const trustIndex = req.body['trust-index'];
+        
+        // For this prototype, we'll simulate file upload handling
+        // In a real application, you would use multer or similar middleware
+        if (req.headers['content-type'] && req.headers['content-type'].includes('multipart/form-data')) {
+            // Simulate file upload processing
+            const uploadedFile = {
+                name: 'board-resolution-document.pdf',
+                size: 1024000, // 1MB
+                type: 'application/pdf'
+            };
+            
+            // Initialize board-resolution-files array if it doesn't exist
+            if (!req.session.data['board-resolution-files']) {
+                req.session.data['board-resolution-files'] = [];
+            }
+            
+            // If we have a trust index, associate the file with that specific trust
+            if (trustIndex !== undefined) {
+                const actualTrustIndex = parseInt(trustIndex);
+                
+                // Initialize files array for this specific trust if it doesn't exist
+                if (!req.session.data['board-resolution-files'][actualTrustIndex]) {
+                    req.session.data['board-resolution-files'][actualTrustIndex] = [];
+                }
+                
+                // Add the uploaded file to the specific trust's files array
+                req.session.data['board-resolution-files'][actualTrustIndex].push(uploadedFile);
+            } else {
+                // Fallback: add to general files array (for backward compatibility)
+                req.session.data['board-resolution-files'].push(uploadedFile);
+            }
+            
+            // Set upload success flag
+            req.session.data['file-upload-success'] = true;
+        }
+        
+        // Redirect back to the board resolution page to show the uploaded file
+        const redirectUrl = trustIndex !== undefined ? 
+            `outgoing-trusts-board-resolution?edit=${trustIndex}` : 
+            'outgoing-trusts-board-resolution';
+        return res.redirect(redirectUrl);
     });
 
     // GET handler for preferred trust question
@@ -2189,6 +2417,194 @@ module.exports = function (router) {
         // If confirmDelete === 'no', do nothing - keep the trustee
         
         res.redirect('trustee-summary');
+    });
+
+    // GET handler for downloading board resolution files
+    router.get('/' + version + '/download-board-resolution-file/:trustIndex/:fileIndex', function (req, res) {
+        const trustIndex = parseInt(req.params.trustIndex);
+        const fileIndex = parseInt(req.params.fileIndex);
+        
+        if (req.session.data['board-resolution-files'] && 
+            req.session.data['board-resolution-files'][trustIndex] && 
+            req.session.data['board-resolution-files'][trustIndex][fileIndex]) {
+            const file = req.session.data['board-resolution-files'][trustIndex][fileIndex];
+            
+            // Set headers for file download
+            res.setHeader('Content-Type', file.type || 'application/octet-stream');
+            res.setHeader('Content-Disposition', `attachment; filename="${file.name}"`);
+            
+            // For prototype purposes, create a simple text response
+            // In a real application, this would serve the actual file from storage
+            res.send(`This is a prototype file download for: ${file.name}\n\nFile size: ${(file.size / 1024 / 1024).toFixed(2)} MB\nFile type: ${file.type}\n\nThis is a simulated file download for demonstration purposes.`);
+        } else {
+            res.status(404).send('File not found');
+        }
+    });
+
+    // GET handler for downloading board resolution files (backward compatibility)
+    router.get('/' + version + '/download-board-resolution-file/:fileIndex', function (req, res) {
+        const fileIndex = parseInt(req.params.fileIndex);
+        
+        if (req.session.data['board-resolution-files'] && req.session.data['board-resolution-files'][fileIndex]) {
+            const file = req.session.data['board-resolution-files'][fileIndex];
+            
+            // Set headers for file download
+            res.setHeader('Content-Type', file.type || 'application/octet-stream');
+            res.setHeader('Content-Disposition', `attachment; filename="${file.name}"`);
+            
+            // For prototype purposes, create a simple text response
+            // In a real application, this would serve the actual file from storage
+            res.send(`This is a prototype file download for: ${file.name}\n\nFile size: ${(file.size / 1024 / 1024).toFixed(2)} MB\nFile type: ${file.type}\n\nThis is a simulated file download for demonstration purposes.`);
+        } else {
+            res.status(404).send('File not found');
+        }
+    });
+
+    // POST handler for deleting board resolution files
+    router.post('/' + version + '/delete-board-resolution-file', function (req, res) {
+        const trustIndex = req.body['trust-index'];
+        const fileIndex = parseInt(req.body['file-index']);
+        
+        if (trustIndex !== undefined) {
+            const actualTrustIndex = parseInt(trustIndex);
+            
+            if (req.session.data['board-resolution-files'] && 
+                req.session.data['board-resolution-files'][actualTrustIndex] && 
+                req.session.data['board-resolution-files'][actualTrustIndex][fileIndex]) {
+                // Get the file name before removing it for the success message
+                const deletedFileName = req.session.data['board-resolution-files'][actualTrustIndex][fileIndex].name;
+                
+                // Remove the file at the specified index from the specific trust
+                req.session.data['board-resolution-files'][actualTrustIndex].splice(fileIndex, 1);
+                
+                // Set success flag for deletion banner
+                req.session.data['file-delete-success'] = true;
+                req.session.data['deleted-file-name'] = deletedFileName;
+                
+                // Clear upload success flag
+                req.session.data['file-upload-success'] = false;
+            }
+            
+            // Redirect back to the board resolution page for the specific trust
+            return res.redirect(`outgoing-trusts-board-resolution?edit=${actualTrustIndex}`);
+        } else {
+            // Fallback: handle deletion from general files array (backward compatibility)
+            if (req.session.data['board-resolution-files'] && req.session.data['board-resolution-files'][fileIndex]) {
+                // Get the file name before removing it for the success message
+                const deletedFileName = req.session.data['board-resolution-files'][fileIndex].name;
+                
+                // Remove the file at the specified index
+                req.session.data['board-resolution-files'].splice(fileIndex, 1);
+                
+                // Set success flag for deletion banner
+                req.session.data['file-delete-success'] = true;
+                req.session.data['deleted-file-name'] = deletedFileName;
+                
+                // Clear upload success flag
+                req.session.data['file-upload-success'] = false;
+            }
+            
+            // Redirect back to the board resolution page
+            return res.redirect('outgoing-trusts-board-resolution');
+        }
+    });
+
+    // POST handler for clearing board resolution upload success flag
+    router.post('/' + version + '/clear-board-resolution-upload-success-flag', function (req, res) {
+        req.session.data['file-upload-success'] = false;
+        res.status(200).json({ success: true });
+    });
+
+    // POST handler for clearing board resolution delete success flag
+    router.post('/' + version + '/clear-board-resolution-delete-success-flag', function (req, res) {
+        req.session.data['file-delete-success'] = false;
+        delete req.session.data['deleted-file-name'];
+        res.status(200).json({ success: true });
+    });
+
+    // POST handler for board resolution page form submission (Save and continue)
+    router.post('/' + version + '/outgoing-trusts-board-resolution', function (req, res) {
+        console.log('=== BOARD RESOLUTION FORM SUBMISSION HANDLER CALLED ===');
+        console.log('Request method:', req.method);
+        console.log('Request URL:', req.url);
+        console.log('Request headers:', req.headers);
+        console.log('Request body:', req.body);
+        
+        const trustIndex = req.body['trust-index'];
+        
+        console.log('Board resolution form submission - trustIndex:', trustIndex);
+        console.log('Request body:', req.body);
+        
+        // Redirect to the stakeholder engagement consultation page for the specific trust
+        if (trustIndex !== undefined) {
+            console.log('Redirecting to stakeholder engagement with trust index:', trustIndex);
+            return res.redirect(`outgoing-trusts-stakeholder-engagement?edit=${trustIndex}`);
+        } else {
+            console.log('No trust index found, redirecting to summary');
+            // Fallback: redirect to outgoing trusts summary
+            return res.redirect('outgoing-trusts-summary');
+        }
+    });
+
+    // GET handler for outgoing trusts stakeholder engagement consultation
+    router.get('/' + version + '/outgoing-trusts-stakeholder-engagement', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        res.render(version + '/outgoing-trusts-stakeholder-engagement', {
+            data: req.session.data,
+            editIndex: editIndex
+        });
+    });
+
+    // POST handler for outgoing trusts stakeholder engagement consultation
+    router.post('/' + version + '/outgoing-trusts-stakeholder-engagement-handler', function (req, res) {
+        const editIndex = req.body['edit-index'];
+        const stakeholderEngagementConsultation = req.body['stakeholder-engagement-consultation'];
+        
+        // Check if we're editing an existing trust
+        if (editIndex !== undefined) {
+            const actualEditIndex = parseInt(editIndex);
+            
+            // Update the existing trust with stakeholder engagement consultation info
+            if (req.session.data['outgoing-trusts'] && req.session.data['outgoing-trusts'][actualEditIndex]) {
+                req.session.data['outgoing-trusts'][actualEditIndex] = {
+                    ...req.session.data['outgoing-trusts'][actualEditIndex],
+                    stakeholderEngagementConsultation: stakeholderEngagementConsultation
+                };
+            }
+        } else {
+            // Find the trust by name and update it with stakeholder engagement consultation info
+            const trustName = req.body['trust-name'];
+            const trustPostcode = req.body['trust-postcode'];
+            const trustCompanyHouse = req.body['trust-company-house'];
+            
+            if (trustName && req.session.data['outgoing-trusts']) {
+                const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
+                    trust.name === trustName && 
+                    trust.postcode === trustPostcode && 
+                    trust.companyHouseNumber === trustCompanyHouse
+                );
+                
+                if (trustIndex !== -1) {
+                    req.session.data['outgoing-trusts'][trustIndex] = {
+                        ...req.session.data['outgoing-trusts'][trustIndex],
+                        stakeholderEngagementConsultation: stakeholderEngagementConsultation
+                    };
+                }
+            }
+        }
+        
+        // Redirect to outgoing trusts summary
+        return res.redirect('outgoing-trusts-summary');
+    });
+
+    // Test route to verify routing is working
+    router.get('/' + version + '/test-stakeholder-redirect', function (req, res) {
+        res.send('Test route working - redirecting to stakeholder engagement...');
+        // This will help us test if the redirect is working
+        setTimeout(() => {
+            res.redirect('outgoing-trusts-stakeholder-engagement?edit=0');
+        }, 2000);
     });
 
 }

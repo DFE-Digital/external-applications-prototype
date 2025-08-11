@@ -55,18 +55,27 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-    <form class="form" action="outgoing-trusts-confirmation" method="post">
+    <form class="form" action="outgoing-trusts-confirmation{% if data.editIndex %}?edit={{ data.editIndex }}{% endif %}" method="post">
       <div class="govuk-form-group">
         <h1 class="govuk-label-wrapper">
           <label class="govuk-label govuk-label--xl" for="create-new-project-academy-name">
             <span class="govuk-caption-l">Trust details</span>
-            Search for the trust by name or reference number
+            {% if data.editIndex !== undefined %}
+              Change outgoing trust
+            {% else %}
+              Search for the trust by name or reference number
+            {% endif %}
           </label>
         </h1>
 
         <div class="govuk-hint">
           For example, search by trust name, postcode, or company house number
         </div>
+        
+        <!-- Hidden input to track edit mode -->
+        {% if data.editIndex !== undefined %}
+        <input type="hidden" name="edit-index" value="{{ data.editIndex }}">
+        {% endif %}
         
         <!-- Hidden select element that will be enhanced -->
         <select id="outgoing-trust-search" name="outgoing-trust-search" style="display: none;">

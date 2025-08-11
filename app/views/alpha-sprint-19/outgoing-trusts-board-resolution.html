@@ -1,0 +1,251 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Upload board resolution" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    {% if data['file-upload-success'] %}
+      <div id="upload-success-banner" class="govuk-notification-banner govuk-notification-banner--success" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Success
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">Your file was uploaded</p>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if data['file-delete-success'] %}
+      <div id="delete-success-banner" class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Important
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">Your file was deleted</p>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if trustIndex !== undefined %}
+      {% set trust = data['outgoing-trusts'][trustIndex] %}
+      {% if trust %}
+        <div class="govuk-inset-text">
+          <h3 class="govuk-heading-s">Uploading board resolution for:</h3>
+          <p class="govuk-body"><strong>{{ trust.name }}</strong></p>
+          <p class="govuk-body">Postcode: {{ trust.postcode }}</p>
+          {% if trust.companyHouseNumber %}
+            <p class="govuk-body">Company House Number: {{ trust.companyHouseNumber }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <form action="outgoing-trusts-board-resolution-handler" method="post" enctype="multipart/form-data">
+        {% if trustIndex !== undefined %}
+          <input type="hidden" name="trust-index" value="{{ trustIndex }}">
+        {% endif %}
+
+        {{ govukFileUpload({
+          label: {
+            html: '<span class="govuk-caption-l">Trust details</span>
+            Upload board resolution',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            html: '<p class="govuk-body">Upload a word document or PDF. Give the file a clear, descriptive name. Files up to 10MB are accepted.</p>'
+          },
+          id: "board-resolution-file",
+          name: "board-resolution-file",
+          value: data["board-resolution-file"]
+        }) }}
+
+        {{ govukButton({
+          text: "Upload file"
+        }) }}
+
+      </form>
+
+    {% if trustIndex !== undefined and data['board-resolution-files'] and data['board-resolution-files'][trustIndex] and data['board-resolution-files'][trustIndex].length > 0 %}
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">Uploaded files for {{ data['outgoing-trusts'][trustIndex].name }}</h2>
+      
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File name</th>
+            <th scope="col" class="govuk-table__header">File size</th>
+            <th scope="col" class="govuk-table__header">File type</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for file in data['board-resolution-files'][trustIndex] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <a href="download-board-resolution-file/{{ trustIndex }}/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                  <strong>{{ file.name }}</strong>
+                </a>
+              </td>
+              <td class="govuk-table__cell">
+                {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+              </td>
+              <td class="govuk-table__cell">
+                {{ file.type }}
+              </td>
+              <td class="govuk-table__cell">
+                <form action="delete-board-resolution-file" method="post" style="display: inline;">
+                  <input type="hidden" name="trust-index" value="{{ trustIndex }}">
+                  <input type="hidden" name="file-index" value="{{ loop.index0 }}">
+                  {{ govukButton({
+                    text: "Delete",
+                    classes: "govuk-button--warning govuk-button--small",
+                    type: "submit"
+                  }) }}
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% elif data['board-resolution-files'] and data['board-resolution-files'].length > 0 %}
+      <!-- Backward compatibility: show general files if no trust-specific files -->
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">Uploaded files</h2>
+      
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File name</th>
+            <th scope="col" class="govuk-table__header">File size</th>
+            <th scope="col" class="govuk-table__header">File type</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for file in data['board-resolution-files'] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <a href="download-board-resolution-file/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                  <strong>{{ file.name }}</strong>
+                </a>
+              </td>
+              <td class="govuk-table__cell">
+                {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+              </td>
+              <td class="govuk-table__cell">
+                {{ file.type }}
+              </td>
+              <td class="govuk-table__cell">
+                <form action="delete-board-resolution-file" method="post" style="display: inline;">
+                  <input type="hidden" name="file-index" value="{{ loop.index0 }}">
+                  {{ govukButton({
+                    text: "Delete",
+                    classes: "govuk-button--warning govuk-button--small",
+                    type: "submit"
+                  }) }}
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">Uploaded files</h2>
+      
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File name</th>
+            <th scope="col" class="govuk-table__header">File size</th>
+            <th scope="col" class="govuk-table__header">File type</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td colspan="4" class="govuk-table__cell govuk-body govuk-!-text-align-center">
+              No files uploaded yet
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    {% endif %}
+
+    <div class="govuk-button-group govuk-!-margin-top-9">
+      <!-- Debug info -->
+      {% if trustIndex !== undefined %}
+        <p class="govuk-body">Debug: Trust Index = {{ trustIndex }}</p>
+      {% else %}
+        <p class="govuk-body">Debug: No Trust Index</p>
+      {% endif %}
+      
+      <form action="outgoing-trusts-board-resolution" method="post" id="save-and-continue-form">
+        {% if trustIndex !== undefined %}
+          <input type="hidden" name="trust-index" value="{{ trustIndex }}">
+        {% endif %}
+        {{ govukButton({
+          text: "Save and continue"
+        }) }}
+      </form>
+      
+      <!-- Test button to verify form submission -->
+      <p class="govuk-body">Test: <a href="outgoing-trusts-stakeholder-engagement?edit={{ trustIndex if trustIndex !== undefined else '0' }}" class="govuk-link">Click here to test stakeholder engagement page</a></p>
+      
+      <!-- Test redirect route -->
+      <p class="govuk-body">Test Redirect: <a href="test-stakeholder-redirect" class="govuk-link">Test redirect functionality</a></p>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+  // Clear banner flags when page loads (for refresh)
+  document.addEventListener('DOMContentLoaded', function() {
+    clearBannerFlags();
+    
+    // Track form submission
+    const saveForm = document.getElementById('save-and-continue-form');
+    if (saveForm) {
+      saveForm.addEventListener('submit', function(e) {
+        console.log('Form submission detected');
+        console.log('Form action:', this.action);
+        console.log('Form method:', this.method);
+        console.log('Form data:', new FormData(this));
+        
+        // Don't prevent default - let the form submit normally
+      });
+    }
+  });
+
+  // Function to clear both upload and delete success flags
+  function clearBannerFlags() {
+    fetch('clear-board-resolution-upload-success-flag', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    fetch('clear-board-resolution-delete-success-flag', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+  }
+</script>
+
+{% endblock %} 

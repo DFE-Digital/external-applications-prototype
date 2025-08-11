@@ -46,11 +46,135 @@
                   <p class="govuk-body govuk-!-margin-bottom-0">Company house number: {{ trust.companyHouseNumber }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="outgoing-trusts-search">
+                  <a class="govuk-link" href="outgoing-trusts-search?edit={{ loop.index0 }}">
                     Change<span class="govuk-visually-hidden"> trust {{ loop.index }} details</span>
                   </a>
                 </dd>
               </div>
+              
+              {% if trust.contactName %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Contact details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body"><strong>{{ trust.contactName }}</strong></p>
+                  {% if trust.role %}<p class="govuk-body">{{ trust.role }}</p>{% endif %}
+                  {% if trust.contactNumber %}<p class="govuk-body">Number: {{ trust.contactNumber }}</p>{% endif %}
+                  {% if trust.emailAddress %}<p class="govuk-body">Email: {{ trust.emailAddress }}</p>{% endif %}
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-contact-details?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> contact details for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if trust.trustWillClose %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Trust closure
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Will this trust close after the transfer? <strong>{{ trust.trustWillClose }}</strong></p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-closure?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> trust closure for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if data['board-resolution-files'] and data['board-resolution-files'][loop.index0] and data['board-resolution-files'][loop.index0].length > 0 %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Board resolution
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {% for file in data['board-resolution-files'][loop.index0] %}
+                    <p class="govuk-body">
+                      <a href="download-board-resolution-file/{{ loop.parent.loop.index0 }}/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                        <strong>{{ file.name }}</strong>
+                      </a>
+                      ({{ (file.size / 1024 / 1024).toFixed(2) }} MB, {{ file.type }})
+                    </p>
+                  {% endfor %}
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-board-resolution?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> board resolution files for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% elif data['board-resolution-files'] and data['board-resolution-files'].length > 0 %}
+              <!-- Backward compatibility: show general files if no trust-specific files -->
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Board resolution
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {% for file in data['board-resolution-files'] %}
+                    <p class="govuk-body">
+                      <a href="download-board-resolution-file/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                        <strong>{{ file.name }}</strong>
+                      </a>
+                      ({{ (file.size / 1024 / 1024).toFixed(2) }} MB, {{ file.type }})
+                    </p>
+                  {% endfor %}
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-board-resolution">
+                    Change<span class="govuk-visually-hidden"> board resolution files</span>
+                  </a>
+                </dd>
+              </div>
+              {% else %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Board resolution
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">No files uploaded yet</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-board-resolution?edit={{ loop.index0 }}">
+                    Add<span class="govuk-visually-hidden"> board resolution files for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if trust.stakeholderEngagementConsultation %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Stakeholder engagement consultation
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Did the trust engage in any consultations and stakeholder engagement? <strong>{{ trust.stakeholderEngagementConsultation }}</strong></p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-stakeholder-engagement?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> stakeholder engagement consultation for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% else %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Stakeholder engagement consultation
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Not answered yet</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-stakeholder-engagement?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> stakeholder engagement consultation for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
             </dl>
           </div>
         </div>

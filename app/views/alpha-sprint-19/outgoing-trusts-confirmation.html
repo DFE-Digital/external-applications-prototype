@@ -17,6 +17,11 @@
     
     <form action="outgoing-trusts-confirmation-handler" method="post">
       
+      <!-- Hidden input to preserve edit context -->
+      {% if data.editIndex !== undefined %}
+      <input type="hidden" name="edit-index" value="{{ data.editIndex }}">
+      {% endif %}
+      
       {{ govukRadios({
         name: "trust-confirmed",
         fieldset: {
