@@ -82,6 +82,9 @@ module.exports = function (router) {
                 academyTrust: academyTrust
             });
 
+            // Set outgoing trusts status to true since we now have academies
+            req.session.data['outgoing-trusts-status'] = true;
+
             // Clear any existing errors since we now have an academy
             delete req.session.data.errors;
         }
@@ -324,6 +327,9 @@ module.exports = function (router) {
             if (req.session.data['incoming-trust-status'] === undefined) {
             req.session.data['incoming-trust-status'] = application['incoming-trust-status'] || false;
             }
+            if (req.session.data['outgoing-trusts-status'] === undefined) {
+            req.session.data['outgoing-trusts-status'] = application['outgoing-trusts-status'] || false;
+            }
             if (req.session.data['finance-status'] === undefined) {
             req.session.data['finance-status'] = application['finance-status'] || false;
             }
@@ -335,6 +341,7 @@ module.exports = function (router) {
             const taskOwnerMap = {
                 'academies-to-transfer': 'academies',
                 'incoming-trust': 'incomingTrust',
+                'outgoing-trusts': 'outgoingTrusts',
                 'finance': 'finance',
                 'declaration': 'declaration',
                 'risks': 'risks',

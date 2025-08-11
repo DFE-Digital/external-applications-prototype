@@ -22,6 +22,28 @@
       </p>
     </div>
 
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">About the trusts that schools are leaving</h2>
+    <ul class="govuk-task-list">
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="outgoing-trusts-summary" aria-describedby="outgoing-trusts-status">
+            Trust details
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="outgoing-trusts-status">
+          {% if data['outgoing-trusts-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+    </ul>
+
     <h2 class="govuk-heading-m govuk-!-margin-top-9">About transferring academies</h2>
     <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
