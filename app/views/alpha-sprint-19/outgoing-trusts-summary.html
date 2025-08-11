@@ -38,40 +38,16 @@
             <dl class="govuk-summary-list">
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  Name
+                  Trust details
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  <p class="govuk-body">{{ trust.name }}</p>
+                  <p class="govuk-body"><strong>{{ trust.name }}</strong></p>
+                  <p class="govuk-body">Postcode: {{ trust.postcode }}</p>
+                  <p class="govuk-body govuk-!-margin-bottom-0">Company house number: {{ trust.companyHouseNumber }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                   <a class="govuk-link" href="outgoing-trusts-search">
-                    Change<span class="govuk-visually-hidden"> trust {{ loop.index }} name</span>
-                  </a>
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Postcode
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <p class="govuk-body">{{ trust.postcode }}</p>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="outgoing-trusts-search">
-                    Change<span class="govuk-visually-hidden"> trust {{ loop.index }} postcode</span>
-                  </a>
-                </dd>
-              </div>
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Company house number
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <p class="govuk-body">{{ trust.companyHouseNumber }}</p>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="outgoing-trusts-search">
-                    Change<span class="govuk-visually-hidden"> trust {{ loop.index }} company house number</span>
+                    Change<span class="govuk-visually-hidden"> trust {{ loop.index }} details</span>
                   </a>
                 </dd>
               </div>
@@ -86,7 +62,7 @@
     </a>
 
 
-    <form action="application-task-list" method="post">
+    <form action="outgoing-trusts-summary" method="post">
       <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
       <div class="govuk-form-group">
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">

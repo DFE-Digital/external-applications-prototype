@@ -426,6 +426,53 @@ module.exports = function (router) {
         }
     });
 
+    // GET handler for confirm delete outgoing trust
+    router.get('/' + version + '/confirm-delete-outgoing-trust', function (req, res) {
+        const index = parseInt(req.query.index);
+        
+        res.render(version + '/confirm-delete-outgoing-trust', {
+            data: req.session.data,
+            index: index
+        });
+    });
+
+    // GET handler for outgoing trusts summary
+    router.get('/' + version + '/outgoing-trusts-summary', function (req, res) {
+        res.render(version + '/outgoing-trusts-summary', {
+            data: req.session.data
+        });
+    });
+
+    // POST handler for outgoing trusts summary (handles deletions)
+    router.post('/' + version + '/outgoing-trusts-summary', function (req, res) {
+        const deleteOutgoingTrust = req.body['delete-outgoing-trust'];
+        const confirmDeleteOutgoingTrust = req.body['confirm-delete-outgoing-trust'];
+        
+        if (deleteOutgoingTrust !== undefined) {
+            if (confirmDeleteOutgoingTrust === 'yes') {
+                // Remove the trust from the array
+                const index = parseInt(deleteOutgoingTrust);
+                if (req.session.data['outgoing-trusts'] && req.session.data['outgoing-trusts'][index]) {
+                    req.session.data['outgoing-trusts'].splice(index, 1);
+                    
+                    // If no more trusts, set status to false
+                    if (req.session.data['outgoing-trusts'].length === 0) {
+                        req.session.data['outgoing-trusts-status'] = false;
+                    }
+                }
+            }
+            // Always redirect back to the summary page (whether deleted or kept)
+            return res.redirect('outgoing-trusts-summary');
+        }
+        
+        // If not deleting, continue with the form submission
+        const outgoingTrustsStatus = req.body['outgoing-trusts-status'] === 'Complete';
+        req.session.data['outgoing-trusts-status'] = outgoingTrustsStatus;
+        
+        // Redirect to application task list
+        return res.redirect('application-task-list');
+    });
+
     // POST handler for outgoing trusts confirmation
     router.post('/' + version + '/outgoing-trusts-confirmation-handler', function (req, res) {
         const trustConfirmed = req.body['trust-confirmed'];

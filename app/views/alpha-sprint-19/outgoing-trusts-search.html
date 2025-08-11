@@ -70,7 +70,7 @@
         
         <!-- Hidden select element that will be enhanced -->
         <select id="outgoing-trust-search" name="outgoing-trust-search" style="display: none;">
-          <option value="">Select a trust</option>
+          <option value=""></option>
           {% for trust in trusts %}
           <option value="{{ trust.name }}" data-postcode="{{ trust.postcode }}" data-company-house="{{ trust.companyHouseNumber }}">
             {{ trust.name }} - {{ trust.postcode }} - {{ trust.companyHouseNumber }}
