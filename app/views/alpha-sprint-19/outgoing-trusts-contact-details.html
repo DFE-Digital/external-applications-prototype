@@ -1,0 +1,96 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Trust contact details" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">
+      <span class="govuk-caption-l">Trust details</span>
+      What is the contact details of this trust?
+    </h1>
+  </div>
+  <div class="govuk-grid-column-two-thirds">
+
+    <form action="outgoing-trusts-contact-details-handler" method="post">
+      
+      <!-- Hidden input to preserve edit context -->
+      {% if data.editIndex !== undefined %}
+      <input type="hidden" name="edit-index" value="{{ data.editIndex }}">
+      {% endif %}
+      
+      <!-- Hidden input to preserve trust details -->
+      <input type="hidden" name="trust-name" value="{{ data['selected-outgoing-trust-name'] }}">
+      <input type="hidden" name="trust-postcode" value="{{ data['selected-outgoing-trust-postcode'] }}">
+      <input type="hidden" name="trust-company-house" value="{{ data['selected-outgoing-trust-company-house'] }}">
+
+      {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+      {% from "govuk/components/input/macro.njk" import govukInput %}
+      {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+      {% from "govuk/components/button/macro.njk" import govukButton %}
+
+      {% call govukFieldset({
+        legend: {
+          text: "Contact information",
+          classes: "govuk-fieldset__legend--m"
+        }
+      }) %}
+
+        {{ govukInput({
+          label: {
+            text: "Contact name"
+          },
+          id: "contact-name",
+          name: "contact-name",
+          value: contactName
+        }) }}
+
+        {{ govukTextarea({
+          label: {
+            text: "Role"
+          },
+          id: "role",
+          name: "role",
+          value: role,
+          rows: 3
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Number"
+          },
+          id: "contact-number",
+          name: "contact-number",
+          value: contactNumber
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Email address"
+          },
+          id: "email-address",
+          name: "email-address",
+          type: "email",
+          value: emailAddress
+        }) }}
+
+      {% endcall %}
+
+      {{ govukButton({
+        text: "Save and continue"
+      }) }}
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %} 

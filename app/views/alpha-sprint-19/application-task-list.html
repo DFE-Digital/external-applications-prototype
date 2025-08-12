@@ -22,7 +22,29 @@
       </p>
     </div>
 
-    <h2 class="govuk-heading-m govuk-!-margin-top-9">About transferring academies</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">About the trusts that schools are leaving</h2>
+    <ul class="govuk-task-list">
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="outgoing-trusts-summary" aria-describedby="outgoing-trusts-status">
+            Trust details
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="outgoing-trusts-status">
+          {% if data['outgoing-trusts-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+    </ul>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">About transferring schools</h2>
     <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
@@ -78,9 +100,45 @@
           {% endif %}
         </div>
       </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="link-to-maintained-schools-status">
+            Link to maintained schools
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="link-to-maintained-schools-status">
+          {% if data['link-to-maintained-schools-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="proposed-transfer-date-status">
+            Proposed transfer date
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="proposed-transfer-date-status">
+          {% if data['proposed-transfer-date-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
     </ul>
 
-    <h2 class="govuk-heading-m govuk-!-margin-top-9">About the incoming trust</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">About the trust that schools are joining</h2>
     <ul class="govuk-task-list">
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
@@ -234,65 +292,6 @@
         </div>
         <div class="govuk-task-list__status" id="governance-status">
           {% if data['governance-structure-status'] %}
-            <strong class="govuk-tag govuk-tag--green">
-              Completed
-            </strong>
-          {% else %}
-            <strong class="govuk-tag govuk-tag--blue">
-              Incomplete
-            </strong>
-          {% endif %}
-        </div>
-      </li>
-    </ul>
-
-
-    <h2 class="govuk-heading-m govuk-!-margin-top-9">Consent and consultations</h2>
-    <ul class="govuk-task-list">
-      <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="diocesan-consent-status">
-            Diocesan consent 
-          </a>
-        </div>
-        <div class="govuk-task-list__status" id="diocesan-consent-status">
-          {% if data['diocesan-consent-status'] %}
-            <strong class="govuk-tag govuk-tag--green">
-              Completed
-            </strong>
-          {% else %}
-            <strong class="govuk-tag govuk-tag--blue">
-              Incomplete
-            </strong>
-          {% endif %}
-        </div>
-      </li>
-      <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="board-resolutions-status">
-            Board resolutions
-          </a>
-        </div>
-        <div class="govuk-task-list__status" id="board-resolutions-status">
-          {% if data['board-resolutions-status'] %}
-            <strong class="govuk-tag govuk-tag--green">
-              Completed
-            </strong>
-          {% else %}
-            <strong class="govuk-tag govuk-tag--blue">
-              Incomplete
-            </strong>
-          {% endif %}
-        </div>
-      </li>
-      <li class="govuk-task-list__item govuk-task-list__item--with-link">
-        <div class="govuk-task-list__name-and-hint">
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="results-of-consultations-and-other-stakeholder-engagements-status">
-            Results of consultations and other stakeholder engagements
-          </a>
-        </div>
-        <div class="govuk-task-list__status" id="results-of-consultations-and-other-stakeholder-engagements-status">
-          {% if data['results-of-consultations-and-other-stakeholder-engagements-status'] %}
             <strong class="govuk-tag govuk-tag--green">
               Completed
             </strong>

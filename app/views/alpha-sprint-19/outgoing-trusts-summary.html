@@ -1,0 +1,166 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Outgoing trusts details" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to application task list",
+    href: "application-task-list?ref=" + data.application.reference,
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="members">
+      Trust details
+    </h1>
+    
+    {% if not data['outgoing-trusts'] or data['outgoing-trusts'].length === 0 %}
+      <div class="govuk-inset-text">
+        No outgoing trusts have been added.
+      </div>
+    {% else %}
+      {% for trust in data['outgoing-trusts'] %}
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h3 class="govuk-summary-card__title">Trust {{ loop.index }}</h3>
+            <div class="govuk-summary-card__actions">
+                              <a class="govuk-link" href="confirm-delete-outgoing-trust?index={{ loop.index0 }}">
+                  Remove<span class="govuk-visually-hidden"> trust {{ loop.index }}</span>
+                </a>
+            </div>
+          </div>
+          <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Trust details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body"><strong>{{ trust.name }}</strong></p>
+                  <p class="govuk-body">Postcode: {{ trust.postcode }}</p>
+                  <p class="govuk-body govuk-!-margin-bottom-0">Company house number: {{ trust.companyHouseNumber }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-search?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> trust {{ loop.index }} details</span>
+                  </a>
+                </dd>
+              </div>
+              
+              {% if trust.contactName %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Contact details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body"><strong>{{ trust.contactName }}</strong></p>
+                  {% if trust.role %}<p class="govuk-body">{{ trust.role }}</p>{% endif %}
+                  {% if trust.contactNumber %}<p class="govuk-body">Number: {{ trust.contactNumber }}</p>{% endif %}
+                  {% if trust.emailAddress %}<p class="govuk-body">Email: {{ trust.emailAddress }}</p>{% endif %}
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-contact-details?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> contact details for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if trust.trustWillClose %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Trust closure
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Will this trust close after the transfer? <strong>{{ trust.trustWillClose }}</strong></p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-closure?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> trust closure for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% else %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Trust closure
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Not answered yet</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-closure?edit={{ loop.index0 }}">
+                    Add<span class="govuk-visually-hidden"> trust closure for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if trust.stakeholderEngagementConsultation %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Stakeholder engagement consultation
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Did the trust engage in any consultations and stakeholder engagement? <strong>{{ trust.stakeholderEngagementConsultation }}</strong></p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-stakeholder-engagement?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> stakeholder engagement consultation for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% else %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Stakeholder engagement consultation
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Not answered yet</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-stakeholder-engagement?edit={{ loop.index0 }}">
+                    Add<span class="govuk-visually-hidden"> stakeholder engagement consultation for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <a href="outgoing-trusts-search" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
+      Add outgoing trust
+    </a>
+
+
+    <form action="outgoing-trusts-summary" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="outgoing-trusts-status" name="outgoing-trusts-status" type="checkbox" value="Complete" {% if data['outgoing-trusts-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="outgoing-trusts-status">
+              Mark this section as complete, you can still make changes later
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

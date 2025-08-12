@@ -82,6 +82,9 @@ module.exports = function (router) {
                 academyTrust: academyTrust
             });
 
+            // Set outgoing trusts status to true since we now have academies
+            req.session.data['outgoing-trusts-status'] = true;
+
             // Clear any existing errors since we now have an academy
             delete req.session.data.errors;
         }
@@ -324,6 +327,9 @@ module.exports = function (router) {
             if (req.session.data['incoming-trust-status'] === undefined) {
             req.session.data['incoming-trust-status'] = application['incoming-trust-status'] || false;
             }
+            if (req.session.data['outgoing-trusts-status'] === undefined) {
+            req.session.data['outgoing-trusts-status'] = application['outgoing-trusts-status'] || false;
+            }
             if (req.session.data['finance-status'] === undefined) {
             req.session.data['finance-status'] = application['finance-status'] || false;
             }
@@ -335,6 +341,7 @@ module.exports = function (router) {
             const taskOwnerMap = {
                 'academies-to-transfer': 'academies',
                 'incoming-trust': 'incomingTrust',
+                'outgoing-trusts': 'outgoingTrusts',
                 'finance': 'finance',
                 'declaration': 'declaration',
                 'risks': 'risks',
@@ -381,6 +388,363 @@ module.exports = function (router) {
         res.render(version + '/incoming-trust-new-trust-question', {
             data: req.session.data
         });
+    });
+
+    // GET handler for outgoing trusts search
+    router.get('/' + version + '/outgoing-trusts-search', function (req, res) {
+        console.log('Outgoing trusts search route - trusts data:', data.trusts);
+        res.render(version + '/outgoing-trusts-search', {
+            data: req.session.data,
+            trusts: data.trusts
+        });
+    });
+
+
+
+    // GET handler for outgoing trusts search
+    router.get('/' + version + '/outgoing-trusts-search', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        res.render(version + '/outgoing-trusts-search', {
+            data: req.session.data,
+            trusts: data.trusts,
+            editIndex: editIndex
+        });
+    });
+
+        // POST handler for outgoing trusts confirmation
+    router.post('/' + version + '/outgoing-trusts-confirmation', function (req, res) {
+        const selectedTrustName = req.body['outgoing-trust-search'];
+        const editIndex = req.query.edit; // Get from query parameter instead of body
+        
+
+        
+        // Find the selected trust details from the data
+        const selectedTrust = data.trusts.find(trust => trust.name === selectedTrustName);
+        
+        if (selectedTrust) {
+            // Store the selected trust details in session for the confirmation page
+            req.session.data['selected-outgoing-trust-name'] = selectedTrust.name;
+            req.session.data['selected-outgoing-trust-postcode'] = selectedTrust.postcode;
+            req.session.data['selected-outgoing-trust-company-house'] = selectedTrust.companyHouseNumber;
+            
+            res.render(version + '/outgoing-trusts-confirmation', {
+                data: req.session.data,
+                trustName: selectedTrust.name,
+                trustPostcode: selectedTrust.postcode,
+                trustCompanyHouse: selectedTrust.companyHouseNumber,
+                editIndex: editIndex // Pass edit index directly to template
+            });
+        } else {
+            // If trust not found, redirect back to search
+            return res.redirect('outgoing-trusts-search');
+        }
+    });
+
+    // GET handler for confirm delete outgoing trust
+    router.get('/' + version + '/confirm-delete-outgoing-trust', function (req, res) {
+        const index = parseInt(req.query.index);
+        
+        res.render(version + '/confirm-delete-outgoing-trust', {
+            data: req.session.data,
+            index: index
+        });
+    });
+
+    // GET handler for outgoing trusts summary
+    router.get('/' + version + '/outgoing-trusts-summary', function (req, res) {
+        res.render(version + '/outgoing-trusts-summary', {
+            data: req.session.data
+        });
+    });
+
+    // POST handler for outgoing trusts summary (handles deletions)
+    router.post('/' + version + '/outgoing-trusts-summary', function (req, res) {
+        const deleteOutgoingTrust = req.body['delete-outgoing-trust'];
+        const confirmDeleteOutgoingTrust = req.body['confirm-delete-outgoing-trust'];
+        
+        if (deleteOutgoingTrust !== undefined) {
+            if (confirmDeleteOutgoingTrust === 'yes') {
+                // Remove the trust from the array
+                const index = parseInt(deleteOutgoingTrust);
+                if (req.session.data['outgoing-trusts'] && req.session.data['outgoing-trusts'][index]) {
+                    req.session.data['outgoing-trusts'].splice(index, 1);
+                    
+                    // If no more trusts, set status to false
+                    if (req.session.data['outgoing-trusts'].length === 0) {
+                        req.session.data['outgoing-trusts-status'] = false;
+                    }
+                }
+            }
+            // Always redirect back to the summary page (whether deleted or kept)
+            return res.redirect('outgoing-trusts-summary');
+        }
+        
+        // If not deleting, continue with the form submission
+        const outgoingTrustsStatus = req.body['outgoing-trusts-status'] === 'Complete';
+        req.session.data['outgoing-trusts-status'] = outgoingTrustsStatus;
+        
+        // Redirect to application task list
+        return res.redirect('application-task-list');
+    });
+
+    // POST handler for outgoing trusts confirmation
+    router.post('/' + version + '/outgoing-trusts-confirmation-handler', function (req, res) {
+        const trustConfirmed = req.body['trust-confirmed'];
+        const editIndex = req.body['edit-index'];
+        
+
+        
+        if (trustConfirmed === 'Yes') {
+            // Initialize outgoing-trusts array if it doesn't exist
+            if (!req.session.data['outgoing-trusts']) {
+                req.session.data['outgoing-trusts'] = [];
+            }
+            
+            const newTrust = {
+                name: req.session.data['selected-outgoing-trust-name'],
+                postcode: req.session.data['selected-outgoing-trust-postcode'],
+                companyHouseNumber: req.session.data['selected-outgoing-trust-company-house']
+            };
+            
+            // Check if we're editing an existing trust
+            if (editIndex !== undefined) {
+                const actualEditIndex = parseInt(editIndex);
+                
+                // Replace the existing trust at the specified index
+                if (req.session.data['outgoing-trusts'][actualEditIndex]) {
+                    req.session.data['outgoing-trusts'][actualEditIndex] = newTrust;
+                }
+            } else {
+                // Add a new trust to the array
+                req.session.data['outgoing-trusts'].push(newTrust);
+            }
+            
+            // Set outgoing trusts status to true
+            req.session.data['outgoing-trusts-status'] = true;
+            
+            // Redirect to contact details page instead of summary
+            return res.redirect('outgoing-trusts-contact-details');
+        } else {
+            // If not confirmed, go back to search
+            return res.redirect('outgoing-trusts-search');
+        }
+    });
+
+    // GET handler for outgoing trusts contact details
+    router.get('/' + version + '/outgoing-trusts-contact-details', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        // Initialize default values
+        let contactName = '';
+        let role = '';
+        let contactNumber = '';
+        let emailAddress = '';
+        
+        // If editing, get existing values from the trust
+        if (editIndex !== undefined && req.session.data['outgoing-trusts']) {
+            const trust = req.session.data['outgoing-trusts'][parseInt(editIndex)];
+            if (trust) {
+                contactName = trust.contactName || '';
+                role = trust.role || '';
+                contactNumber = trust.contactNumber || '';
+                emailAddress = trust.emailAddress || '';
+            }
+        }
+        
+        res.render(version + '/outgoing-trusts-contact-details', {
+            data: req.session.data,
+            editIndex: editIndex,
+            contactName: contactName,
+            role: role,
+            contactNumber: contactNumber,
+            emailAddress: emailAddress
+        });
+    });
+
+    // POST handler for outgoing trusts contact details
+    router.post('/' + version + '/outgoing-trusts-contact-details-handler', function (req, res) {
+        const editIndex = req.body['edit-index'];
+        const trustName = req.body['trust-name'];
+        const trustPostcode = req.body['trust-postcode'];
+        const trustCompanyHouse = req.body['trust-company-house'];
+        
+        // Store contact details
+        const contactDetails = {
+            contactName: req.body['contact-name'],
+            role: req.body['role'],
+            contactNumber: req.body['contact-number'],
+            emailAddress: req.body['email-address']
+        };
+        
+        // Check if we're editing an existing trust
+        if (editIndex !== undefined) {
+            const actualEditIndex = parseInt(editIndex);
+            
+            // Update the existing trust with contact details
+            if (req.session.data['outgoing-trusts'][actualEditIndex]) {
+                req.session.data['outgoing-trusts'][actualEditIndex] = {
+                    ...req.session.data['outgoing-trusts'][actualEditIndex],
+                    ...contactDetails
+                };
+            }
+        } else {
+            // Find the trust by name and update it with contact details
+            const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
+                trust.name === trustName && 
+                trust.postcode === trustPostcode && 
+                trust.companyHouseNumber === trustCompanyHouse
+            );
+            
+            if (trustIndex !== -1) {
+                req.session.data['outgoing-trusts'][trustIndex] = {
+                    ...req.session.data['outgoing-trusts'][trustIndex],
+                    ...contactDetails
+                };
+            }
+        }
+        
+        // Redirect to trust closure page instead of summary
+        return res.redirect('outgoing-trusts-closure');
+    });
+
+    // GET handler for outgoing trusts closure
+    router.get('/' + version + '/outgoing-trusts-closure', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        // Initialize default value
+        let trustWillClose = '';
+        
+        // If editing, get existing value from the trust
+        if (editIndex !== undefined && req.session.data['outgoing-trusts']) {
+            const trust = req.session.data['outgoing-trusts'][parseInt(editIndex)];
+            if (trust) {
+                trustWillClose = trust.trustWillClose || '';
+            }
+        }
+        
+        res.render(version + '/outgoing-trusts-closure', {
+            data: {
+                ...req.session.data,
+                'trust-will-close': trustWillClose
+            },
+            editIndex: editIndex
+        });
+    });
+
+    // POST handler for outgoing trusts closure
+    router.post('/' + version + '/outgoing-trusts-closure-handler', function (req, res) {
+        const editIndex = req.body['edit-index'];
+        const trustName = req.body['trust-name'];
+        const trustPostcode = req.body['trust-postcode'];
+        const trustCompanyHouse = req.body['trust-company-house'];
+        
+        // Store closure information
+        const closureInfo = {
+            trustWillClose: req.body['trust-will-close']
+        };
+        
+        // Check if we're editing an existing trust
+        if (editIndex !== undefined) {
+            const actualEditIndex = parseInt(editIndex);
+            
+            // Update the existing trust with closure info
+            if (req.session.data['outgoing-trusts'][actualEditIndex]) {
+                req.session.data['outgoing-trusts'][actualEditIndex] = {
+                    ...req.session.data['outgoing-trusts'][actualEditIndex],
+                    ...closureInfo
+                };
+            }
+        } else {
+            // Find the trust by name and update it with closure info
+            const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
+                trust.name === trustName && 
+                trust.postcode === trustPostcode && 
+                trust.companyHouseNumber === trustCompanyHouse
+            );
+            
+            if (trustIndex !== -1) {
+                req.session.data['outgoing-trusts'][trustIndex] = {
+                    ...req.session.data['outgoing-trusts'][trustIndex],
+                    ...closureInfo
+                };
+            }
+        }
+        
+        // Redirect to stakeholder engagement consultation page
+        if (editIndex !== undefined) {
+            return res.redirect(`outgoing-trusts-stakeholder-engagement?edit=${editIndex}`);
+        } else {
+            // For new entries, also redirect to stakeholder engagement page
+            return res.redirect('outgoing-trusts-stakeholder-engagement');
+        }
+    });
+
+    // GET handler for outgoing trusts stakeholder engagement consultation
+    router.get('/' + version + '/outgoing-trusts-stakeholder-engagement', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        // Initialize default value
+        let stakeholderEngagementConsultation = '';
+        
+        // If editing, get existing value from the trust
+        if (editIndex !== undefined && req.session.data['outgoing-trusts']) {
+            const trust = req.session.data['outgoing-trusts'][parseInt(editIndex)];
+            if (trust) {
+                stakeholderEngagementConsultation = trust.stakeholderEngagementConsultation || '';
+            }
+        }
+        
+        res.render(version + '/outgoing-trusts-stakeholder-engagement', {
+            data: {
+                ...req.session.data,
+                'stakeholder-engagement-consultation': stakeholderEngagementConsultation
+            },
+            editIndex: editIndex
+        });
+    });
+
+    // POST handler for outgoing trusts stakeholder engagement consultation
+    router.post('/' + version + '/outgoing-trusts-stakeholder-engagement-handler', function (req, res) {
+        const editIndex = req.body['edit-index'];
+        const trustName = req.body['trust-name'];
+        const trustPostcode = req.body['trust-postcode'];
+        const trustCompanyHouse = req.body['trust-company-house'];
+        
+        // Store stakeholder engagement consultation information
+        const stakeholderInfo = {
+            stakeholderEngagementConsultation: req.body['stakeholder-engagement-consultation']
+        };
+        
+        // Check if we're editing an existing trust
+        if (editIndex !== undefined) {
+            const actualEditIndex = parseInt(editIndex);
+            
+            // Update the existing trust with stakeholder engagement consultation info
+            if (req.session.data['outgoing-trusts'][actualEditIndex]) {
+                req.session.data['outgoing-trusts'][actualEditIndex] = {
+                    ...req.session.data['outgoing-trusts'][actualEditIndex],
+                    ...stakeholderInfo
+                };
+            }
+        } else {
+            // Find the trust by name and update it with stakeholder engagement consultation info
+            const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
+                trust.name === trustName && 
+                trust.postcode === trustPostcode && 
+                trust.companyHouseNumber === trustCompanyHouse
+            );
+            
+            if (trustIndex !== -1) {
+                req.session.data['outgoing-trusts'][trustIndex] = {
+                    ...req.session.data['outgoing-trusts'][trustIndex],
+                    ...stakeholderInfo
+                };
+            }
+        }
+        
+        // Redirect to outgoing trusts summary
+        return res.redirect('outgoing-trusts-summary');
     });
 
     // GET handler for preferred trust question
@@ -2072,5 +2436,66 @@ module.exports = function (router) {
         
         res.redirect('trustee-summary');
     });
+
+
+
+
+
+    // POST handler for deleting board resolution files
+    router.post('/' + version + '/delete-board-resolution-file', function (req, res) {
+        const trustIndex = req.body['trust-index'];
+        const fileIndex = parseInt(req.body['file-index']);
+        
+        if (trustIndex !== undefined) {
+            const actualTrustIndex = parseInt(trustIndex);
+            
+            if (req.session.data['board-resolution-files'] && 
+                req.session.data['board-resolution-files'][actualTrustIndex] && 
+                req.session.data['board-resolution-files'][actualTrustIndex][fileIndex]) {
+                // Get the file name before removing it for the success message
+                const deletedFileName = req.session.data['board-resolution-files'][actualTrustIndex][fileIndex].name;
+                
+                // Remove the file at the specified index from the specific trust
+                req.session.data['board-resolution-files'][actualTrustIndex].splice(fileIndex, 1);
+                
+                // Set success flag for deletion banner
+                req.session.data['file-delete-success'] = true;
+                req.session.data['deleted-file-name'] = deletedFileName;
+                
+                // Clear upload success flag
+                req.session.data['file-upload-success'] = false;
+            }
+            
+            // Redirect back to the board resolution page for the specific trust
+            return res.redirect(`outgoing-trusts-board-resolution?edit=${actualTrustIndex}`);
+        } else {
+            // Fallback: handle deletion from general files array (backward compatibility)
+            if (req.session.data['board-resolution-files'] && req.session.data['board-resolution-files'][fileIndex]) {
+                // Get the file name before removing it for the success message
+                const deletedFileName = req.session.data['board-resolution-files'][fileIndex].name;
+                
+                // Remove the file at the specified index
+                req.session.data['board-resolution-files'].splice(fileIndex, 1);
+                
+                // Set success flag for deletion banner
+                req.session.data['file-delete-success'] = true;
+                req.session.data['deleted-file-name'] = deletedFileName;
+                
+                // Clear upload success flag
+                req.session.data['file-upload-success'] = false;
+            }
+            
+            // Redirect back to the board resolution page
+            return res.redirect('outgoing-trusts-board-resolution');
+        }
+    });
+
+
+
+
+
+
+
+
 
 }
