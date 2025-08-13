@@ -1521,6 +1521,9 @@ module.exports = function (router) {
         // Save the quality data to session
         req.session.data['high-quality-and-inclusive-education-quality'] = req.body['high-quality-and-inclusive-education-quality'];
         
+        // Set success flag for banner
+        req.session.data['high-quality-and-inclusive-education-changes-saved'] = true;
+        
         // Redirect to the high-quality and inclusive education summary page
         res.redirect('high-quality-and-inclusive-education');
     });
@@ -1529,6 +1532,9 @@ module.exports = function (router) {
     router.post('/' + version + '/high-quality-and-inclusive-education-inclusive-handler', function (req, res) {
         // Save the inclusive data to session
         req.session.data['high-quality-and-inclusive-education-inclusive'] = req.body['high-quality-and-inclusive-education-inclusive'];
+        
+        // Set success flag for banner
+        req.session.data['high-quality-and-inclusive-education-changes-saved'] = true;
         
         // Redirect to the high-quality and inclusive education summary page
         res.redirect('high-quality-and-inclusive-education');
@@ -1546,6 +1552,11 @@ module.exports = function (router) {
 
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
+        
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['high-quality-and-inclusive-education-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['high-quality-and-inclusive-education-changes-saved'];
         
         // Load contributors from application data if not already in session
         if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
@@ -1569,7 +1580,8 @@ module.exports = function (router) {
         
         res.render(version + '/high-quality-and-inclusive-education', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1585,6 +1597,11 @@ module.exports = function (router) {
 
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
+        
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['school-improvement-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['school-improvement-changes-saved'];
         
         // Load contributors from application data if not already in session
         if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
@@ -1608,7 +1625,8 @@ module.exports = function (router) {
         
         res.render(version + '/school-improvement', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1616,6 +1634,9 @@ module.exports = function (router) {
     router.post('/' + version + '/school-improvement-model-handler', function (req, res) {
         // Save the school improvement model data to session
         req.session.data['school-improvement-model'] = req.body['school-improvement-model'];
+        
+        // Set success flag for banner
+        req.session.data['school-improvement-changes-saved'] = true;
         
         // Redirect to the school improvement summary page
         res.redirect('school-improvement');
@@ -2061,8 +2082,24 @@ module.exports = function (router) {
     // Members routes
     // GET handler for members summary
     router.get('/' + version + '/members-summary', function (req, res) {
+        // Check if we have success messages
+        const memberAdded = req.session.data['member-added'];
+        const memberRemoved = req.session.data['member-removed'];
+        const memberToRemoveAdded = req.session.data['member-to-remove-added'];
+        const memberToRemoveRemoved = req.session.data['member-to-remove-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['member-added'];
+        delete req.session.data['member-removed'];
+        delete req.session.data['member-to-remove-added'];
+        delete req.session.data['member-to-remove-removed'];
+        
         res.render(version + '/members-summary', {
-            data: req.session.data
+            data: req.session.data,
+            memberAdded: memberAdded,
+            memberRemoved: memberRemoved,
+            memberToRemoveAdded: memberToRemoveAdded,
+            memberToRemoveRemoved: memberToRemoveRemoved
         });
     });
 
@@ -2117,7 +2154,9 @@ module.exports = function (router) {
         if (req.body['delete-member-to-remove'] !== undefined) {
             const memberIndex = parseInt(req.body['delete-member-to-remove']);
             if (req.session.data['members-to-remove'] && req.session.data['members-to-remove'][memberIndex]) {
+                const memberName = req.session.data['members-to-remove'][memberIndex].name;
                 req.session.data['members-to-remove'].splice(memberIndex, 1);
+                req.session.data['member-to-remove-removed'] = memberName;
             }
         }
 
@@ -2135,6 +2174,9 @@ module.exports = function (router) {
                 name: fullName
             });
 
+            // Set success flag for banner
+            req.session.data['member-to-remove-added'] = fullName;
+
             // Clear the form field after storing the data
             delete req.session.data['member-to-remove-full-name'];
         }
@@ -2150,6 +2192,9 @@ module.exports = function (router) {
                 if (memberIndex !== -1) {
                     req.session.data['members-to-add'][memberIndex].currentResponsibilities = req.session.data['member-current-responsibilities'];
                     req.session.data['members-to-add'][memberIndex].futureRole = futureRole;
+                    
+                    // Set success flag for banner when member is fully added
+                    req.session.data['member-added'] = fullName;
                 }
             }
 
