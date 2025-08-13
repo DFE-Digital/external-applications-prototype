@@ -85,6 +85,9 @@ module.exports = function (router) {
             // Set outgoing trusts status to true since we now have academies
             req.session.data['outgoing-trusts-status'] = true;
 
+            // Store the academy name for success message
+            req.session.data['academy-added'] = name;
+
             // Clear any existing errors since we now have an academy
             delete req.session.data.errors;
         }
@@ -200,10 +203,15 @@ module.exports = function (router) {
 
     // GET handler for academies-to-transfer page
     router.get('/' + version + '/academies-to-transfer', function (req, res) {
-        // Check if we have a success message
+        // Check if we have a success message for removed academy
         const removedAcademy = req.session.data['academy-removed'];
         // Clear it from session immediately
         delete req.session.data['academy-removed'];
+        
+        // Check if we have a success message for added academy
+        const addedAcademy = req.session.data['academy-added'];
+        // Clear it from session immediately
+        delete req.session.data['academy-added'];
         
         // Process task owners
         let taskOwnerDisplay = 'Task owner: not assigned';
@@ -221,8 +229,9 @@ module.exports = function (router) {
         }
         
         res.render(version + '/academies-to-transfer-summary', {
-            success: !!removedAcademy,
+            success: !!(removedAcademy || addedAcademy),
             removedAcademy: removedAcademy,
+            addedAcademy: addedAcademy,
             data: req.session.data,
             taskOwnerDisplay: taskOwnerDisplay
         });
