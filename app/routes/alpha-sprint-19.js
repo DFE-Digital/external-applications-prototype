@@ -1344,6 +1344,11 @@ module.exports = function (router) {
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['reason-and-benefits-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['reason-and-benefits-changes-saved'];
+        
         // Process task owners
         let taskOwnerDisplay = 'Task owner: not assigned';
         if (req.session.data.taskOwners?.['reason-and-benefits-academies']) {
@@ -1361,7 +1366,8 @@ module.exports = function (router) {
         
         res.render(version + '/reason-and-benefits-academies', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1369,6 +1375,9 @@ module.exports = function (router) {
     router.post('/' + version + '/reason-and-benefits-academies-summary', function (req, res) {
         // Save the strategic needs data to session
         req.session.data['reason-and-benefits-academies-strategic-needs'] = req.body['reason-and-benefits-academies-strategic-needs'];
+        
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-changes-saved'] = true;
         
         // Redirect to the reason and benefits academies summary page
         res.redirect('reason-and-benefits-academies');
@@ -1379,6 +1388,9 @@ module.exports = function (router) {
         // Save the maintain improve data to session
         req.session.data['reason-and-benefits-academies-maintain-improve'] = req.body['reason-and-benefits-academies-maintain-improve'];
         
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-changes-saved'] = true;
+        
         // Redirect to the reason and benefits academies summary page
         res.redirect('reason-and-benefits-academies');
     });
@@ -1387,6 +1399,9 @@ module.exports = function (router) {
     router.post('/' + version + '/reason-and-benefits-academies-benefit-trust-handler', function (req, res) {
         // Save the benefit trust data to session
         req.session.data['reason-and-benefits-academies-benefit-trust'] = req.body['reason-and-benefits-academies-benefit-trust'];
+        
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-changes-saved'] = true;
         
         // Redirect to the reason and benefits academies summary page
         res.redirect('reason-and-benefits-academies');
@@ -1405,6 +1420,11 @@ module.exports = function (router) {
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['reason-and-benefits-trust-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['reason-and-benefits-trust-changes-saved'];
+        
         // Process task owners
         let taskOwnerDisplay = 'Task owner: not assigned';
         if (req.session.data.taskOwners?.['reason-and-benefits-trust']) {
@@ -1422,7 +1442,8 @@ module.exports = function (router) {
         
         res.render(version + '/reason-and-benefits-trust', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1430,6 +1451,9 @@ module.exports = function (router) {
     router.post('/' + version + '/reason-and-benefits-trust-strategic-needs-handler', function (req, res) {
         // Save the strategic needs data to session
         req.session.data['reason-and-benefits-trust-strategic-needs'] = req.body['reason-and-benefits-trust-strategic-needs'];
+        
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-trust-changes-saved'] = true;
         
         // Redirect to the reason and benefits trust summary page
         res.redirect('reason-and-benefits-trust');
@@ -1440,6 +1464,9 @@ module.exports = function (router) {
         // Save the maintain improve data to session
         req.session.data['reason-and-benefits-trust-maintain-improve'] = req.body['reason-and-benefits-trust-maintain-improve'];
         
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-trust-changes-saved'] = true;
+        
         // Redirect to the reason and benefits trust summary page
         res.redirect('reason-and-benefits-trust');
     });
@@ -1448,6 +1475,9 @@ module.exports = function (router) {
     router.post('/' + version + '/reason-and-benefits-trust-transfer-type-handler', function (req, res) {
         // Save the transfer type data to session
         req.session.data['reason-and-benefits-trust-transfer-type'] = req.body['reason-and-benefits-trust-transfer-type'];
+        
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-trust-changes-saved'] = true;
         
         // Redirect to the reason and benefits trust summary page
         res.redirect('reason-and-benefits-trust');
