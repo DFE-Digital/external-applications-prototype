@@ -1173,6 +1173,11 @@ module.exports = function (router) {
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['risks-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['risks-changes-saved'];
+        
         // Process task owners
         let taskOwnerDisplay = 'Task owner: not assigned';
         if (req.session.data.taskOwners?.risks) {
@@ -1190,7 +1195,8 @@ module.exports = function (router) {
         
         res.render(version + '/risks-summary', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1201,6 +1207,9 @@ module.exports = function (router) {
             // Save the due diligence data to session
             req.session.data['risks-due-diligence'] = req.body['risks-due-diligence'];
             
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
+            
             // Redirect to the risks summary page (GET)
             return res.redirect('risks-summary');
         }
@@ -1209,6 +1218,9 @@ module.exports = function (router) {
         if (req.body['risks-pupil-numbers']) {
             // Save the pupil numbers data to session
             req.session.data['risks-pupil-numbers'] = req.body['risks-pupil-numbers'];
+            
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
             
             // If the answer is "No", clear any existing pupil forecast data and go to summary
             if (req.body['risks-pupil-numbers'] === 'No') {
@@ -1227,6 +1239,9 @@ module.exports = function (router) {
             // Save the pupil forecast data to session
             req.session.data['risks-pupil-forecast'] = req.body['risks-pupil-forecast'];
             
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
+            
             // Redirect to the risks summary page (GET)
             return res.redirect('risks-summary');
         }
@@ -1235,6 +1250,9 @@ module.exports = function (router) {
         if (req.body['risks-financial-deficit']) {
             // Save the financial deficit data to session
             req.session.data['risks-financial-deficit'] = req.body['risks-financial-deficit'];
+            
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
             
             // If the answer is "No", clear any existing financial forecast data and go to summary
             if (req.body['risks-financial-deficit'] === 'No') {
@@ -1253,6 +1271,9 @@ module.exports = function (router) {
             // Save the financial forecast data to session
             req.session.data['risks-financial-forecast'] = req.body['risks-financial-forecast'];
             
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
+            
             // Redirect to the risks summary page (GET)
             return res.redirect('risks-summary');
         }
@@ -1261,6 +1282,9 @@ module.exports = function (router) {
         if (req.body['risks-finances-pooled']) {
             // Save the finances pooled data to session
             req.session.data['risks-finances-pooled'] = req.body['risks-finances-pooled'];
+            
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
             
             // If the answer is "No", clear any existing reserves transfer data and go to summary
             if (req.body['risks-finances-pooled'] === 'No') {
@@ -1279,6 +1303,9 @@ module.exports = function (router) {
             // Save the reserves transfer data to session
             req.session.data['risks-reserves-transfer'] = req.body['risks-reserves-transfer'];
             
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
+            
             // Redirect to the risks summary page (GET)
             return res.redirect('risks-summary');
         }
@@ -1287,6 +1314,9 @@ module.exports = function (router) {
         if (req.body['risks-other-risks']) {
             // Save the other risks data to session
             req.session.data['risks-other-risks'] = req.body['risks-other-risks'];
+            
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
             
             // If the answer is "No", clear any existing risk management data and go to summary
             if (req.body['risks-other-risks'] === 'No') {
@@ -1304,6 +1334,9 @@ module.exports = function (router) {
         if (req.body['risks-risk-management']) {
             // Save the risk management data to session
             req.session.data['risks-risk-management'] = req.body['risks-risk-management'];
+            
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
             
             // Redirect to the risks summary page (GET)
             return res.redirect('risks-summary');
