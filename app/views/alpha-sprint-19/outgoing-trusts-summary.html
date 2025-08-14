@@ -1,5 +1,7 @@
 {% extends "layouts/main.html" %}
 
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
 {% set pageName="Outgoing trusts details" %}
 
 {% block beforeContent %}
@@ -14,6 +16,32 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    {% if trustAdded %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ trustAdded }} details has been added
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+
+    {% if trustRemoved %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ trustRemoved }} has been removed
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="members">
       Trust details

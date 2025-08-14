@@ -462,8 +462,18 @@ module.exports = function (router) {
 
     // GET handler for outgoing trusts summary
     router.get('/' + version + '/outgoing-trusts-summary', function (req, res) {
+        // Check if we have success messages
+        const trustAdded = req.session.data['outgoing-trust-added'];
+        const trustRemoved = req.session.data['outgoing-trust-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['outgoing-trust-added'];
+        delete req.session.data['outgoing-trust-removed'];
+        
         res.render(version + '/outgoing-trusts-summary', {
-            data: req.session.data
+            data: req.session.data,
+            trustAdded: trustAdded,
+            trustRemoved: trustRemoved
         });
     });
 
@@ -477,9 +487,13 @@ module.exports = function (router) {
                 // Remove the trust from the array
                 const index = parseInt(deleteOutgoingTrust);
                 if (req.session.data['outgoing-trusts'] && req.session.data['outgoing-trusts'][index]) {
+                    // Get the trust name before removing it for the success message
+                    const trustName = req.session.data['outgoing-trusts'][index].name;
                     req.session.data['outgoing-trusts'].splice(index, 1);
                     
-                    // If no more trusts, set status to false
+                    // Set success flag for banner
+                    req.session.data['outgoing-trust-removed'] = trustName;
+                    
                     if (req.session.data['outgoing-trusts'].length === 0) {
                         req.session.data['outgoing-trusts-status'] = false;
                     }
@@ -527,6 +541,9 @@ module.exports = function (router) {
             } else {
                 // Add a new trust to the array
                 req.session.data['outgoing-trusts'].push(newTrust);
+                
+                // Set success flag for banner when trust is added
+                req.session.data['outgoing-trust-added'] = newTrust.name;
             }
             
             // Set outgoing trusts status to true
@@ -1655,6 +1672,11 @@ module.exports = function (router) {
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['governance-structure-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['governance-structure-changes-saved'];
+        
         // Load contributors from application data if not already in session
         if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
             req.session.data['contributors'] = application.contributors;
@@ -1677,7 +1699,8 @@ module.exports = function (router) {
         
         res.render(version + '/governance-structure', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1773,6 +1796,9 @@ module.exports = function (router) {
     router.post('/' + version + '/governance-team-confirmation-handler', function (req, res) {
         // Save the governance team confirmed data to session
         req.session.data['governance-team-confirmed'] = req.body['governance-team-confirmed'];
+        
+        // Set success flag for banner
+        req.session.data['governance-structure-changes-saved'] = true;
         
         // If the answer is "No", go to the explanation page
         if (req.body['governance-team-confirmed'] === 'No') {
@@ -2105,8 +2131,24 @@ module.exports = function (router) {
 
     // GET handler for trustee summary
     router.get('/' + version + '/trustee-summary', function (req, res) {
+        // Check if we have success messages
+        const trusteeAdded = req.session.data['trustee-added'];
+        const trusteeRemoved = req.session.data['trustee-removed'];
+        const trusteeToRemoveAdded = req.session.data['trustee-to-remove-added'];
+        const trusteeToRemoveRemoved = req.session.data['trustee-to-remove-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['trustee-added'];
+        delete req.session.data['trustee-removed'];
+        delete req.session.data['trustee-to-remove-added'];
+        delete req.session.data['trustee-to-remove-removed'];
+        
         res.render(version + '/trustee-summary', {
-            data: req.session.data
+            data: req.session.data,
+            trusteeAdded: trusteeAdded,
+            trusteeRemoved: trusteeRemoved,
+            trusteeToRemoveAdded: trusteeToRemoveAdded,
+            trusteeToRemoveRemoved: trusteeToRemoveRemoved
         });
     });
 
@@ -2312,8 +2354,24 @@ module.exports = function (router) {
 
     // GET handler for trustee summary
     router.get('/' + version + '/trustee-summary', function (req, res) {
+        // Check if we have success messages
+        const trusteeAdded = req.session.data['trustee-added'];
+        const trusteeRemoved = req.session.data['trustee-removed'];
+        const trusteeToRemoveAdded = req.session.data['trustee-to-remove-added'];
+        const trusteeToRemoveRemoved = req.session.data['trustee-to-remove-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['trustee-added'];
+        delete req.session.data['trustee-removed'];
+        delete req.session.data['trustee-to-remove-added'];
+        delete req.session.data['trustee-to-remove-removed'];
+        
         res.render(version + '/trustee-summary', {
-            data: req.session.data
+            data: req.session.data,
+            trusteeAdded: trusteeAdded,
+            trusteeRemoved: trusteeRemoved,
+            trusteeToRemoveAdded: trusteeToRemoveAdded,
+            trusteeToRemoveRemoved: trusteeToRemoveRemoved
         });
     });
 
@@ -2382,6 +2440,9 @@ module.exports = function (router) {
                 name: fullName
             });
 
+            // Set success flag for banner
+            req.session.data['trustee-to-remove-added'] = fullName;
+
             // Clear the form field after storing the data
             delete req.session.data['trustee-to-remove-full-name'];
         }
@@ -2418,6 +2479,9 @@ module.exports = function (router) {
                     req.session.data['trustees-to-add'][trusteeIndex].currentResponsibilities = req.session.data['trustee-current-responsibilities'];
                     req.session.data['trustees-to-add'][trusteeIndex].futureRole = req.session.data['trustee-future-role'];
                     req.session.data['trustees-to-add'][trusteeIndex].localGoverningBody = localGoverningBody;
+                    
+                    // Set success flag for banner when trustee is fully added
+                    req.session.data['trustee-added'] = fullName;
                 }
             }
 
