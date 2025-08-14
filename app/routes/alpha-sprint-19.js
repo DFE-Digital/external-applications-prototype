@@ -85,6 +85,9 @@ module.exports = function (router) {
             // Set outgoing trusts status to true since we now have academies
             req.session.data['outgoing-trusts-status'] = true;
 
+            // Store the academy name for success message
+            req.session.data['academy-added'] = name;
+
             // Clear any existing errors since we now have an academy
             delete req.session.data.errors;
         }
@@ -200,10 +203,15 @@ module.exports = function (router) {
 
     // GET handler for academies-to-transfer page
     router.get('/' + version + '/academies-to-transfer', function (req, res) {
-        // Check if we have a success message
+        // Check if we have a success message for removed academy
         const removedAcademy = req.session.data['academy-removed'];
         // Clear it from session immediately
         delete req.session.data['academy-removed'];
+        
+        // Check if we have a success message for added academy
+        const addedAcademy = req.session.data['academy-added'];
+        // Clear it from session immediately
+        delete req.session.data['academy-added'];
         
         // Process task owners
         let taskOwnerDisplay = 'Task owner: not assigned';
@@ -221,8 +229,9 @@ module.exports = function (router) {
         }
         
         res.render(version + '/academies-to-transfer-summary', {
-            success: !!removedAcademy,
+            success: !!(removedAcademy || addedAcademy),
             removedAcademy: removedAcademy,
+            addedAcademy: addedAcademy,
             data: req.session.data,
             taskOwnerDisplay: taskOwnerDisplay
         });
@@ -453,8 +462,18 @@ module.exports = function (router) {
 
     // GET handler for outgoing trusts summary
     router.get('/' + version + '/outgoing-trusts-summary', function (req, res) {
+        // Check if we have success messages
+        const trustAdded = req.session.data['outgoing-trust-added'];
+        const trustRemoved = req.session.data['outgoing-trust-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['outgoing-trust-added'];
+        delete req.session.data['outgoing-trust-removed'];
+        
         res.render(version + '/outgoing-trusts-summary', {
-            data: req.session.data
+            data: req.session.data,
+            trustAdded: trustAdded,
+            trustRemoved: trustRemoved
         });
     });
 
@@ -468,9 +487,13 @@ module.exports = function (router) {
                 // Remove the trust from the array
                 const index = parseInt(deleteOutgoingTrust);
                 if (req.session.data['outgoing-trusts'] && req.session.data['outgoing-trusts'][index]) {
+                    // Get the trust name before removing it for the success message
+                    const trustName = req.session.data['outgoing-trusts'][index].name;
                     req.session.data['outgoing-trusts'].splice(index, 1);
                     
-                    // If no more trusts, set status to false
+                    // Set success flag for banner
+                    req.session.data['outgoing-trust-removed'] = trustName;
+                    
                     if (req.session.data['outgoing-trusts'].length === 0) {
                         req.session.data['outgoing-trusts-status'] = false;
                     }
@@ -518,6 +541,9 @@ module.exports = function (router) {
             } else {
                 // Add a new trust to the array
                 req.session.data['outgoing-trusts'].push(newTrust);
+                
+                // Set success flag for banner when trust is added
+                req.session.data['outgoing-trust-added'] = newTrust.name;
             }
             
             // Set outgoing trusts status to true
@@ -1164,6 +1190,11 @@ module.exports = function (router) {
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['risks-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['risks-changes-saved'];
+        
         // Process task owners
         let taskOwnerDisplay = 'Task owner: not assigned';
         if (req.session.data.taskOwners?.risks) {
@@ -1181,7 +1212,8 @@ module.exports = function (router) {
         
         res.render(version + '/risks-summary', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1192,6 +1224,9 @@ module.exports = function (router) {
             // Save the due diligence data to session
             req.session.data['risks-due-diligence'] = req.body['risks-due-diligence'];
             
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
+            
             // Redirect to the risks summary page (GET)
             return res.redirect('risks-summary');
         }
@@ -1200,6 +1235,9 @@ module.exports = function (router) {
         if (req.body['risks-pupil-numbers']) {
             // Save the pupil numbers data to session
             req.session.data['risks-pupil-numbers'] = req.body['risks-pupil-numbers'];
+            
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
             
             // If the answer is "No", clear any existing pupil forecast data and go to summary
             if (req.body['risks-pupil-numbers'] === 'No') {
@@ -1218,6 +1256,9 @@ module.exports = function (router) {
             // Save the pupil forecast data to session
             req.session.data['risks-pupil-forecast'] = req.body['risks-pupil-forecast'];
             
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
+            
             // Redirect to the risks summary page (GET)
             return res.redirect('risks-summary');
         }
@@ -1226,6 +1267,9 @@ module.exports = function (router) {
         if (req.body['risks-financial-deficit']) {
             // Save the financial deficit data to session
             req.session.data['risks-financial-deficit'] = req.body['risks-financial-deficit'];
+            
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
             
             // If the answer is "No", clear any existing financial forecast data and go to summary
             if (req.body['risks-financial-deficit'] === 'No') {
@@ -1244,6 +1288,9 @@ module.exports = function (router) {
             // Save the financial forecast data to session
             req.session.data['risks-financial-forecast'] = req.body['risks-financial-forecast'];
             
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
+            
             // Redirect to the risks summary page (GET)
             return res.redirect('risks-summary');
         }
@@ -1252,6 +1299,9 @@ module.exports = function (router) {
         if (req.body['risks-finances-pooled']) {
             // Save the finances pooled data to session
             req.session.data['risks-finances-pooled'] = req.body['risks-finances-pooled'];
+            
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
             
             // If the answer is "No", clear any existing reserves transfer data and go to summary
             if (req.body['risks-finances-pooled'] === 'No') {
@@ -1270,6 +1320,9 @@ module.exports = function (router) {
             // Save the reserves transfer data to session
             req.session.data['risks-reserves-transfer'] = req.body['risks-reserves-transfer'];
             
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
+            
             // Redirect to the risks summary page (GET)
             return res.redirect('risks-summary');
         }
@@ -1278,6 +1331,9 @@ module.exports = function (router) {
         if (req.body['risks-other-risks']) {
             // Save the other risks data to session
             req.session.data['risks-other-risks'] = req.body['risks-other-risks'];
+            
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
             
             // If the answer is "No", clear any existing risk management data and go to summary
             if (req.body['risks-other-risks'] === 'No') {
@@ -1295,6 +1351,9 @@ module.exports = function (router) {
         if (req.body['risks-risk-management']) {
             // Save the risk management data to session
             req.session.data['risks-risk-management'] = req.body['risks-risk-management'];
+            
+            // Set success flag for banner
+            req.session.data['risks-changes-saved'] = true;
             
             // Redirect to the risks summary page (GET)
             return res.redirect('risks-summary');
@@ -1335,6 +1394,11 @@ module.exports = function (router) {
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['reason-and-benefits-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['reason-and-benefits-changes-saved'];
+        
         // Process task owners
         let taskOwnerDisplay = 'Task owner: not assigned';
         if (req.session.data.taskOwners?.['reason-and-benefits-academies']) {
@@ -1352,7 +1416,8 @@ module.exports = function (router) {
         
         res.render(version + '/reason-and-benefits-academies', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1360,6 +1425,9 @@ module.exports = function (router) {
     router.post('/' + version + '/reason-and-benefits-academies-summary', function (req, res) {
         // Save the strategic needs data to session
         req.session.data['reason-and-benefits-academies-strategic-needs'] = req.body['reason-and-benefits-academies-strategic-needs'];
+        
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-changes-saved'] = true;
         
         // Redirect to the reason and benefits academies summary page
         res.redirect('reason-and-benefits-academies');
@@ -1370,6 +1438,9 @@ module.exports = function (router) {
         // Save the maintain improve data to session
         req.session.data['reason-and-benefits-academies-maintain-improve'] = req.body['reason-and-benefits-academies-maintain-improve'];
         
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-changes-saved'] = true;
+        
         // Redirect to the reason and benefits academies summary page
         res.redirect('reason-and-benefits-academies');
     });
@@ -1378,6 +1449,9 @@ module.exports = function (router) {
     router.post('/' + version + '/reason-and-benefits-academies-benefit-trust-handler', function (req, res) {
         // Save the benefit trust data to session
         req.session.data['reason-and-benefits-academies-benefit-trust'] = req.body['reason-and-benefits-academies-benefit-trust'];
+        
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-changes-saved'] = true;
         
         // Redirect to the reason and benefits academies summary page
         res.redirect('reason-and-benefits-academies');
@@ -1396,6 +1470,11 @@ module.exports = function (router) {
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
         
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['reason-and-benefits-trust-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['reason-and-benefits-trust-changes-saved'];
+        
         // Process task owners
         let taskOwnerDisplay = 'Task owner: not assigned';
         if (req.session.data.taskOwners?.['reason-and-benefits-trust']) {
@@ -1413,7 +1492,8 @@ module.exports = function (router) {
         
         res.render(version + '/reason-and-benefits-trust', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1421,6 +1501,9 @@ module.exports = function (router) {
     router.post('/' + version + '/reason-and-benefits-trust-strategic-needs-handler', function (req, res) {
         // Save the strategic needs data to session
         req.session.data['reason-and-benefits-trust-strategic-needs'] = req.body['reason-and-benefits-trust-strategic-needs'];
+        
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-trust-changes-saved'] = true;
         
         // Redirect to the reason and benefits trust summary page
         res.redirect('reason-and-benefits-trust');
@@ -1431,6 +1514,9 @@ module.exports = function (router) {
         // Save the maintain improve data to session
         req.session.data['reason-and-benefits-trust-maintain-improve'] = req.body['reason-and-benefits-trust-maintain-improve'];
         
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-trust-changes-saved'] = true;
+        
         // Redirect to the reason and benefits trust summary page
         res.redirect('reason-and-benefits-trust');
     });
@@ -1439,6 +1525,9 @@ module.exports = function (router) {
     router.post('/' + version + '/reason-and-benefits-trust-transfer-type-handler', function (req, res) {
         // Save the transfer type data to session
         req.session.data['reason-and-benefits-trust-transfer-type'] = req.body['reason-and-benefits-trust-transfer-type'];
+        
+        // Set success flag for banner
+        req.session.data['reason-and-benefits-trust-changes-saved'] = true;
         
         // Redirect to the reason and benefits trust summary page
         res.redirect('reason-and-benefits-trust');
@@ -1449,6 +1538,9 @@ module.exports = function (router) {
         // Save the quality data to session
         req.session.data['high-quality-and-inclusive-education-quality'] = req.body['high-quality-and-inclusive-education-quality'];
         
+        // Set success flag for banner
+        req.session.data['high-quality-and-inclusive-education-changes-saved'] = true;
+        
         // Redirect to the high-quality and inclusive education summary page
         res.redirect('high-quality-and-inclusive-education');
     });
@@ -1457,6 +1549,9 @@ module.exports = function (router) {
     router.post('/' + version + '/high-quality-and-inclusive-education-inclusive-handler', function (req, res) {
         // Save the inclusive data to session
         req.session.data['high-quality-and-inclusive-education-inclusive'] = req.body['high-quality-and-inclusive-education-inclusive'];
+        
+        // Set success flag for banner
+        req.session.data['high-quality-and-inclusive-education-changes-saved'] = true;
         
         // Redirect to the high-quality and inclusive education summary page
         res.redirect('high-quality-and-inclusive-education');
@@ -1474,6 +1569,11 @@ module.exports = function (router) {
 
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
+        
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['high-quality-and-inclusive-education-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['high-quality-and-inclusive-education-changes-saved'];
         
         // Load contributors from application data if not already in session
         if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
@@ -1497,7 +1597,8 @@ module.exports = function (router) {
         
         res.render(version + '/high-quality-and-inclusive-education', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1513,6 +1614,11 @@ module.exports = function (router) {
 
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
+        
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['school-improvement-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['school-improvement-changes-saved'];
         
         // Load contributors from application data if not already in session
         if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
@@ -1536,7 +1642,8 @@ module.exports = function (router) {
         
         res.render(version + '/school-improvement', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1544,6 +1651,9 @@ module.exports = function (router) {
     router.post('/' + version + '/school-improvement-model-handler', function (req, res) {
         // Save the school improvement model data to session
         req.session.data['school-improvement-model'] = req.body['school-improvement-model'];
+        
+        // Set success flag for banner
+        req.session.data['school-improvement-changes-saved'] = true;
         
         // Redirect to the school improvement summary page
         res.redirect('school-improvement');
@@ -1561,6 +1671,11 @@ module.exports = function (router) {
 
         const ref = req.session.data.application.reference;
         const application = data.applications.find(app => app.reference === ref);
+        
+        // Check if we have a success message for changes saved
+        const changesSaved = req.session.data['governance-structure-changes-saved'];
+        // Clear it from session immediately
+        delete req.session.data['governance-structure-changes-saved'];
         
         // Load contributors from application data if not already in session
         if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
@@ -1584,7 +1699,8 @@ module.exports = function (router) {
         
         res.render(version + '/governance-structure', {
             data: req.session.data,
-            taskOwnerDisplay: taskOwnerDisplay
+            taskOwnerDisplay: taskOwnerDisplay,
+            changesSaved: changesSaved
         });
     });
 
@@ -1680,6 +1796,9 @@ module.exports = function (router) {
     router.post('/' + version + '/governance-team-confirmation-handler', function (req, res) {
         // Save the governance team confirmed data to session
         req.session.data['governance-team-confirmed'] = req.body['governance-team-confirmed'];
+        
+        // Set success flag for banner
+        req.session.data['governance-structure-changes-saved'] = true;
         
         // If the answer is "No", go to the explanation page
         if (req.body['governance-team-confirmed'] === 'No') {
@@ -1989,15 +2108,47 @@ module.exports = function (router) {
     // Members routes
     // GET handler for members summary
     router.get('/' + version + '/members-summary', function (req, res) {
+        // Check if we have success messages
+        const memberAdded = req.session.data['member-added'];
+        const memberRemoved = req.session.data['member-removed'];
+        const memberToRemoveAdded = req.session.data['member-to-remove-added'];
+        const memberToRemoveRemoved = req.session.data['member-to-remove-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['member-added'];
+        delete req.session.data['member-removed'];
+        delete req.session.data['member-to-remove-added'];
+        delete req.session.data['member-to-remove-removed'];
+        
         res.render(version + '/members-summary', {
-            data: req.session.data
+            data: req.session.data,
+            memberAdded: memberAdded,
+            memberRemoved: memberRemoved,
+            memberToRemoveAdded: memberToRemoveAdded,
+            memberToRemoveRemoved: memberToRemoveRemoved
         });
     });
 
     // GET handler for trustee summary
     router.get('/' + version + '/trustee-summary', function (req, res) {
+        // Check if we have success messages
+        const trusteeAdded = req.session.data['trustee-added'];
+        const trusteeRemoved = req.session.data['trustee-removed'];
+        const trusteeToRemoveAdded = req.session.data['trustee-to-remove-added'];
+        const trusteeToRemoveRemoved = req.session.data['trustee-to-remove-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['trustee-added'];
+        delete req.session.data['trustee-removed'];
+        delete req.session.data['trustee-to-remove-added'];
+        delete req.session.data['trustee-to-remove-removed'];
+        
         res.render(version + '/trustee-summary', {
-            data: req.session.data
+            data: req.session.data,
+            trusteeAdded: trusteeAdded,
+            trusteeRemoved: trusteeRemoved,
+            trusteeToRemoveAdded: trusteeToRemoveAdded,
+            trusteeToRemoveRemoved: trusteeToRemoveRemoved
         });
     });
 
@@ -2045,7 +2196,9 @@ module.exports = function (router) {
         if (req.body['delete-member-to-remove'] !== undefined) {
             const memberIndex = parseInt(req.body['delete-member-to-remove']);
             if (req.session.data['members-to-remove'] && req.session.data['members-to-remove'][memberIndex]) {
+                const memberName = req.session.data['members-to-remove'][memberIndex].name;
                 req.session.data['members-to-remove'].splice(memberIndex, 1);
+                req.session.data['member-to-remove-removed'] = memberName;
             }
         }
 
@@ -2063,6 +2216,9 @@ module.exports = function (router) {
                 name: fullName
             });
 
+            // Set success flag for banner
+            req.session.data['member-to-remove-added'] = fullName;
+
             // Clear the form field after storing the data
             delete req.session.data['member-to-remove-full-name'];
         }
@@ -2078,6 +2234,9 @@ module.exports = function (router) {
                 if (memberIndex !== -1) {
                     req.session.data['members-to-add'][memberIndex].currentResponsibilities = req.session.data['member-current-responsibilities'];
                     req.session.data['members-to-add'][memberIndex].futureRole = futureRole;
+                    
+                    // Set success flag for banner when member is fully added
+                    req.session.data['member-added'] = fullName;
                 }
             }
 
@@ -2195,8 +2354,24 @@ module.exports = function (router) {
 
     // GET handler for trustee summary
     router.get('/' + version + '/trustee-summary', function (req, res) {
+        // Check if we have success messages
+        const trusteeAdded = req.session.data['trustee-added'];
+        const trusteeRemoved = req.session.data['trustee-removed'];
+        const trusteeToRemoveAdded = req.session.data['trustee-to-remove-added'];
+        const trusteeToRemoveRemoved = req.session.data['trustee-to-remove-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['trustee-added'];
+        delete req.session.data['trustee-removed'];
+        delete req.session.data['trustee-to-remove-added'];
+        delete req.session.data['trustee-to-remove-removed'];
+        
         res.render(version + '/trustee-summary', {
-            data: req.session.data
+            data: req.session.data,
+            trusteeAdded: trusteeAdded,
+            trusteeRemoved: trusteeRemoved,
+            trusteeToRemoveAdded: trusteeToRemoveAdded,
+            trusteeToRemoveRemoved: trusteeToRemoveRemoved
         });
     });
 
@@ -2265,6 +2440,9 @@ module.exports = function (router) {
                 name: fullName
             });
 
+            // Set success flag for banner
+            req.session.data['trustee-to-remove-added'] = fullName;
+
             // Clear the form field after storing the data
             delete req.session.data['trustee-to-remove-full-name'];
         }
@@ -2301,6 +2479,9 @@ module.exports = function (router) {
                     req.session.data['trustees-to-add'][trusteeIndex].currentResponsibilities = req.session.data['trustee-current-responsibilities'];
                     req.session.data['trustees-to-add'][trusteeIndex].futureRole = req.session.data['trustee-future-role'];
                     req.session.data['trustees-to-add'][trusteeIndex].localGoverningBody = localGoverningBody;
+                    
+                    // Set success flag for banner when trustee is fully added
+                    req.session.data['trustee-added'] = fullName;
                 }
             }
 

@@ -19,7 +19,11 @@
     {% if success %}
       {% set html %}
         <h3 class="govuk-notification-banner__heading">
-          {{ removedAcademy }} has been removed
+          {% if addedAcademy %}
+            {{ addedAcademy }} has been added
+          {% else %}
+            {{ removedAcademy }} has been removed
+          {% endif %}
         </h3>
       {% endset %}
 

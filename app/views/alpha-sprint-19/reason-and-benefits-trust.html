@@ -1,5 +1,7 @@
 {% extends "layouts/main.html" %}
 
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
 {% set pageName="Reason and benefits" %}
 
 {% block beforeContent %}
@@ -14,6 +16,18 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
+    {% if changesSaved %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          Your changes have been saved
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="reason-and-benefits-trust">
       Reason and benefits
