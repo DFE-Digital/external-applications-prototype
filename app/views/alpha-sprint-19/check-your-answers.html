@@ -26,6 +26,140 @@
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Outgoing trusts details</h2>
+        {% if data.application and data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="outgoing-trusts-summary">
+              Change<span class="govuk-visually-hidden"> outgoing trusts details</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-summary-card__content">
+        {% if not data['outgoing-trusts'] or data['outgoing-trusts'].length === 0 %}
+          <div class="govuk-inset-text">
+            No outgoing trusts have been added.
+          </div>
+        {% else %}
+          <dl class="govuk-summary-list">
+            {% for trust in data['outgoing-trusts'] %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Trust {{ loop.index }}
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body"><strong>{{ trust.name }}</strong></p>
+                  <p class="govuk-body">Postcode: {{ trust.postcode }}</p>
+                  <p class="govuk-body govuk-!-margin-bottom-0">Company house number: {{ trust.companyHouseNumber }}</p>
+                </dd>
+              </div>
+              
+              {% if trust.contactName %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Contact details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body"><strong>{{ trust.contactName }}</strong></p>
+                  {% if trust.role %}<p class="govuk-body">{{ trust.role }}</p>{% endif %}
+                  {% if trust.contactNumber %}<p class="govuk-body">Number: {{ trust.contactNumber }}</p>{% endif %}
+                  {% if trust.emailAddress %}<p class="govuk-body">Email: {{ trust.emailAddress }}</p>{% endif %}
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if trust.trustWillClose %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Trust closure
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Will this trust close after the transfer? <strong>{{ trust.trustWillClose }}</strong></p>
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if data['board-resolution-files'] and data['board-resolution-files'].length > 0 %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Board resolution
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {% for file in data['board-resolution-files'] %}
+                    <p class="govuk-body">
+                      <a href="download-board-resolution-file/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                        <strong>{{ file.name }}</strong>
+                      </a>
+                    </p>
+                    <p class="govuk-body govuk-!-font-size-14">
+                      File size: {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+                    </p>
+                    <p class="govuk-body govuk-!-font-size-14">
+                      File type: {{ file.type }}
+                    </p>
+                    {% if not loop.last %}
+                      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+                    {% endif %}
+                  {% endfor %}
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if trust.stakeholderEngagementConsultation %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Stakeholder engagement consultation
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Did the trust engage in any consultations and stakeholder engagement? <strong>{{ trust.stakeholderEngagementConsultation }}</strong></p>
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if trust.stakeholderEngagementConsultation === "No" and trust.stakeholderEngagementExplanation %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Stakeholder engagement explanation
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ trust.stakeholderEngagementExplanation }}</p>
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if trust.stakeholderEngagementConsultation === "Yes" and data['consultation-results-files'] and data['consultation-results-files'].length > 0 %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Consultation results
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {% for file in data['consultation-results-files'] %}
+                    <p class="govuk-body">
+                      <a href="download-consultation-results-file/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                        <strong>{{ file.name }}</strong>
+                      </a>
+                    </p>
+                    <p class="govuk-body govuk-!-font-size-14">
+                      File size: {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+                    </p>
+                    <p class="govuk-body govuk-!-font-size-14">
+                      File type: {{ file.type }}
+                    </p>
+                    {% if not loop.last %}
+                      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+                    {% endif %}
+                  {% endfor %}
+                </dd>
+              </div>
+              {% endif %}
+            {% endfor %}
+          </dl>
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Details of academies</h2>
         {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
