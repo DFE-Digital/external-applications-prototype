@@ -15,7 +15,7 @@
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-xl">
       <span class="govuk-caption-l">Trust details</span>
-      What is the contact details of this trust?
+      Contact details
     </h1>
   </div>
   <div class="govuk-grid-column-two-thirds">
@@ -39,14 +39,14 @@
 
       {% call govukFieldset({
         legend: {
-          text: "Contact information",
+          text: "",
           classes: "govuk-fieldset__legend--m"
         }
       }) %}
 
         {{ govukInput({
           label: {
-            text: "Contact name"
+            text: "Full name"
           },
           id: "contact-name",
           name: "contact-name",
@@ -65,7 +65,7 @@
 
         {{ govukInput({
           label: {
-            text: "Number"
+            text: "Phone number"
           },
           id: "contact-number",
           name: "contact-number",

@@ -129,6 +129,45 @@
               </div>
               {% endif %}
               
+              {% if data['board-resolution-files'] and data['board-resolution-files'].length > 0 %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Board resolution
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {% for file in data['board-resolution-files'] %}
+                    <p class="govuk-body">
+                      <a href="download-board-resolution-file/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                        <strong>{{ file.name }}</strong>
+                      </a>
+                    </p>
+                    {% if not loop.last %}
+                      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+                    {% endif %}
+                  {% endfor %}
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-board-resolution?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> board resolution for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% else %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Board resolution
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Not answered yet</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-board-resolution?edit={{ loop.index0 }}">
+                    Add<span class="govuk-visually-hidden"> board resolution for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              
               {% if trust.stakeholderEngagementConsultation %}
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -154,6 +193,59 @@
                 <dd class="govuk-summary-list__actions">
                   <a class="govuk-link" href="outgoing-trusts-stakeholder-engagement?edit={{ loop.index0 }}">
                     Add<span class="govuk-visually-hidden"> stakeholder engagement consultation for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              
+              {% if trust.stakeholderEngagementConsultation === "No" and trust.stakeholderEngagementExplanation %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Stakeholder engagement explanation
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ trust.stakeholderEngagementExplanation }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-stakeholder-engagement-explanation?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> stakeholder engagement explanation for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% elif trust.stakeholderEngagementConsultation === "Yes" and data['consultation-results-files'] and data['consultation-results-files'].length > 0 %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Consultation results
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {% for file in data['consultation-results-files'] %}
+                    <p class="govuk-body">
+                      <a href="download-consultation-results-file/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                        <strong>{{ file.name }}</strong>
+                      </a>
+                    </p>
+                    {% if not loop.last %}
+                      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-4 govuk-!-margin-bottom-4">
+                    {% endif %}
+                  {% endfor %}
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-consultation-results?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> consultation results for {{ trust.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% elif trust.stakeholderEngagementConsultation === "Yes" %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Consultation results
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">Not answered yet</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="outgoing-trusts-consultation-results?edit={{ loop.index0 }}">
+                    Add<span class="govuk-visually-hidden"> consultation results for {{ trust.name }}</span>
                   </a>
                 </dd>
               </div>

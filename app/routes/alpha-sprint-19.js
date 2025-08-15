@@ -25,6 +25,40 @@ module.exports = function (router) {
         next();
     });
 
+    // Add file upload middleware for board resolution
+    router.use('/' + version + '/outgoing-trusts-board-resolution-handler', (req, res, next) => {
+        // For this prototype, we'll simulate file upload handling
+        // In a real application, you would use multer or similar middleware
+        if (req.headers['content-type'] && req.headers['content-type'].includes('multipart/form-data')) {
+            // Simulate file upload processing
+            req.files = {
+                'board-resolution-file': {
+                    name: 'board-resolution-document.pdf',
+                    size: 1024000, // 1MB
+                    mimetype: 'application/pdf'
+                }
+            };
+        }
+        next();
+    });
+
+    // Add file upload middleware for consultation results
+    router.use('/' + version + '/outgoing-trusts-consultation-results-handler', (req, res, next) => {
+        // For this prototype, we'll simulate file upload handling
+        // In a real application, you would use multer or similar middleware
+        if (req.headers['content-type'] && req.headers['content-type'].includes('multipart/form-data')) {
+            // Simulate file upload processing
+            req.files = {
+                'consultation-results-file': {
+                    name: 'consultation-results-document.pdf',
+                    size: 1024000, // 1MB
+                    mimetype: 'application/pdf'
+                }
+            };
+        }
+        next();
+    });
+
 
     // Handle academy search results page
     router.get('/' + version + '/academies-to-transfer-search-results', function (req, res) {
@@ -503,12 +537,17 @@ module.exports = function (router) {
             return res.redirect('outgoing-trusts-summary');
         }
         
-        // If not deleting, continue with the form submission
-        const outgoingTrustsStatus = req.body['outgoing-trusts-status'] === 'Complete';
-        req.session.data['outgoing-trusts-status'] = outgoingTrustsStatus;
-        
-        // Redirect to application task list
+        // Check if this is the completion checkbox form submission
+        if (req.body['outgoing-trusts-status']) {
+            // Save the checkbox state - using 'Complete' to match the form value
+            req.session.data['outgoing-trusts-status'] = req.body['outgoing-trusts-status'] === 'Complete';
+            
+            // Go to application task list
         return res.redirect('application-task-list');
+        }
+        
+        // Default fallback
+        return res.redirect('outgoing-trusts-summary');
     });
 
     // POST handler for outgoing trusts confirmation
@@ -652,7 +691,7 @@ module.exports = function (router) {
         res.render(version + '/outgoing-trusts-closure', {
             data: {
                 ...req.session.data,
-                'trust-will-close': trustWillClose
+            'trust-will-close': trustWillClose
             },
             editIndex: editIndex
         });
@@ -697,13 +736,111 @@ module.exports = function (router) {
             }
         }
         
-        // Redirect to stakeholder engagement consultation page
+        // Redirect to board resolution page
         if (editIndex !== undefined) {
-            return res.redirect(`outgoing-trusts-stakeholder-engagement?edit=${editIndex}`);
+            return res.redirect(`outgoing-trusts-board-resolution?edit=${editIndex}`);
         } else {
-            // For new entries, also redirect to stakeholder engagement page
-            return res.redirect('outgoing-trusts-stakeholder-engagement');
+            // For new entries, also redirect to board resolution page
+            return res.redirect('outgoing-trusts-board-resolution');
         }
+    });
+
+    // GET handler for outgoing trusts board resolution
+    router.get('/' + version + '/outgoing-trusts-board-resolution', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        res.render(version + '/outgoing-trusts-board-resolution', {
+            data: req.session.data,
+            editIndex: editIndex
+        });
+    });
+
+    // POST handler for outgoing trusts board resolution
+    router.post('/' + version + '/outgoing-trusts-board-resolution-handler', function (req, res) {
+        // Handle file upload for board resolution
+        if (req.files && req.files['board-resolution-file']) {
+            const uploadedFile = req.files['board-resolution-file'];
+            
+            // Initialize files array if it doesn't exist
+            if (!req.session.data['board-resolution-files']) {
+                req.session.data['board-resolution-files'] = [];
+            }
+            
+            // Add the new file to the array
+            req.session.data['board-resolution-files'].push({
+                name: uploadedFile.name,
+                size: uploadedFile.size,
+                type: uploadedFile.mimetype
+            });
+            
+            // Set success flag for banner
+            req.session.data['file-upload-success'] = true;
+            
+            // Clear deletion success flag
+            req.session.data['file-delete-success'] = false;
+            delete req.session.data['deleted-file-name'];
+            
+            // In a real application, you would save the file to a secure location
+            // For this prototype, we'll just store the file information
+        }
+        
+        // Redirect to the board resolution page to show the file table
+        res.redirect('outgoing-trusts-board-resolution');
+    });
+
+    // POST handler for clearing board resolution upload success flag
+    router.post('/' + version + '/clear-board-resolution-upload-success-flag', function (req, res) {
+        req.session.data['file-upload-success'] = false;
+        res.status(200).json({ success: true });
+    });
+
+    // POST handler for clearing board resolution delete success flag
+    router.post('/' + version + '/clear-board-resolution-delete-success-flag', function (req, res) {
+        req.session.data['file-delete-success'] = false;
+        delete req.session.data['deleted-file-name'];
+        res.status(200).json({ success: true });
+    });
+
+    // GET handler for downloading board resolution files
+    router.get('/' + version + '/download-board-resolution-file/:index', function (req, res) {
+        const fileIndex = parseInt(req.params.index);
+        
+        if (req.session.data['board-resolution-files'] && req.session.data['board-resolution-files'][fileIndex]) {
+            const file = req.session.data['board-resolution-files'][fileIndex];
+            
+            // Set headers for file download
+            res.setHeader('Content-Type', file.type || 'application/octet-stream');
+            res.setHeader('Content-Disposition', `attachment; filename="${file.name}"`);
+            
+            // For prototype purposes, create a simple text response
+            // In a real application, this would serve the actual file from storage
+            res.send(`This is a prototype file download for: ${file.name}\n\nFile size: ${(file.size / 1024 / 1024).toFixed(2)} MB\nFile type: ${file.type}\n\nThis is a simulated file download for demonstration purposes.`);
+        } else {
+            res.status(404).send('File not found');
+        }
+    });
+
+    // POST handler for deleting board resolution files
+    router.post('/' + version + '/delete-board-resolution-file', function (req, res) {
+        const fileIndex = parseInt(req.body['file-index']);
+        
+        if (req.session.data['board-resolution-files'] && req.session.data['board-resolution-files'][fileIndex]) {
+            // Get the file name before removing it for the success message
+            const deletedFileName = req.session.data['board-resolution-files'][fileIndex].name;
+            
+            // Remove the file at the specified index
+            req.session.data['board-resolution-files'].splice(fileIndex, 1);
+            
+            // Set success flag for deletion banner
+            req.session.data['file-delete-success'] = true;
+            req.session.data['deleted-file-name'] = deletedFileName;
+            
+            // Clear upload success flag
+            req.session.data['file-upload-success'] = false;
+        }
+        
+        // Redirect back to the board resolution page
+        res.redirect('outgoing-trusts-board-resolution');
     });
 
     // GET handler for outgoing trusts stakeholder engagement consultation
@@ -769,8 +906,187 @@ module.exports = function (router) {
             }
         }
         
+        // Redirect based on the answer
+        if (req.body['stakeholder-engagement-consultation'] === 'No') {
+            // If No, redirect to explanation page
+            if (editIndex !== undefined) {
+                return res.redirect(`outgoing-trusts-stakeholder-engagement-explanation?edit=${editIndex}`);
+            } else {
+                return res.redirect('outgoing-trusts-stakeholder-engagement-explanation');
+            }
+        } else {
+            // If Yes, redirect to consultation results page
+            if (editIndex !== undefined) {
+                return res.redirect(`outgoing-trusts-consultation-results?edit=${editIndex}`);
+            } else {
+                return res.redirect('outgoing-trusts-consultation-results');
+            }
+        }
+    });
+
+    // GET handler for outgoing trusts stakeholder engagement explanation
+    router.get('/' + version + '/outgoing-trusts-stakeholder-engagement-explanation', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        // Initialize default value
+        let stakeholderEngagementExplanation = '';
+        
+        // If editing, get existing value from the trust
+        if (editIndex !== undefined && req.session.data['outgoing-trusts']) {
+            const trust = req.session.data['outgoing-trusts'][parseInt(editIndex)];
+            if (trust) {
+                stakeholderEngagementExplanation = trust.stakeholderEngagementExplanation || '';
+            }
+        }
+        
+        res.render(version + '/outgoing-trusts-stakeholder-engagement-explanation', {
+            data: {
+                ...req.session.data,
+                'stakeholder-engagement-explanation': stakeholderEngagementExplanation
+            },
+            editIndex: editIndex
+        });
+    });
+
+    // POST handler for outgoing trusts stakeholder engagement explanation
+    router.post('/' + version + '/outgoing-trusts-stakeholder-engagement-explanation-handler', function (req, res) {
+        const editIndex = req.body['edit-index'];
+        const trustName = req.body['trust-name'];
+        const trustPostcode = req.body['trust-postcode'];
+        const trustCompanyHouse = req.body['trust-company-house'];
+        
+        // Store stakeholder engagement explanation information
+        const explanationInfo = {
+            stakeholderEngagementExplanation: req.body['stakeholder-engagement-explanation']
+        };
+        
+        // Check if we're editing an existing trust
+        if (editIndex !== undefined) {
+            const actualEditIndex = parseInt(editIndex);
+            
+            // Update the existing trust with explanation info
+            if (req.session.data['outgoing-trusts'][actualEditIndex]) {
+                req.session.data['outgoing-trusts'][actualEditIndex] = {
+                    ...req.session.data['outgoing-trusts'][actualEditIndex],
+                    ...explanationInfo
+                };
+            }
+        } else {
+            // Find the trust by name and update it with explanation info
+            const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
+                trust.name === trustName && 
+                trust.postcode === trustPostcode && 
+                trust.companyHouseNumber === trustCompanyHouse
+            );
+            
+            if (trustIndex !== -1) {
+                req.session.data['outgoing-trusts'][trustIndex] = {
+                    ...req.session.data['outgoing-trusts'][trustIndex],
+                    ...explanationInfo
+                };
+            }
+        }
+        
         // Redirect to outgoing trusts summary
-        return res.redirect('outgoing-trusts-summary');
+            return res.redirect('outgoing-trusts-summary');
+    });
+
+    // GET handler for outgoing trusts consultation results
+    router.get('/' + version + '/outgoing-trusts-consultation-results', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        res.render(version + '/outgoing-trusts-consultation-results', {
+            data: req.session.data,
+            editIndex: editIndex
+        });
+    });
+
+    // POST handler for outgoing trusts consultation results
+    router.post('/' + version + '/outgoing-trusts-consultation-results-handler', function (req, res) {
+        // Handle file upload for consultation results
+        if (req.files && req.files['consultation-results-file']) {
+            const uploadedFile = req.files['consultation-results-file'];
+            
+            // Initialize files array if it doesn't exist
+            if (!req.session.data['consultation-results-files']) {
+                req.session.data['consultation-results-files'] = [];
+            }
+            
+            // Add the new file to the array
+            req.session.data['consultation-results-files'].push({
+                name: uploadedFile.name,
+                size: uploadedFile.size,
+                type: uploadedFile.mimetype
+            });
+            
+            // Set success flag for banner
+            req.session.data['file-upload-success'] = true;
+            
+            // Clear deletion success flag
+            req.session.data['file-delete-success'] = false;
+            delete req.session.data['deleted-file-name'];
+            
+            // In a real application, you would save the file to a secure location
+            // For this prototype, we'll just store the file information
+        }
+        
+        // Redirect to the consultation results page to show the file table
+        res.redirect('outgoing-trusts-consultation-results');
+    });
+
+    // POST handler for clearing consultation results upload success flag
+    router.post('/' + version + '/clear-consultation-results-upload-success-flag', function (req, res) {
+        req.session.data['file-upload-success'] = false;
+        res.status(200).json({ success: true });
+    });
+
+    // POST handler for clearing consultation results delete success flag
+    router.post('/' + version + '/clear-consultation-results-delete-success-flag', function (req, res) {
+        req.session.data['file-delete-success'] = false;
+        delete req.session.data['deleted-file-name'];
+        res.status(200).json({ success: true });
+    });
+
+    // GET handler for downloading consultation results files
+    router.get('/' + version + '/download-consultation-results-file/:index', function (req, res) {
+        const fileIndex = parseInt(req.params.index);
+        
+        if (req.session.data['consultation-results-files'] && req.session.data['consultation-results-files'][fileIndex]) {
+            const file = req.session.data['consultation-results-files'][fileIndex];
+            
+            // Set headers for file download
+            res.setHeader('Content-Type', file.type || 'application/octet-stream');
+            res.setHeader('Content-Disposition', `attachment; filename="${file.name}"`);
+            
+            // For prototype purposes, create a simple text response
+            // In a real application, this would serve the actual file from storage
+            res.send(`This is a prototype file download for: ${file.name}\n\nFile size: ${(file.size / 1024 / 1024).toFixed(2)} MB\nFile type: ${file.type}\n\nThis is a simulated file download for demonstration purposes.`);
+        } else {
+            res.status(404).send('File not found');
+        }
+    });
+
+    // POST handler for deleting consultation results files
+    router.post('/' + version + '/delete-consultation-results-file', function (req, res) {
+        const fileIndex = parseInt(req.body['file-index']);
+        
+        if (req.session.data['consultation-results-files'] && req.session.data['consultation-results-files'][fileIndex]) {
+            // Get the file name before removing it for the success message
+            const deletedFileName = req.session.data['consultation-results-files'][fileIndex].name;
+            
+            // Remove the file at the specified index
+            req.session.data['consultation-results-files'].splice(fileIndex, 1);
+            
+            // Set success flag for deletion banner
+            req.session.data['file-delete-success'] = true;
+            req.session.data['deleted-file-name'] = deletedFileName;
+            
+            // Clear upload success flag
+            req.session.data['file-upload-success'] = false;
+        }
+        
+        // Redirect back to the consultation results page
+        res.redirect('outgoing-trusts-consultation-results');
     });
 
     // GET handler for preferred trust question
