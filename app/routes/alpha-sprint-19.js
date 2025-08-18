@@ -468,13 +468,13 @@ module.exports = function (router) {
         if (selectedTrust) {
             // Store the selected trust details in session for the confirmation page
             req.session.data['selected-outgoing-trust-name'] = selectedTrust.name;
-            req.session.data['selected-outgoing-trust-postcode'] = selectedTrust.postcode;
+            req.session.data['selected-outgoing-trust-ukprn'] = selectedTrust.ukprn;
             req.session.data['selected-outgoing-trust-company-house'] = selectedTrust.companyHouseNumber;
             
             res.render(version + '/outgoing-trusts-confirmation', {
                 data: req.session.data,
                 trustName: selectedTrust.name,
-                trustPostcode: selectedTrust.postcode,
+                trustUkprn: selectedTrust.ukprn,
                 trustCompanyHouse: selectedTrust.companyHouseNumber,
                 editIndex: editIndex // Pass edit index directly to template
             });
@@ -565,7 +565,7 @@ module.exports = function (router) {
             
             const newTrust = {
                 name: req.session.data['selected-outgoing-trust-name'],
-                postcode: req.session.data['selected-outgoing-trust-postcode'],
+                ukprn: req.session.data['selected-outgoing-trust-ukprn'],
                 companyHouseNumber: req.session.data['selected-outgoing-trust-company-house']
             };
             
@@ -631,7 +631,7 @@ module.exports = function (router) {
     router.post('/' + version + '/outgoing-trusts-contact-details-handler', function (req, res) {
         const editIndex = req.body['edit-index'];
         const trustName = req.body['trust-name'];
-        const trustPostcode = req.body['trust-postcode'];
+        const trustUkprn = req.body['trust-ukprn'];
         const trustCompanyHouse = req.body['trust-company-house'];
         
         // Store contact details
@@ -657,7 +657,7 @@ module.exports = function (router) {
             // Find the trust by name and update it with contact details
             const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
                 trust.name === trustName && 
-                trust.postcode === trustPostcode && 
+                trust.ukprn === trustUkprn && 
                 trust.companyHouseNumber === trustCompanyHouse
             );
             
@@ -701,7 +701,7 @@ module.exports = function (router) {
     router.post('/' + version + '/outgoing-trusts-closure-handler', function (req, res) {
         const editIndex = req.body['edit-index'];
         const trustName = req.body['trust-name'];
-        const trustPostcode = req.body['trust-postcode'];
+        const trustUkprn = req.body['trust-ukprn'];
         const trustCompanyHouse = req.body['trust-company-house'];
         
         // Store closure information
@@ -724,7 +724,7 @@ module.exports = function (router) {
             // Find the trust by name and update it with closure info
             const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
                 trust.name === trustName && 
-                trust.postcode === trustPostcode && 
+                trust.ukprn === trustUkprn && 
                 trust.companyHouseNumber === trustCompanyHouse
             );
             
@@ -871,7 +871,7 @@ module.exports = function (router) {
     router.post('/' + version + '/outgoing-trusts-stakeholder-engagement-handler', function (req, res) {
         const editIndex = req.body['edit-index'];
         const trustName = req.body['trust-name'];
-        const trustPostcode = req.body['trust-postcode'];
+        const trustUkprn = req.body['trust-ukprn'];
         const trustCompanyHouse = req.body['trust-company-house'];
         
         // Store stakeholder engagement consultation information
@@ -894,7 +894,7 @@ module.exports = function (router) {
             // Find the trust by name and update it with stakeholder engagement consultation info
             const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
                 trust.name === trustName && 
-                trust.postcode === trustPostcode && 
+                trust.ukprn === trustUkprn && 
                 trust.companyHouseNumber === trustCompanyHouse
             );
             
@@ -952,7 +952,7 @@ module.exports = function (router) {
     router.post('/' + version + '/outgoing-trusts-stakeholder-engagement-explanation-handler', function (req, res) {
         const editIndex = req.body['edit-index'];
         const trustName = req.body['trust-name'];
-        const trustPostcode = req.body['trust-postcode'];
+        const trustUkprn = req.body['trust-ukprn'];
         const trustCompanyHouse = req.body['trust-company-house'];
         
         // Store stakeholder engagement explanation information
@@ -975,7 +975,7 @@ module.exports = function (router) {
             // Find the trust by name and update it with explanation info
             const trustIndex = req.session.data['outgoing-trusts'].findIndex(trust => 
                 trust.name === trustName && 
-                trust.postcode === trustPostcode && 
+                trust.ukprn === trustUkprn && 
                 trust.companyHouseNumber === trustCompanyHouse
             );
             
