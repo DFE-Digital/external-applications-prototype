@@ -64,52 +64,52 @@ module.exports = {
     'trusts': [
         {
             name: "London Education Trust",
-            postcode: "SW1A 1AA",
+            ukprn: "10003526",
             companyHouseNumber: "12345678"
         },
         {
             name: "Northern Learning Trust",
-            postcode: "M1 1AA",
+            ukprn: "10004567",
             companyHouseNumber: "87654321"
         },
         {
             name: "Southern Multi-Academy Trust",
-            postcode: "SO1 1AA",
+            ukprn: "10005678",
             companyHouseNumber: "11223344"
         },
         {
             name: "Eastern Educational Trust",
-            postcode: "CB1 1AA",
+            ukprn: "10006789",
             companyHouseNumber: "55667788"
         },
         {
             name: "Western Learning Partnership",
-            postcode: "BS1 1AA",
+            ukprn: "10007890",
             companyHouseNumber: "99887766"
         },
         {
             name: "Central Academy Trust",
-            postcode: "B1 1AA",
+            ukprn: "10008901",
             companyHouseNumber: "44332211"
         },
         {
             name: "Metropolitan Education Trust",
-            postcode: "L1 1AA",
+            ukprn: "10009012",
             companyHouseNumber: "66554433"
         },
         {
             name: "Regional Learning Trust",
-            postcode: "LS1 1AA",
+            ukprn: "10010123",
             companyHouseNumber: "77889900"
         },
         {
             name: "National Academy Partnership",
-            postcode: "S1 1AA",
+            ukprn: "10011234",
             companyHouseNumber: "11223344"
         },
         {
             name: "United Learning Trust",
-            postcode: "M1 1AA",
+            ukprn: "10012345",
             companyHouseNumber: "55667788"
         }
     ],
