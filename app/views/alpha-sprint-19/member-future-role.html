@@ -17,7 +17,7 @@
     
     <form action="members-summary" method="post">
       
-      {{ govukCheckboxes({
+      {{ govukRadios({
         name: "member-future-role",
         fieldset: {
           legend: {
@@ -34,17 +34,20 @@
           {
             value: "Trustee",
             text: "Trustee",
-            checked: data["member-future-role"] and data["member-future-role"].includes("Trustee")
+            checked: data["member-future-role"] === "Trustee"
           },
           {
             value: "Part of a local governing body",
             text: "Part of a local governing body",
-            checked: data["member-future-role"] and data["member-future-role"].includes("Part of a local governing body")
+            checked: data["member-future-role"] === "Part of a local governing body"
+          },
+          {
+            divider: "or"
           },
           {
             value: "None of these",
             text: "None of these",
-            checked: data["member-future-role"] and data["member-future-role"].includes("None of these")
+            checked: data["member-future-role"] === "None of these"
           }
         ]
       }) }}
