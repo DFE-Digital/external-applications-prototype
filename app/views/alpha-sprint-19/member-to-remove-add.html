@@ -16,19 +16,20 @@
   <div class="govuk-grid-column-two-thirds">
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+      <span class="govuk-caption-l">Members</span>
       Full name of the member who will be leaving
     </h1>
 
-    <p class="govuk-body">
+    <!--<p class="govuk-body">
       Enter the full name of the current member who will be leaving the trust after the transfer.
-    </p>
+    </p>-->
 
     <form action="members-summary" method="post">
       
       <div class="govuk-form-group">
-        <label class="govuk-label" for="member-to-remove-full-name">
+        <!--<label class="govuk-label" for="member-to-remove-full-name">
           Full name
-        </label>
+        </label>-->
         <input class="govuk-input" id="member-to-remove-full-name" name="member-to-remove-full-name" type="text" value="{{ data['member-to-remove-full-name'] }}">
       </div>
 

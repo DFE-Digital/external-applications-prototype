@@ -2539,28 +2539,7 @@ module.exports = function (router) {
             delete req.session.data['member-to-remove-full-name'];
         }
 
-        // Handle member future role and save complete member data
-        if (req.body['member-future-role'] !== undefined) {
-            const futureRole = req.body['member-future-role'];
-            const fullName = req.session.data['member-full-name'];
 
-            // Find the member in the array and update their data
-            if (req.session.data['members-to-add']) {
-                const memberIndex = req.session.data['members-to-add'].findIndex(m => m.name === fullName);
-                if (memberIndex !== -1) {
-                    req.session.data['members-to-add'][memberIndex].currentResponsibilities = req.session.data['member-current-responsibilities'];
-                    req.session.data['members-to-add'][memberIndex].futureRole = futureRole;
-                    
-                    // Set success flag for banner when member is fully added
-                    req.session.data['member-added'] = fullName;
-                }
-            }
-
-            // Clear temporary session data
-            delete req.session.data['member-full-name'];
-            delete req.session.data['member-current-responsibilities'];
-            delete req.session.data['member-future-role'];
-        }
 
         // Redirect based on the action
         if (req.body['members-status'] !== undefined) {
@@ -2624,12 +2603,31 @@ module.exports = function (router) {
 
     // Handle member future role
     router.post('/' + version + '/member-future-role', function (req, res) {
-        const currentResponsibilities = req.body['member-current-responsibilities'];
-        
-        // Save to session for the current member being added
-        req.session.data['member-current-responsibilities'] = currentResponsibilities;
+        const futureRole = req.body['member-future-role'];
+        const fullName = req.session.data['member-full-name'];
 
-        res.render(version + '/member-future-role');
+        // Save the future role to session
+        req.session.data['member-future-role'] = futureRole;
+
+        // Find the member in the array and update their data
+        if (req.session.data['members-to-add']) {
+            const memberIndex = req.session.data['members-to-add'].findIndex(m => m.name === fullName);
+            if (memberIndex !== -1) {
+                req.session.data['members-to-add'][memberIndex].currentResponsibilities = req.session.data['member-current-responsibilities'];
+                req.session.data['members-to-add'][memberIndex].futureRole = futureRole;
+                
+                // Set success flag for banner when member is fully added
+                req.session.data['member-added'] = fullName;
+            }
+        }
+
+        // Clear temporary session data
+        delete req.session.data['member-full-name'];
+        delete req.session.data['member-current-responsibilities'];
+        delete req.session.data['member-future-role'];
+
+        // Redirect to members summary
+        res.redirect('members-summary');
     });
 
     // Handle member deletion confirmation

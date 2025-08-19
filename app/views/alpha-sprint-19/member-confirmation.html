@@ -4,7 +4,7 @@
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back to Add a member by name",
+    text: "Back",
     href: "member-add",
     classes: "govuk-!-margin-top-6"
   }) }}
@@ -30,12 +30,12 @@
         items: [
           {
             value: "Yes",
-            text: "Yes",
+            text: "Existing",
             checked: data["member-confirmed"] === "Yes"
           },
           {
             value: "No",
-            text: "No",
+            text: "New",
             checked: data["member-confirmed"] === "No"
           }
         ]
