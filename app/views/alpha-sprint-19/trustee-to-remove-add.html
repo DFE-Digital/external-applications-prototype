@@ -4,7 +4,7 @@
 
 {% block beforeContent %}
   {{ govukBackLink({
-    text: "Back to Trustees",
+    text: "Back",
     href: "trustee-summary",
     classes: "govuk-!-margin-top-6"
   }) }}
@@ -16,19 +16,20 @@
   <div class="govuk-grid-column-two-thirds">
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+      <span class="govuk-caption-l">Trustees</span>
       Full name of the trustee who will be leaving
     </h1>
 
-    <p class="govuk-body">
+    <!--<p class="govuk-body">
       Enter the full name of the current trustee who will be leaving the trust after the transfer.
-    </p>
+    </p>-->
 
     <form action="trustee-summary" method="post">
       
       <div class="govuk-form-group">
-        <label class="govuk-label" for="trustee-to-remove-full-name">
+        <!--<label class="govuk-label" for="trustee-to-remove-full-name">
           Full name
-        </label>
+        </label>-->
         <input class="govuk-input" id="trustee-to-remove-full-name" name="trustee-to-remove-full-name" type="text" value="{{ data['trustee-to-remove-full-name'] }}">
       </div>
 
