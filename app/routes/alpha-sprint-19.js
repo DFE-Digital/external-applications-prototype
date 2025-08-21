@@ -2987,6 +2987,90 @@ module.exports = function (router) {
         }
     });
 
+    // INCOMING TRUST PROGRESSIVE ENHANCEMENT ROUTES
+    
+    // GET handler for incoming trust progressive enhancement summary
+    router.get('/' + version + '/incoming-trust-progressive-enhancement-summary', function (req, res) {
+        res.render(version + '/incoming-trust-progressive-enhancement-summary', {
+            data: req.session.data
+        });
+    });
+
+    // GET handler for incoming trust progressive enhancement search
+    router.get('/' + version + '/incoming-trust-progressive-enhancement-search', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        console.log('Search route - trusts data:', data.trusts);
+        console.log('Edit index:', editIndex);
+        
+        res.render(version + '/incoming-trust-progressive-enhancement-search', {
+            data: req.session.data,
+            trusts: data.trusts,
+            editIndex: editIndex
+        });
+    });
+
+    // GET handler for incoming trust progressive enhancement confirmation
+    router.get('/' + version + '/incoming-trust-progressive-enhancement-confirmation', function (req, res) {
+        const editIndex = req.query.edit;
+        const selectedTrustName = req.query['incoming-trust-progressive-enhancement-search'];
+        
+        console.log('Confirmation route - query params:', req.query);
+        console.log('Selected trust name:', selectedTrustName);
+        
+        if (!selectedTrustName) {
+            console.log('No trust name found, redirecting to search');
+            return res.redirect('incoming-trust-progressive-enhancement-search');
+        }
+        
+        // Find the selected trust details from the data
+        const selectedTrust = data.trusts.find(trust => trust.name === selectedTrustName);
+        
+        if (selectedTrust) {
+            // Store the selected trust details in session for the confirmation page
+            req.session.data['selected-progressive-enhancement-trust-name'] = selectedTrust.name;
+            req.session.data['selected-progressive-enhancement-trust-ukprn'] = selectedTrust.ukprn;
+            req.session.data['selected-progressive-enhancement-trust-company-house'] = selectedTrust.companyHouseNumber;
+            
+            res.render(version + '/incoming-trust-progressive-enhancement-confirmation', {
+                data: req.session.data,
+                trustName: selectedTrust.name,
+                trustUkprn: selectedTrust.ukprn,
+                trustCompanyHouse: selectedTrust.companyHouseNumber,
+                editIndex: editIndex
+            });
+        } else {
+            // If trust not found, redirect back to search
+            return res.redirect('incoming-trust-progressive-enhancement-search');
+        }
+    });
+
+    // POST handler for incoming trust progressive enhancement confirmation
+    router.post('/' + version + '/incoming-trust-progressive-enhancement-confirmation-handler', function (req, res) {
+        const trustConfirmed = req.body['trust-confirmed'];
+        const editIndex = req.body['edit'];
+        
+        if (trustConfirmed === 'Yes') {
+            // Store the selected trust in session
+            req.session.data['progressive-enhancement-selected-trust'] = {
+                name: req.session.data['selected-progressive-enhancement-trust-name'],
+                ukprn: req.session.data['selected-progressive-enhancement-trust-ukprn'],
+                companyHouseNumber: req.session.data['selected-progressive-enhancement-trust-company-house']
+            };
+            
+            // Clear the temporary selection data
+            delete req.session.data['selected-progressive-enhancement-trust-name'];
+            delete req.session.data['selected-progressive-enhancement-trust-ukprn'];
+            delete req.session.data['selected-progressive-enhancement-trust-company-house'];
+            
+            // Redirect back to summary page
+            return res.redirect('incoming-trust-progressive-enhancement-summary');
+        } else {
+            // If not confirmed, go back to search
+            return res.redirect('incoming-trust-progressive-enhancement-search');
+        }
+    });
+
 
 
 
