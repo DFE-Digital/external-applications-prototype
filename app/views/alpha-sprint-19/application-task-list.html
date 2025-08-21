@@ -142,6 +142,24 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="incoming-trust-progressive-enhancement-summary" aria-describedby="incoming-trust-progressive-enhancement-status">
+            Trust details (progressive enhancement)
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="incoming-trust-status-progressive-enhancement">
+          {% if data['incoming-trust-progressive-enhancement-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="reason-and-benefits-trust" aria-describedby="reason-and-benefits-trust-status">
             Reason and benefits
           </a>
