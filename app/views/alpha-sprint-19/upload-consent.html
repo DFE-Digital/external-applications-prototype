@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Upload consent" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form class="form" action="upload-consent-handler" method="post" enctype="multipart/form-data">
+      
+      <h1 class="govuk-heading-xl">Upload consent</h1>
+      
+      <p class="govuk-body">Upload a Word document or PDF.</p>
+      <p class="govuk-body">Give the file a clear, descriptive name. Files up to 10MB are accepted.</p>
+
+      {{ govukFileUpload({
+        id: "consent-file",
+        name: "consent-file",
+        label: {
+          text: "Upload a file"
+        },
+        hint: {
+          text: "Word document or PDF, max 10MB"
+        }
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+    
+  </div>
+</div>
+
+{% endblock %}
+

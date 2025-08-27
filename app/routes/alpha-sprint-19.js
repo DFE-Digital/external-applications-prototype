@@ -59,6 +59,23 @@ module.exports = function (router) {
         next();
     });
 
+    // Add file upload middleware for consent upload
+    router.use('/' + version + '/upload-consent-handler', (req, res, next) => {
+        // For this prototype, we'll simulate file upload handling
+        // In a real application, you would use multer or similar middleware
+        if (req.headers['content-type'] && req.headers['content-type'].includes('multipart/form-data')) {
+            // Simulate file upload processing
+            req.files = {
+                'consent-file': {
+                    name: 'diocesan-consent-document.pdf',
+                    size: 2048000, // 2MB
+                    mimetype: 'application/pdf'
+                }
+            };
+        }
+        next();
+    });
+
 
     // Handle academy search results page
     router.get('/' + version + '/academies-to-transfer-search-results', function (req, res) {
@@ -103,32 +120,145 @@ module.exports = function (router) {
             const selectedAcademy = req.session.data['selected-academy'];
             const [name, urn, postcode, academyTrust] = selectedAcademy.split('|||');
 
+            // Store the academy details temporarily for the flow
+            req.session.data['temp-academy-details'] = {
+                name: name,
+                urn: urn,
+                postcode: postcode,
+                academyTrust: academyTrust
+            };
+
+            // Redirect to proposed transfer date page
+            return res.redirect('proposed-transfer-date');
+        } else {
+            // If user selects No, go back to academies-to-transfer
+            return res.redirect('academies-to-transfer');
+        }
+    });
+
+    // Handle proposed transfer date
+    router.post('/' + version + '/proposed-transfer-date-handler', function (req, res) {
+        // Store the proposed transfer date
+        const day = req.body['proposed-transfer-date-day'];
+        const month = req.body['proposed-transfer-date-month'];
+        const year = req.body['proposed-transfer-date-year'];
+        
+        req.session.data['proposed-transfer-date'] = {
+            day: day,
+            month: month,
+            year: year
+        };
+
+        // Redirect to academy funding agreement page
+        return res.redirect('academy-funding-agreement');
+    });
+
+    // Handle academy funding agreement
+    router.post('/' + version + '/academy-funding-agreement-handler', function (req, res) {
+        const fundingAgreement = req.body['academy-funding-agreement'];
+        
+        // Store the funding agreement response
+        req.session.data['academy-funding-agreement'] = fundingAgreement;
+
+        if (fundingAgreement === 'yes') {
+            // If Yes, go to diocesan consent page
+            return res.redirect('diocesan-consent');
+        } else {
+            // If No, go to academy operating differently page
+            return res.redirect('academy-operating-differently');
+        }
+    });
+
+    // Handle diocesan consent
+    router.post('/' + version + '/diocesan-consent-handler', function (req, res) {
+        const diocesanConsent = req.body['diocesan-consent'];
+        
+        // Store the diocesan consent response
+        req.session.data['diocesan-consent'] = diocesanConsent;
+
+        if (diocesanConsent === 'yes') {
+            // If Yes, go to upload consent page
+            return res.redirect('upload-consent');
+        } else {
+            // If No, add academy to list and go to summary
+            addAcademyToTransferList(req);
+            return res.redirect('academies-to-transfer');
+        }
+    });
+
+    // Handle upload consent
+    router.post('/' + version + '/upload-consent-handler', function (req, res) {
+        // Handle file upload for consent
+        if (req.files && req.files['consent-file']) {
+            const uploadedFile = req.files['consent-file'];
+            
+            // Initialize consent files array if it doesn't exist
+            if (!req.session.data['consent-files']) {
+                req.session.data['consent-files'] = [];
+            }
+            
+            // Add the new file to the array
+            req.session.data['consent-files'].push({
+                name: uploadedFile.name,
+                size: uploadedFile.size,
+                type: uploadedFile.mimetype
+            });
+        }
+        
+        // Add academy to list and go to summary
+        addAcademyToTransferList(req);
+        return res.redirect('academies-to-transfer');
+    });
+
+    // Handle academy operating differently
+    router.post('/' + version + '/academy-operating-differently-handler', function (req, res) {
+        // Store the operating differently explanation
+        req.session.data['academy-operating-differently'] = req.body['academy-operating-differently'];
+        
+        // Add academy to list and go to summary
+        addAcademyToTransferList(req);
+        return res.redirect('academies-to-transfer');
+    });
+
+    // Helper function to add academy to transfer list
+    function addAcademyToTransferList(req) {
+        const tempAcademy = req.session.data['temp-academy-details'];
+        
+        if (tempAcademy) {
             // Initialize academies-to-transfer array if it doesn't exist
             if (!req.session.data['academies-to-transfer']) {
                 req.session.data['academies-to-transfer'] = [];
             }
 
+            // Add the academy with all the collected information
+            const academyWithDetails = {
+                ...tempAcademy,
+                proposedTransferDate: req.session.data['proposed-transfer-date'],
+                fundingAgreement: req.session.data['academy-funding-agreement'],
+                diocesanConsent: req.session.data['diocesan-consent'],
+                operatingDifferently: req.session.data['academy-operating-differently']
+            };
+
             // Add the new academy to the list
-            req.session.data['academies-to-transfer'].push({
-                name: name,
-                urn: urn,
-                postcode: postcode,
-                academyTrust: academyTrust
-            });
+            req.session.data['academies-to-transfer'].push(academyWithDetails);
 
             // Set outgoing trusts status to true since we now have academies
             req.session.data['outgoing-trusts-status'] = true;
 
             // Store the academy name for success message
-            req.session.data['academy-added'] = name;
+            req.session.data['academy-added'] = tempAcademy.name;
 
             // Clear any existing errors since we now have an academy
             delete req.session.data.errors;
+
+            // Clear temporary data
+            delete req.session.data['temp-academy-details'];
+            delete req.session.data['proposed-transfer-date'];
+            delete req.session.data['academy-funding-agreement'];
+            delete req.session.data['diocesan-consent'];
+            delete req.session.data['academy-operating-differently'];
         }
-        
-        // Always go to academies-to-transfer first
-        return res.redirect('academies-to-transfer');
-    });
+    }
     
     // Handle new trust question response
     router.post('/' + version + '/new-trust-handler', function (req, res) {
