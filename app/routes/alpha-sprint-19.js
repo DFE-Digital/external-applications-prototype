@@ -203,8 +203,66 @@ module.exports = function (router) {
                 size: uploadedFile.size,
                 type: uploadedFile.mimetype
             });
+            
+            // Set success flag for banner
+            req.session.data['file-upload-success'] = true;
+            
+            // Clear deletion success flag
+            req.session.data['file-delete-success'] = false;
+            delete req.session.data['deleted-file-name'];
+            
+            // In a real application, you would save the file to a secure location
+            // For this prototype, we'll just store the file information
         }
         
+        // Redirect back to the upload consent page to show the file table
+        res.redirect('upload-consent');
+    });
+
+    // POST handler for deleting consent files
+    router.post('/' + version + '/delete-consent-file', function (req, res) {
+        const fileIndex = parseInt(req.body['file-index']);
+        
+        if (req.session.data['consent-files'] && req.session.data['consent-files'][fileIndex]) {
+            // Get the file name before removing it for the success message
+            const deletedFileName = req.session.data['consent-files'][fileIndex].name;
+            
+            // Remove the file at the specified index
+            req.session.data['consent-files'].splice(fileIndex, 1);
+            
+            // Set success flag for deletion banner
+            req.session.data['file-delete-success'] = true;
+            req.session.data['deleted-file-name'] = deletedFileName;
+            
+            // Clear upload success flag
+            req.session.data['file-upload-success'] = false;
+        }
+        
+        // Redirect back to the upload consent page
+        res.redirect('upload-consent');
+    });
+
+    // GET handler for downloading consent files
+    router.get('/' + version + '/download-consent-file/:index', function (req, res) {
+        const fileIndex = parseInt(req.params.index);
+        
+        if (req.session.data['consent-files'] && req.session.data['consent-files'][fileIndex]) {
+            const file = req.session.data['consent-files'][fileIndex];
+            
+            // Set headers for file download
+            res.setHeader('Content-Type', file.type || 'application/octet-stream');
+            res.setHeader('Content-Disposition', `attachment; filename="${file.name}"`);
+            
+            // For prototype purposes, create a simple text response
+            // In a real application, this would serve the actual file from storage
+            res.send(`This is a prototype file download for: ${file.name}\n\nFile size: ${(file.size / 1024 / 1024).toFixed(2)} MB\nFile type: ${file.type}\n\nThis is a simulated file download for demonstration purposes.`);
+        } else {
+            res.status(404).send('File not found');
+        }
+    });
+
+    // POST handler for continuing from upload consent page
+    router.post('/' + version + '/upload-consent-continue', function (req, res) {
         // Add academy to list and go to summary
         addAcademyToTransferList(req);
         return res.redirect('academies-to-transfer');
@@ -230,14 +288,20 @@ module.exports = function (router) {
                 req.session.data['academies-to-transfer'] = [];
             }
 
+            // Get consent files for this academy (if any)
+            const consentFiles = req.session.data['consent-files'] || [];
+
             // Add the academy with all the collected information
             const academyWithDetails = {
                 ...tempAcademy,
                 proposedTransferDate: req.session.data['proposed-transfer-date'],
                 fundingAgreement: req.session.data['academy-funding-agreement'],
                 diocesanConsent: req.session.data['diocesan-consent'],
-                operatingDifferently: req.session.data['academy-operating-differently']
+                operatingDifferently: req.session.data['academy-operating-differently'],
+                consentFiles: consentFiles
             };
+
+
 
             // Add the new academy to the list
             req.session.data['academies-to-transfer'].push(academyWithDetails);
@@ -251,12 +315,13 @@ module.exports = function (router) {
             // Clear any existing errors since we now have an academy
             delete req.session.data.errors;
 
-            // Clear temporary data
+            // Clear temporary data for this academy only
             delete req.session.data['temp-academy-details'];
             delete req.session.data['proposed-transfer-date'];
             delete req.session.data['academy-funding-agreement'];
             delete req.session.data['diocesan-consent'];
             delete req.session.data['academy-operating-differently'];
+            delete req.session.data['consent-files'];
         }
     }
     
@@ -391,6 +456,8 @@ module.exports = function (router) {
                 }).join(', ');
             }
         }
+        
+
         
         res.render(version + '/academies-to-transfer-summary', {
             success: !!(removedAcademy || addedAcademy),

@@ -59,26 +59,144 @@
         No academies have been added.
       </div>
     {% else %}
-      <dl class="govuk-summary-list">
-        {% for academy in data['academies-to-transfer'] %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              Academy {{ loop.index }}
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <p class="govuk-body">{{ academy.name }}</p>
-              <p class="govuk-body govuk-!-margin-bottom-0">URN: {{ academy.urn }}</p>
-              <p class="govuk-body govuk-!-margin-bottom-0">Postcode: {{ academy.postcode }}</p>
-              <p class="govuk-body govuk-!-margin-bottom-0">Trust: {{ academy.academyTrust }}</p>
-            </dd>
-            <dd class="govuk-summary-list__actions">
+      {% for academy in data['academies-to-transfer'] %}
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h3 class="govuk-summary-card__title">Academy {{ loop.index }}</h3>
+            <div class="govuk-summary-card__actions">
               <a class="govuk-link" href="confirm-delete-academy?index={{ loop.index0 }}">
                 Remove<span class="govuk-visually-hidden"> academy {{ loop.index }}</span>
               </a>
-            </dd>
+            </div>
           </div>
-        {% endfor %}
-      </dl>
+          <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Academy name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ academy.name }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <!-- No change link for academy name as it comes from search -->
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  URN
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ academy.urn }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <!-- No change link for URN as it comes from search -->
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Postcode
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ academy.postcode }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <!-- No change link for postcode as it comes from search -->
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Trust
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ academy.academyTrust }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <!-- No change link for trust as it comes from search -->
+                </dd>
+              </div>
+              
+              {% if academy.proposedTransferDate and academy.proposedTransferDate.day and academy.proposedTransferDate.month and academy.proposedTransferDate.year %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Proposed transfer date
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ academy.proposedTransferDate.day }}/{{ academy.proposedTransferDate.month }}/{{ academy.proposedTransferDate.year }}</p>
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <!-- No change link for transfer date as it's part of the flow -->
+                  </dd>
+                </div>
+              {% endif %}
+              
+              {% if academy.fundingAgreement %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Operating based on funding agreement
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{% if academy.fundingAgreement === 'yes' %}Yes{% else %}No{% endif %}</p>
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <!-- No change link for funding agreement as it's part of the flow -->
+                  </dd>
+                </div>
+              {% endif %}
+              
+              {% if academy.diocesanConsent %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Diocesan consent
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{% if academy.diocesanConsent === 'yes' %}Yes{% else %}No{% endif %}</p>
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <!-- No change link for diocesan consent as it's part of the flow -->
+                  </dd>
+                </div>
+              {% endif %}
+              
+              {% if academy.operatingDifferently %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Operating differently explanation
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ academy.operatingDifferently }}</p>
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <!-- No change link for operating differently as it's part of the flow -->
+                  </dd>
+                </div>
+              {% endif %}
+              
+              {% if academy.consentFiles and academy.consentFiles.length > 0 %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Consent files uploaded
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list govuk-list--bullet">
+                      {% for file in academy.consentFiles %}
+                        <li>
+                          <a href="download-consent-file/{{ loop.parent.index0 }}/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                            {{ file.name }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <!-- No change link for consent files as they're part of the flow -->
+                  </dd>
+                </div>
+              {% endif %}
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
     {% endif %}
 
     <a href="academies-to-transfer-search" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
