@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Upload consent (Progressive enhancement)" %}
+{% set pageName="Upload consent" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -44,7 +44,7 @@
       
       {{ govukFileUpload({
         label: {
-          html: '<span class="govuk-caption-l">Diocesan consent (Progressive enhancement)</span>
+          html: '<span class="govuk-caption-l">Diocesan consent</span>
           Upload consent',
           classes: "govuk-label--l",
           isPageHeading: true
@@ -145,7 +145,7 @@
 
   // Clear banner flags when continue button is clicked (for navigation)
   document.addEventListener('DOMContentLoaded', function() {
-    const continueForm = document.querySelector('form[action="upload-consent-continue-progressive"]');
+    const continueForm = document.querySelector('form[action="upload-consent-progressive-continue-direct"]');
     if (continueForm) {
       continueForm.addEventListener('submit', function() {
         clearBannerFlags();

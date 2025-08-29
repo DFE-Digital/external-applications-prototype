@@ -2,7 +2,7 @@
 
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
-{% set pageName="Details of academies (Progressive enhancement)" %}
+{% set pageName="Details of academies" %}
 
 {% block beforeContent %}
   {{ govukBackLink({
@@ -51,7 +51,7 @@
     {% endif %}
 
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="academies-to-transfer">
-      Details of academies (Progressive enhancement)
+      Details of academies
     </h1>
 
     {% if not data['academies-to-transfer'] or data['academies-to-transfer'].length === 0 %}
@@ -116,13 +116,13 @@
                 </dd>
               </div>
               
-              {% if academy.proposedTransferDate and academy.proposedTransferDate.day and academy.proposedTransferDate.month and academy.proposedTransferDate.year %}
+              {% if academy.proposedTransferDate %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
                     Proposed transfer date
                   </dt>
                   <dd class="govuk-summary-list__value">
-                    <p class="govuk-body">{{ academy.proposedTransferDate.day }}/{{ academy.proposedTransferDate.month }}/{{ academy.proposedTransferDate.year }}</p>
+                    <p class="govuk-body">{{ academy.proposedTransferDate }}</p>
                   </dd>
                   <dd class="govuk-summary-list__actions">
                     <!-- No change link for transfer date as it's part of the flow -->
