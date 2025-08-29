@@ -16,7 +16,7 @@
 
     <form class="form" action="academy-operating-differently-progressive-handler" method="post">
 
-      {{ govukTextarea({
+      {{ govukCharacterCount({
         name: "academy-operating-differently",
         id: "academy-operating-differently",
         label: {
@@ -25,9 +25,9 @@
           isPageHeading: true
         },
         hint: {
-          text: "Tell us if the academy has submitted an application to 'Making a significant change'."
+          html: "Tell us if the academy has submitted an application to <a href='https://www.gov.uk/government/publications/making-significant-changes-to-an-existing-academy' class='govuk-link' target='_blank' rel='noopener noreferrer'>Making a significant change</a>."
         },
-        rows: 5,
+        maxlength: 4000,
         value: data['academy-operating-differently']
       }) }}
 
