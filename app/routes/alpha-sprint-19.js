@@ -4534,12 +4534,27 @@ module.exports = function (router) {
         }
     });
 
+    // POST handler for academies progressive enhancement summary
+    router.post('/' + version + '/academies-to-transfer-summary-progressive', function (req, res) {
+        // Handle academy deletion confirmation
+        if (req.body['confirm-delete'] !== undefined) {
+            const confirmDelete = req.body['confirm-delete'];
+            const academyIndex = parseInt(req.body['academy-index']);
+            
+            if (confirmDelete === 'yes' && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+                // Get academy name before removing it
+                const academyName = req.session.data['academies-to-transfer-progressive'][academyIndex].name;
+                // Remove the academy at the specified index
+                req.session.data['academies-to-transfer-progressive'].splice(academyIndex, 1);
+                // Store success message in session
+                req.session.data['academy-removed'] = academyName;
+            }
+            // If confirmDelete === 'no', do nothing - keep the academy
+        }
 
+        // Redirect back to the summary page
+        res.redirect('academies-to-transfer-summary-progressive');
+    });
 
-
-
-
-
-
-
+    // POST handler for academies progressive enhancement confirmation
 }
