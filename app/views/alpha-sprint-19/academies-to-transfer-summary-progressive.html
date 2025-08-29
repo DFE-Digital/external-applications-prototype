@@ -54,12 +54,12 @@
       Details of academies
     </h1>
 
-    {% if not data['academies-to-transfer'] or data['academies-to-transfer'].length === 0 %}
+    {% if not data['academies-to-transfer-progressive'] or data['academies-to-transfer-progressive'].length === 0 %}
       <div class="govuk-inset-text">
         No academies have been added.
       </div>
     {% else %}
-      {% for academy in data['academies-to-transfer'] %}
+      {% for academy in data['academies-to-transfer-progressive'] %}
         <div class="govuk-summary-card">
           <div class="govuk-summary-card__title-wrapper">
             <h3 class="govuk-summary-card__title">Academy {{ loop.index }}</h3>
@@ -116,13 +116,13 @@
                 </dd>
               </div>
               
-              {% if academy.proposedTransferDate %}
+              {% if academy.proposedTransferDate and academy.proposedTransferDate.day and academy.proposedTransferDate.month and academy.proposedTransferDate.year %}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
                     Proposed transfer date
                   </dt>
                   <dd class="govuk-summary-list__value">
-                    <p class="govuk-body">{{ academy.proposedTransferDate }}</p>
+                    <p class="govuk-body">{{ academy.proposedTransferDate.day }}/{{ academy.proposedTransferDate.month }}/{{ academy.proposedTransferDate.year }}</p>
                   </dd>
                   <dd class="govuk-summary-list__actions">
                     <!-- No change link for transfer date as it's part of the flow -->

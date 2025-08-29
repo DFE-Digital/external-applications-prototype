@@ -341,6 +341,51 @@ module.exports = function (router) {
             delete req.session.data['consent-files'];
         }
     }
+
+    // Helper function to add academy to transfer list (progressive enhancement)
+    function addAcademyToTransferListProgressive(req) {
+        const tempAcademy = req.session.data['temp-academy-details'];
+        
+        if (tempAcademy) {
+            // Initialize academies-to-transfer-progressive array if it doesn't exist
+            if (!req.session.data['academies-to-transfer-progressive']) {
+                req.session.data['academies-to-transfer-progressive'] = [];
+            }
+
+            // Get consent files for this academy (if any)
+            const consentFiles = req.session.data['consent-files'] || [];
+
+            // Add the academy with all the collected information
+            const academyWithDetails = {
+                ...tempAcademy,
+                proposedTransferDate: req.session.data['proposed-transfer-date'],
+                fundingAgreement: req.session.data['academy-funding-agreement'],
+                diocesanConsent: req.session.data['diocesan-consent'],
+                operatingDifferently: req.session.data['academy-operating-differently'],
+                consentFiles: consentFiles
+            };
+
+            // Add the new academy to the list
+            req.session.data['academies-to-transfer-progressive'].push(academyWithDetails);
+
+            // Set outgoing trusts status to true since we now have academies
+            req.session.data['outgoing-trusts-status'] = true;
+
+            // Store the academy name for success message
+            req.session.data['academy-added'] = tempAcademy.name;
+
+            // Clear any existing errors since we now have an academy
+            delete req.session.data.errors;
+
+            // Clear temporary data for this academy only
+            delete req.session.data['temp-academy-details'];
+            delete req.session.data['proposed-transfer-date'];
+            delete req.session.data['academy-funding-agreement'];
+            delete req.session.data['diocesan-consent'];
+            delete req.session.data['academy-operating-differently'];
+            delete req.session.data['consent-files'];
+        }
+    }
     
     // Handle new trust question response
     router.post('/' + version + '/new-trust-handler', function (req, res) {
@@ -3442,7 +3487,7 @@ module.exports = function (router) {
             return res.redirect('upload-consent-progressive');
         } else {
             // If No, add academy to list and go to summary
-            addAcademyToTransferList(req);
+            addAcademyToTransferListProgressive(req);
             return res.redirect('academies-to-transfer-summary-progressive');
         }
     });
@@ -3462,7 +3507,7 @@ module.exports = function (router) {
         req.session.data['academy-operating-differently'] = operatingDifferently;
 
         // Add academy to list and go to summary
-        addAcademyToTransferList(req);
+        addAcademyToTransferListProgressive(req);
         return res.redirect('academies-to-transfer-summary-progressive');
     });
 
@@ -3506,7 +3551,7 @@ module.exports = function (router) {
     // POST handler for continuing directly from upload consent progressive (adds academy to list)
     router.post('/' + version + '/upload-consent-progressive-continue-direct', function (req, res) {
         // Add academy to list and go to summary
-        addAcademyToTransferList(req);
+        addAcademyToTransferListProgressive(req);
         return res.redirect('academies-to-transfer-summary-progressive');
     });
 

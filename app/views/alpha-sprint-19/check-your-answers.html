@@ -160,6 +160,133 @@
     
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">Details of academies (Progressive enhancement)</h2>
+        {% if data.application and data.application.status !== 'Submitted' %}
+          <div class="govuk-summary-card__actions">
+            <a class="govuk-link" href="academies-to-transfer-summary-progressive">
+              Change<span class="govuk-visually-hidden"> details of academies (progressive enhancement)</span>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      
+      {% if not data['academies-to-transfer-progressive'] or data['academies-to-transfer-progressive'].length === 0 %}
+        <div class="govuk-summary-card__content">
+          <div class="govuk-inset-text">
+            No academies have been selected.
+          </div>
+        </div>
+      {% else %}
+        <div class="govuk-summary-card__content">
+          <h3 class="govuk-heading-s">Academies to be transferred</h3>
+          <dl class="govuk-summary-list">
+            {% for academy in data['academies-to-transfer-progressive'] %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Academy {{ loop.index }}
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ academy.name }}</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  URN
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ academy.urn }}</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Postcode
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ academy.postcode }}</p>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Trust
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ academy.academyTrust }}</p>
+                </dd>
+              </div>
+              
+              {% if academy.proposedTransferDate and academy.proposedTransferDate.day and academy.proposedTransferDate.month and academy.proposedTransferDate.year %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Proposed transfer date
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ academy.proposedTransferDate.day }}/{{ academy.proposedTransferDate.month }}/{{ academy.proposedTransferDate.year }}</p>
+                  </dd>
+                </div>
+              {% endif %}
+              
+              {% if academy.fundingAgreement %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Operating based on funding agreement
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{% if academy.fundingAgreement === 'yes' %}Yes{% else %}No{% endif %}</p>
+                  </dd>
+                </div>
+              {% endif %}
+              
+              {% if academy.diocesanConsent %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Diocesan consent
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{% if academy.diocesanConsent === 'yes' %}Yes{% else %}No{% endif %}</p>
+                  </dd>
+                </div>
+              {% endif %}
+              
+              {% if academy.operatingDifferently %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Operating differently explanation
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">{{ academy.operatingDifferently }}</p>
+                  </dd>
+                </div>
+              {% endif %}
+              
+              {% if academy.consentFiles and academy.consentFiles.length > 0 %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    Consent files uploaded
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list govuk-list--bullet">
+                      {% for file in academy.consentFiles %}
+                        <li>
+                          <a href="download-consent-file-progressive/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                            {{ file.name }}
+                          </a>
+                          <span class="govuk-body govuk-!-font-size-14">
+                            ({{ (file.size / 1024 / 1024).toFixed(2) }} MB, {{ file.type }})
+                          </span>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </dd>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </dl>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Details of academies</h2>
         {% if data.application and data.application.status !== 'Submitted' %}
           <div class="govuk-summary-card__actions">
