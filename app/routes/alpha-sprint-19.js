@@ -76,6 +76,23 @@ module.exports = function (router) {
         next();
     });
 
+    // Add file upload middleware for consent upload (progressive enhancement)
+    router.use('/' + version + '/upload-consent-progressive-handler', (req, res, next) => {
+        // For this prototype, we'll simulate file upload handling
+        // In a real application, you would use multer or similar middleware
+        if (req.headers['content-type'] && req.headers['content-type'].includes('multipart/form-data')) {
+            // Simulate file upload processing
+            req.files = {
+                'consent-file': {
+                    name: 'diocesan-consent-document-progressive.pdf',
+                    size: 2048000, // 2MB
+                    mimetype: 'application/pdf'
+                }
+            };
+        }
+        next();
+    });
+
 
     // Handle academy search results page
     router.get('/' + version + '/academies-to-transfer-search-results', function (req, res) {
@@ -2372,6 +2389,1197 @@ module.exports = function (router) {
         });
     });
 
+    // Handle declaration trust search results selection
+    router.post('/' + version + '/declaration-trust-confirmation', function (req, res) {
+        // Get the selected trust value from the form data
+        const selectedDeclarationTrustValue = req.body['selected-trust'];
+        
+        if (selectedDeclarationTrustValue) {
+            try {
+                // Parse the JSON string and store temporarily
+                const selectedDeclarationTrust = JSON.parse(selectedDeclarationTrustValue);
+                req.session.data['temp-selected-declaration-trust'] = selectedDeclarationTrustValue;
+                req.session.data.tempSelectedDeclarationTrust = selectedDeclarationTrust;
+                
+                // Prepare the hint HTML in JavaScript to avoid Nunjucks parsing issues
+                const hintHtml = selectedDeclarationTrust ? 
+                    `<div class="govuk-inset-text">
+                        <h2 class="govuk-heading-m">${selectedDeclarationTrust.name}</h2>
+                        <p class="govuk-body">TRN: ${selectedDeclarationTrust.ref}</p>
+                        <p class="govuk-body">UKPRN: ${selectedDeclarationTrust.companies}</p>
+                    </div>` : '';
+                
+                // Render with the parsed trust data and prepared hint HTML
+                res.render(version + '/declaration-trust-confirmation', {
+                    selectedDeclarationTrust: selectedDeclarationTrust,
+                    hintHtml: hintHtml
+                });
+            } catch (error) {
+                console.error('Error parsing selected declaration trust:', error);
+                res.render(version + '/declaration-trust-confirmation', {
+                    selectedDeclarationTrust: null,
+                    hintHtml: ''
+                });
+            }
+        } else {
+            res.render(version + '/declaration-trust-confirmation', {
+                selectedDeclarationTrust: null,
+                hintHtml: ''
+            });
+        }
+    });
+
+    // Handle declaration trust confirmation
+    router.post('/' + version + '/declaration-trust-confirmation-handler', function (req, res) {
+        const confirmTrust = req.body['confirm-trust'];
+        
+        if (confirmTrust === 'yes') {
+            // Only save the trust selection permanently if user confirms with "Yes"
+            req.session.data['selected-declaration-trust'] = req.session.data['temp-selected-declaration-trust'];
+            req.session.data.selectedDeclarationTrust = req.session.data.tempSelectedDeclarationTrust;
+            
+            // Clear the temporary data
+            delete req.session.data['temp-selected-declaration-trust'];
+            delete req.session.data.tempSelectedDeclarationTrust;
+            
+            // Redirect to declaration form when user confirms
+            res.redirect('declaration-form');
+        } else {
+            // Clear the temporary data
+            delete req.session.data['temp-selected-declaration-trust'];
+            delete req.session.data.tempSelectedDeclarationTrust;
+            
+            // Redirect to declaration summary when user says no
+            res.redirect('declaration-summary');
+        }
+    });
+
+    // Handle declaration form submission
+    router.post('/' + version + '/declaration-form-handler', function (req, res) {
+        // Initialize declarations array if it doesn't exist
+        if (!req.session.data['declarations']) {
+            req.session.data['declarations'] = [];
+        }
+        
+        // Create declaration object with complete trust information
+        const declarationData = {
+            trust: {
+                name: req.session.data.selectedDeclarationTrust?.name || '',
+                ref: req.session.data.selectedDeclarationTrust?.ref || '',
+                companies: req.session.data.selectedDeclarationTrust?.companies || ''
+            },
+            chairOfTrustees: req.body['declarationFormChairOfTrustees'] || '',
+            dateOfDeclaration: {
+                day: req.body['passport-issued-day'] || '',
+                month: req.body['passport-issued-month'] || '',
+                year: req.body['passport-issued-year'] || ''
+            },
+            status: 'Signed'
+        };
+        
+        // Check if we're updating an existing declaration
+        const declarationIndex = req.body['declaration-index'];
+        const trustName = req.session.data.selectedDeclarationTrust?.name;
+        
+        if (declarationIndex !== undefined && req.session.data['declarations'][declarationIndex]) {
+            // Update existing declaration by index
+            req.session.data['declarations'][declarationIndex] = declarationData;
+        } else if (trustName && req.session.data['declarations']) {
+            // Try to find existing declaration by trust name
+            const existingIndex = req.session.data['declarations'].findIndex(declaration => 
+                declaration.trust.name === trustName
+            );
+            
+            if (existingIndex !== -1) {
+                // Update existing declaration
+                req.session.data['declarations'][existingIndex] = declarationData;
+            } else {
+                // Add new declaration to the array
+                req.session.data['declarations'].push(declarationData);
+            }
+        } else {
+            // Add new declaration to the array
+            req.session.data['declarations'].push(declarationData);
+        }
+        
+        // Redirect to declaration summary
+        res.redirect('declaration-summary');
+    });
+
+    // GET handler for declaration form (for viewing existing declarations)
+    router.get('/' + version + '/declaration-form', function (req, res) {
+        const declarationIndex = req.query.index;
+        const trustName = req.query.trust;
+        let existingDeclaration = null;
+        
+        // If we have an index, find the declaration by index (for editing existing)
+        if (declarationIndex !== undefined && req.session.data['declarations'] && req.session.data['declarations'][declarationIndex]) {
+            existingDeclaration = req.session.data['declarations'][declarationIndex];
+        }
+        // If we have a trust name, find the declaration by trust name (for editing existing)
+        else if (trustName && req.session.data['declarations']) {
+            existingDeclaration = req.session.data['declarations'].find(declaration => 
+                declaration.trust.name === trustName
+            );
+        }
+        
+        // Store the trust name in session for the form submission
+        if (trustName) {
+            req.session.data.selectedDeclarationTrust = {
+                name: trustName,
+                ref: '',
+                companies: ''
+            };
+        }
+        
+        res.render(version + '/declaration-form', {
+            data: req.session.data,
+            existingDeclaration: existingDeclaration,
+            declarationIndex: declarationIndex,
+            trustName: trustName
+        });
+    });
+
+    // GET handler for declaration summary
+    router.get('/' + version + '/declaration-summary', function (req, res) {
+        // Initialize application data if not exists
+        if (!req.session.data.application) {
+            req.session.data.application = {
+                reference: req.session.data['application-reference'],
+                contributors: []
+            };
+        }
+
+        const ref = req.session.data.application.reference;
+        const application = data.applications.find(app => app.reference === ref);
+        
+        // Load contributors from application data if not already in session
+        if (application && application.contributors && (!req.session.data['contributors'] || req.session.data['contributors'].length === 0)) {
+            req.session.data['contributors'] = application.contributors;
+        }
+        
+        // Process task owners
+        let taskOwnerDisplay = 'Task owner: not assigned';
+        if (req.session.data.taskOwners?.declaration) {
+            const owners = Array.isArray(req.session.data.taskOwners.declaration) 
+                ? req.session.data.taskOwners.declaration 
+                : [req.session.data.taskOwners.declaration];
+            
+            if (owners.length > 0 && !owners.includes('_unchecked')) {
+                taskOwnerDisplay = 'Assigned to: ' + owners.map(owner => {
+                    const contributor = req.session.data['contributors'].find(c => c.email === owner);
+                    return contributor ? contributor.name : owner;
+                }).join(', ');
+            }
+        }
+        
+        // Create unique list of outgoing trusts from academies
+        let uniqueOutgoingTrusts = [];
+        if (req.session.data['academies-to-transfer'] && req.session.data['academies-to-transfer'].length > 0) {
+            const trustNames = req.session.data['academies-to-transfer'].map(academy => academy.academyTrust);
+            uniqueOutgoingTrusts = [...new Set(trustNames)];
+        }
+        
+        // Process incoming trust status
+        let incomingTrustStatus = 'Not signed yet';
+        if (req.session.data['declarations'] && req.session.data.selectedTrust) {
+            const incomingDeclaration = req.session.data['declarations'].find(declaration => 
+                declaration.trust.name === req.session.data.selectedTrust.name
+            );
+            if (incomingDeclaration) {
+                incomingTrustStatus = incomingDeclaration.status || 'Signed';
+            }
+        }
+        
+        // Process outgoing trusts status
+        let outgoingTrustsStatus = {};
+        if (uniqueOutgoingTrusts.length > 0) {
+            uniqueOutgoingTrusts.forEach(trustName => {
+                const declaration = req.session.data['declarations'] ? req.session.data['declarations'].find(declaration => 
+                    declaration.trust.name === trustName
+                ) : null;
+                outgoingTrustsStatus[trustName] = declaration ? (declaration.status || 'Signed') : 'Not signed yet';
+            });
+        }
+        
+        console.log('Debug - uniqueOutgoingTrusts:', uniqueOutgoingTrusts);
+        console.log('Debug - outgoingTrustsStatus:', outgoingTrustsStatus);
+        console.log('Debug - declarations:', req.session.data['declarations']);
+        
+        res.render(version + '/declaration-summary', {
+            data: req.session.data,
+            taskOwnerDisplay: taskOwnerDisplay,
+            uniqueOutgoingTrusts: uniqueOutgoingTrusts,
+            incomingTrustStatus: incomingTrustStatus,
+            outgoingTrustsStatus: outgoingTrustsStatus
+        });
+    });
+
+    // Handle declaration deletion
+    router.post('/' + version + '/delete-declaration-handler', function (req, res) {
+        const declarationIndex = req.body['declaration-index'];
+        const confirmDelete = req.body['confirm-delete'];
+        
+        if (confirmDelete === 'yes' && declarationIndex !== undefined && req.session.data['declarations'] && req.session.data['declarations'][declarationIndex]) {
+            // Remove the declaration at the specified index
+            req.session.data['declarations'].splice(declarationIndex, 1);
+        }
+        
+        // Redirect to declaration summary
+        res.redirect('declaration-summary');
+    });
+
+    // GET handler for confirm delete declaration page
+    router.get('/' + version + '/confirm-delete-declaration', function (req, res) {
+        req.session.data['index'] = req.query.index;
+        res.render(version + '/confirm-delete-declaration');
+    });
+
+    // Members routes
+    // GET handler for members summary
+    router.get('/' + version + '/members-summary', function (req, res) {
+        // Check if we have success messages
+        const memberAdded = req.session.data['member-added'];
+        const memberRemoved = req.session.data['member-removed'];
+        const memberToRemoveAdded = req.session.data['member-to-remove-added'];
+        const memberToRemoveRemoved = req.session.data['member-to-remove-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['member-added'];
+        delete req.session.data['member-removed'];
+        delete req.session.data['member-to-remove-added'];
+        delete req.session.data['member-to-remove-removed'];
+        
+        res.render(version + '/members-summary', {
+            data: req.session.data,
+            memberAdded: memberAdded,
+            memberRemoved: memberRemoved,
+            memberToRemoveAdded: memberToRemoveAdded,
+            memberToRemoveRemoved: memberToRemoveRemoved
+        });
+    });
+
+    // GET handler for trustee summary
+    router.get('/' + version + '/trustee-summary', function (req, res) {
+        // Check if we have success messages
+        const trusteeAdded = req.session.data['trustee-added'];
+        const trusteeRemoved = req.session.data['trustee-removed'];
+        const trusteeToRemoveAdded = req.session.data['trustee-to-remove-added'];
+        const trusteeToRemoveRemoved = req.session.data['trustee-to-remove-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['trustee-added'];
+        delete req.session.data['trustee-removed'];
+        delete req.session.data['trustee-to-remove-added'];
+        delete req.session.data['trustee-to-remove-removed'];
+        
+        res.render(version + '/trustee-summary', {
+            data: req.session.data,
+            trusteeAdded: trusteeAdded,
+            trusteeRemoved: trusteeRemoved,
+            trusteeToRemoveAdded: trusteeToRemoveAdded,
+            trusteeToRemoveRemoved: trusteeToRemoveRemoved
+        });
+    });
+
+    // GET handler for member-add - clear previous member data
+    router.get('/' + version + '/member-add', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['member-full-name'];
+        delete req.session.data['member-current-responsibilities'];
+        delete req.session.data['member-future-role'];
+        delete req.session.data['member-confirmed'];
+        
+        res.render(version + '/member-add');
+    });
+
+    // GET handler for member-to-remove-add - clear previous member data
+    router.get('/' + version + '/member-to-remove-add', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['member-to-remove-full-name'];
+        
+        res.render(version + '/member-to-remove-add');
+    });
+
+    // Handle members summary form submission
+    router.post('/' + version + '/members-summary', function (req, res) {
+        // Handle completion status
+        if (req.body['members-status'] !== undefined) {
+            req.session.data['members-status'] = req.body['members-status'] === 'Complete';
+        }
+
+        // Handle member deletion confirmation
+        if (req.body['confirm-delete-member'] !== undefined) {
+            const confirmDelete = req.body['confirm-delete-member'];
+            const memberIndex = parseInt(req.body['delete-member']);
+            
+            if (confirmDelete === 'yes' && req.session.data['members-to-add'] && req.session.data['members-to-add'][memberIndex]) {
+                // Remove the member if confirmed
+                const memberName = req.session.data['members-to-add'][memberIndex].name;
+                req.session.data['members-to-add'].splice(memberIndex, 1);
+                req.session.data['member-removed'] = memberName;
+            }
+            // If confirmDelete === 'no', do nothing - keep the member
+        }
+
+        // Handle member to remove deletion
+        if (req.body['delete-member-to-remove'] !== undefined) {
+            const memberIndex = parseInt(req.body['delete-member-to-remove']);
+            if (req.session.data['members-to-remove'] && req.session.data['members-to-remove'][memberIndex]) {
+                const memberName = req.session.data['members-to-remove'][memberIndex].name;
+                req.session.data['members-to-remove'].splice(memberIndex, 1);
+                req.session.data['member-to-remove-removed'] = memberName;
+            }
+        }
+
+        // Handle member to remove add form submission
+        if (req.body['member-to-remove-full-name'] !== undefined) {
+            const fullName = req.body['member-to-remove-full-name'];
+
+            // Initialize members-to-remove array if it doesn't exist
+            if (!req.session.data['members-to-remove']) {
+                req.session.data['members-to-remove'] = [];
+            }
+
+            // Add the member to the array
+            req.session.data['members-to-remove'].push({
+                name: fullName
+            });
+
+            // Set success flag for banner
+            req.session.data['member-to-remove-added'] = fullName;
+
+            // Clear the form field after storing the data
+            delete req.session.data['member-to-remove-full-name'];
+        }
+
+        // Handle member future role and save complete member data
+        if (req.body['member-future-role'] !== undefined) {
+            const futureRole = req.body['member-future-role'];
+            const fullName = req.session.data['member-full-name'];
+
+            // Find the member in the array and update their data
+            if (req.session.data['members-to-add']) {
+                const memberIndex = req.session.data['members-to-add'].findIndex(m => m.name === fullName);
+                if (memberIndex !== -1) {
+                    req.session.data['members-to-add'][memberIndex].currentResponsibilities = req.session.data['member-current-responsibilities'];
+                    req.session.data['members-to-add'][memberIndex].futureRole = futureRole;
+                    
+                    // Set success flag for banner when member is fully added
+                    req.session.data['member-added'] = fullName;
+                }
+            }
+
+            // Clear temporary session data
+            delete req.session.data['member-full-name'];
+            delete req.session.data['member-current-responsibilities'];
+            delete req.session.data['member-future-role'];
+        }
+
+        // Redirect based on the action
+        if (req.body['members-status'] !== undefined) {
+            res.redirect('application-task-list');
+        } else {
+            res.redirect('members-summary');
+        }
+    });
+
+    // Handle member add form
+    router.post('/' + version + '/member-confirmation', function (req, res) {
+        const fullName = req.body['member-full-name'];
+
+        res.render(version + '/member-confirmation', {
+            'member-full-name': fullName,
+            'member-name': fullName
+        });
+    });
+
+    // Handle member confirmation and save member
+    router.post('/' + version + '/member-current-responsibilities', function (req, res) {
+        const confirmed = req.body['member-confirmed'];
+        
+        if (confirmed === 'Yes') {
+            const fullName = req.session.data['member-full-name'];
+
+            // Initialize members-to-add array if it doesn't exist
+            if (!req.session.data['members-to-add']) {
+                req.session.data['members-to-add'] = [];
+            }
+
+            // Add the member to the array with confirmation status
+            req.session.data['members-to-add'].push({
+                name: fullName,
+                isExistingMember: true
+            });
+            
+            res.render(version + '/member-current-responsibilities');
+        } else if (confirmed === 'No') {
+            // If user selects "No", still continue to current responsibilities
+            // This means they're adding a new member, not an existing one
+            const fullName = req.session.data['member-full-name'];
+
+            // Initialize members-to-add array if it doesn't exist
+            if (!req.session.data['members-to-add']) {
+                req.session.data['members-to-add'] = [];
+            }
+
+            // Add the member to the array with confirmation status
+            req.session.data['members-to-add'].push({
+                name: fullName,
+                isExistingMember: false
+            });
+            
+            res.render(version + '/member-current-responsibilities');
+        } else {
+            // Default fallback
+            res.redirect('members-summary');
+        }
+    });
+
+    // Handle member future role
+    router.post('/' + version + '/member-future-role', function (req, res) {
+        const currentResponsibilities = req.body['member-current-responsibilities'];
+        
+        // Save to session for the current member being added
+        req.session.data['member-current-responsibilities'] = currentResponsibilities;
+
+        res.render(version + '/member-future-role');
+    });
+
+    // Handle member deletion confirmation
+    router.get('/' + version + '/confirm-delete-member', function (req, res) {
+        const memberIndex = parseInt(req.query.index);
+        req.session.data['delete-member-index'] = memberIndex;
+
+        res.render(version + '/confirm-delete-member', {
+            index: memberIndex
+        });
+    });
+
+    // Handle member to remove deletion confirmation
+    router.get('/' + version + '/confirm-delete-member-to-remove', function (req, res) {
+        const memberIndex = parseInt(req.query.index);
+        req.session.data['delete-member-to-remove-index'] = memberIndex;
+
+        res.render(version + '/confirm-delete-member-to-remove', {
+            index: memberIndex
+        });
+    });
+
+    // Handle member to remove deletion confirmation POST
+    router.post('/' + version + '/confirm-delete-member-to-remove', function (req, res) {
+        const confirmDelete = req.body['confirm-delete-member-to-remove'];
+        const memberIndex = parseInt(req.body['delete-member-to-remove']);
+        
+        if (confirmDelete === 'yes' && req.session.data['members-to-remove'] && req.session.data['members-to-remove'][memberIndex]) {
+            // Remove the member if confirmed
+            const memberName = req.session.data['members-to-remove'][memberIndex].name;
+            req.session.data['members-to-remove'].splice(memberIndex, 1);
+            req.session.data['member-to-remove-removed'] = memberName;
+        }
+        // If confirmDelete === 'no', do nothing - keep the member
+        
+        res.redirect('members-summary');
+    });
+
+    // GET handler for trustee summary
+    router.get('/' + version + '/trustee-summary', function (req, res) {
+        // Check if we have success messages
+        const trusteeAdded = req.session.data['trustee-added'];
+        const trusteeRemoved = req.session.data['trustee-removed'];
+        const trusteeToRemoveAdded = req.session.data['trustee-to-remove-added'];
+        const trusteeToRemoveRemoved = req.session.data['trustee-to-remove-removed'];
+        
+        // Clear success flags from session immediately
+        delete req.session.data['trustee-added'];
+        delete req.session.data['trustee-removed'];
+        delete req.session.data['trustee-to-remove-added'];
+        delete req.session.data['trustee-to-remove-removed'];
+        
+        res.render(version + '/trustee-summary', {
+            data: req.session.data,
+            trusteeAdded: trusteeAdded,
+            trusteeRemoved: trusteeRemoved,
+            trusteeToRemoveAdded: trusteeToRemoveAdded,
+            trusteeToRemoveRemoved: trusteeToRemoveRemoved
+        });
+    });
+
+    // GET handler for trustee-add - clear previous trustee data
+    router.get('/' + version + '/trustee-add', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['trustee-full-name'];
+        delete req.session.data['trustee-current-responsibilities'];
+        delete req.session.data['trustee-future-role'];
+        delete req.session.data['trustee-confirmed'];
+        delete req.session.data['trustee-local-governing-body'];
+        
+        res.render(version + '/trustee-add', {
+            data: req.session.data
+        });
+    });
+
+    // GET handler for trustee-to-remove-add - clear previous trustee data
+    router.get('/' + version + '/trustee-to-remove-add', function (req, res) {
+        // Clear form fields to ensure clean state when entering input fields
+        delete req.session.data['trustee-to-remove-full-name'];
+        
+        res.render(version + '/trustee-to-remove-add');
+    });
+
+    // Handle trustees summary form submission
+    router.post('/' + version + '/trustee-summary', function (req, res) {
+        // Handle completion status
+        if (req.body['trustee-status'] !== undefined) {
+            req.session.data['trustee-status'] = req.body['trustee-status'] === 'Complete';
+        }
+
+        // Handle trustee deletion confirmation
+        if (req.body['confirm-delete-trustee'] !== undefined) {
+            const confirmDelete = req.body['confirm-delete-trustee'];
+            const trusteeIndex = parseInt(req.body['delete-trustee']);
+            
+            if (confirmDelete === 'yes' && req.session.data['trustees-to-add'] && req.session.data['trustees-to-add'][trusteeIndex]) {
+                // Remove the trustee if confirmed
+                const trusteeName = req.session.data['trustees-to-add'][trusteeIndex].name;
+                req.session.data['trustees-to-add'].splice(trusteeIndex, 1);
+                req.session.data['trustee-removed'] = trusteeName;
+            }
+            // If confirmDelete === 'no', do nothing - keep the trustee
+        }
+
+        // Handle trustee to remove deletion
+        if (req.body['delete-trustee-to-remove'] !== undefined) {
+            const trusteeIndex = parseInt(req.body['delete-trustee-to-remove']);
+            if (req.session.data['trustees-to-remove'] && req.session.data['trustees-to-remove'][trusteeIndex]) {
+                req.session.data['trustees-to-remove'].splice(trusteeIndex, 1);
+            }
+        }
+
+        // Handle trustee to remove add form submission
+        if (req.body['trustee-to-remove-full-name'] !== undefined) {
+            const fullName = req.body['trustee-to-remove-full-name'];
+
+            // Initialize trustees-to-remove array if it doesn't exist
+            if (!req.session.data['trustees-to-remove']) {
+                req.session.data['trustees-to-remove'] = [];
+            }
+
+            // Add the trustee to the array
+            req.session.data['trustees-to-remove'].push({
+                name: fullName
+            });
+
+            // Set success flag for banner
+            req.session.data['trustee-to-remove-added'] = fullName;
+
+            // Clear the form field after storing the data
+            delete req.session.data['trustee-to-remove-full-name'];
+        }
+
+        // Handle trustee future role and save complete trustee data
+        if (req.body['trustee-future-role'] !== undefined) {
+            const futureRole = req.body['trustee-future-role'];
+            const fullName = req.session.data['trustee-full-name'];
+
+            // Find the trustee in the array and update their data
+            if (req.session.data['trustees-to-add']) {
+                const trusteeIndex = req.session.data['trustees-to-add'].findIndex(t => t.name === fullName);
+                if (trusteeIndex !== -1) {
+                    req.session.data['trustees-to-add'][trusteeIndex].currentResponsibilities = req.session.data['trustee-current-responsibilities'];
+                    req.session.data['trustees-to-add'][trusteeIndex].futureRole = futureRole;
+                }
+            }
+
+            // Clear temporary session data
+            delete req.session.data['trustee-full-name'];
+            delete req.session.data['trustee-current-responsibilities'];
+            delete req.session.data['trustee-future-role'];
+        }
+
+        // Handle trustee local governing body and save complete trustee data
+        if (req.body['trustee-local-governing-body'] !== undefined) {
+            const localGoverningBody = req.body['trustee-local-governing-body'];
+            const fullName = req.session.data['trustee-full-name'];
+
+            // Find the trustee in the array and update their data
+            if (req.session.data['trustees-to-add']) {
+                const trusteeIndex = req.session.data['trustees-to-add'].findIndex(t => t.name === fullName);
+                if (trusteeIndex !== -1) {
+                    req.session.data['trustees-to-add'][trusteeIndex].currentResponsibilities = req.session.data['trustee-current-responsibilities'];
+                    req.session.data['trustees-to-add'][trusteeIndex].futureRole = req.session.data['trustee-future-role'];
+                    req.session.data['trustees-to-add'][trusteeIndex].localGoverningBody = localGoverningBody;
+                    
+                    // Set success flag for banner when trustee is fully added
+                    req.session.data['trustee-added'] = fullName;
+                }
+            }
+
+            // Clear temporary session data
+            delete req.session.data['trustee-full-name'];
+            delete req.session.data['trustee-current-responsibilities'];
+            delete req.session.data['trustee-future-role'];
+            delete req.session.data['trustee-local-governing-body'];
+        }
+
+        // Redirect based on the action
+        if (req.body['trustee-status'] !== undefined) {
+            res.redirect('application-task-list');
+        } else {
+            res.redirect('trustee-summary');
+        }
+    });
+
+    // Handle trustee add form
+    router.post('/' + version + '/trustee-confirmation', function (req, res) {
+        const fullName = req.body['trustee-full-name'];
+        req.session.data['trustee-full-name'] = fullName;
+
+        res.render(version + '/trustee-confirmation', {
+            data: req.session.data
+        });
+    });
+
+    // Handle trustee confirmation and save trustee
+    router.post('/' + version + '/trustee-current-responsibilities', function (req, res) {
+        const confirmed = req.body['trustee-confirmed'];
+        
+        if (confirmed === 'Yes') {
+            const fullName = req.session.data['trustee-full-name'];
+
+            // Initialize trustees-to-add array if it doesn't exist
+            if (!req.session.data['trustees-to-add']) {
+                req.session.data['trustees-to-add'] = [];
+            }
+
+            // Add the trustee to the array with confirmation status
+            req.session.data['trustees-to-add'].push({
+                name: fullName,
+                isExistingTrustee: true
+            });
+            
+            res.render(version + '/trustee-current-responsibilities', {
+                data: req.session.data
+            });
+        } else if (confirmed === 'No') {
+            // If user selects "No", still continue to current responsibilities
+            // This means they're adding a new trustee, not an existing one
+            const fullName = req.session.data['trustee-full-name'];
+
+            // Initialize trustees-to-add array if it doesn't exist
+            if (!req.session.data['trustees-to-add']) {
+                req.session.data['trustees-to-add'] = [];
+            }
+
+            // Add the trustee to the array with confirmation status
+            req.session.data['trustees-to-add'].push({
+                name: fullName,
+                isExistingTrustee: false
+            });
+            
+            res.render(version + '/trustee-current-responsibilities', {
+                data: req.session.data
+            });
+        } else {
+            // Default fallback
+            res.redirect('trustee-summary');
+        }
+    });
+
+    // Handle trustee future role
+    router.post('/' + version + '/trustee-future-role', function (req, res) {
+        const currentResponsibilities = req.body['trustee-current-responsibilities'];
+        
+        // Save to session for the current trustee being added
+        req.session.data['trustee-current-responsibilities'] = currentResponsibilities;
+
+        res.render(version + '/trustee-future-role', {
+            data: req.session.data
+        });
+    });
+
+    // Handle trustee local governing body question
+    router.post('/' + version + '/trustee-local-governing-body', function (req, res) {
+        const futureRole = req.body['trustee-future-role'];
+        const localGoverningBody = req.body['trustee-local-governing-body'];
+        
+        // Save to session for the current trustee being added
+        req.session.data['trustee-future-role'] = futureRole;
+        req.session.data['trustee-local-governing-body'] = localGoverningBody;
+
+        res.render(version + '/trustee-local-governing-body', {
+            data: req.session.data
+        });
+    });
+
+    // Handle trustee deletion confirmation
+    router.get('/' + version + '/confirm-delete-trustee', function (req, res) {
+        const trusteeIndex = parseInt(req.query.index);
+        req.session.data['delete-trustee-index'] = trusteeIndex;
+
+        res.render(version + '/confirm-delete-trustee', {
+            index: trusteeIndex
+        });
+    });
+
+    // Handle trustee to remove deletion confirmation
+    router.get('/' + version + '/confirm-delete-trustee-to-remove', function (req, res) {
+        const trusteeIndex = parseInt(req.query.index);
+        req.session.data['delete-trustee-to-remove-index'] = trusteeIndex;
+
+        res.render(version + '/confirm-delete-trustee-to-remove', {
+            index: trusteeIndex
+        });
+    });
+
+    // Handle trustee to remove deletion confirmation POST
+    router.post('/' + version + '/confirm-delete-trustee-to-remove', function (req, res) {
+        const confirmDelete = req.body['confirm-delete-trustee-to-remove'];
+        const trusteeIndex = parseInt(req.body['delete-trustee-to-remove']);
+        
+        if (confirmDelete === 'yes' && req.session.data['trustees-to-remove'] && req.session.data['trustees-to-remove'][trusteeIndex]) {
+            // Remove the trustee if confirmed
+            const trusteeName = req.session.data['trustees-to-remove'][trusteeIndex].name;
+            req.session.data['trustees-to-remove'].splice(trusteeIndex, 1);
+            req.session.data['trustee-to-remove-removed'] = trusteeName;
+        }
+        // If confirmDelete === 'no', do nothing - keep the trustee
+        
+        res.redirect('trustee-summary');
+    });
+
+
+
+
+
+    // POST handler for deleting board resolution files
+    router.post('/' + version + '/delete-board-resolution-file', function (req, res) {
+        const trustIndex = req.body['trust-index'];
+        const fileIndex = parseInt(req.body['file-index']);
+        
+        if (trustIndex !== undefined) {
+            const actualTrustIndex = parseInt(trustIndex);
+            
+            if (req.session.data['board-resolution-files'] && 
+                req.session.data['board-resolution-files'][actualTrustIndex] && 
+                req.session.data['board-resolution-files'][actualTrustIndex][fileIndex]) {
+                // Get the file name before removing it for the success message
+                const deletedFileName = req.session.data['board-resolution-files'][actualTrustIndex][fileIndex].name;
+                
+                // Remove the file at the specified index from the specific trust
+                req.session.data['board-resolution-files'][actualTrustIndex].splice(fileIndex, 1);
+                
+                // Set success flag for deletion banner
+                req.session.data['file-delete-success'] = true;
+                req.session.data['deleted-file-name'] = deletedFileName;
+                
+                // Clear upload success flag
+                req.session.data['file-upload-success'] = false;
+            }
+            
+            // Redirect back to the board resolution page for the specific trust
+            return res.redirect(`outgoing-trusts-board-resolution?edit=${actualTrustIndex}`);
+        } else {
+            // Fallback: handle deletion from general files array (backward compatibility)
+            if (req.session.data['board-resolution-files'] && req.session.data['board-resolution-files'][fileIndex]) {
+                // Get the file name before removing it for the success message
+                const deletedFileName = req.session.data['board-resolution-files'][fileIndex].name;
+                
+                // Remove the file at the specified index
+                req.session.data['board-resolution-files'].splice(fileIndex, 1);
+                
+                // Set success flag for deletion banner
+                req.session.data['file-delete-success'] = true;
+                req.session.data['deleted-file-name'] = deletedFileName;
+                
+                // Clear upload success flag
+                req.session.data['file-upload-success'] = false;
+            }
+            
+            // Redirect back to the board resolution page
+            return res.redirect('outgoing-trusts-board-resolution');
+        }
+    });
+
+    // INCOMING TRUST PROGRESSIVE ENHANCEMENT ROUTES
+    
+    // GET handler for incoming trust progressive enhancement summary
+    router.get('/' + version + '/incoming-trust-progressive-enhancement-summary', function (req, res) {
+        res.render(version + '/incoming-trust-progressive-enhancement-summary', {
+            data: req.session.data
+        });
+    });
+
+    // GET handler for incoming trust progressive enhancement search
+    router.get('/' + version + '/incoming-trust-progressive-enhancement-search', function (req, res) {
+        const editIndex = req.query.edit;
+        
+        console.log('Search route - trusts data:', data.trusts);
+        console.log('Edit index:', editIndex);
+        
+        res.render(version + '/incoming-trust-progressive-enhancement-search', {
+            data: req.session.data,
+            trusts: data.trusts,
+            editIndex: editIndex
+        });
+    });
+
+    // GET handler for incoming trust progressive enhancement confirmation
+    router.get('/' + version + '/incoming-trust-progressive-enhancement-confirmation', function (req, res) {
+        const editIndex = req.query.edit;
+        const selectedTrustName = req.query['incoming-trust-progressive-enhancement-search'];
+        
+        console.log('Confirmation route - query params:', req.query);
+        console.log('Selected trust name:', selectedTrustName);
+        
+        if (!selectedTrustName) {
+            console.log('No trust name found, redirecting to search');
+            return res.redirect('incoming-trust-progressive-enhancement-search');
+        }
+        
+        // Find the selected trust details from the data
+        const selectedTrust = data.trusts.find(trust => trust.name === selectedTrustName);
+        
+        if (selectedTrust) {
+            // Store the selected trust details in session for the confirmation page
+            req.session.data['selected-progressive-enhancement-trust-name'] = selectedTrust.name;
+            req.session.data['selected-progressive-enhancement-trust-ukprn'] = selectedTrust.ukprn;
+            req.session.data['selected-progressive-enhancement-trust-company-house'] = selectedTrust.companyHouseNumber;
+            
+            res.render(version + '/incoming-trust-progressive-enhancement-confirmation', {
+                data: req.session.data,
+                trustName: selectedTrust.name,
+                trustUkprn: selectedTrust.ukprn,
+                trustCompanyHouse: selectedTrust.companyHouseNumber,
+                editIndex: editIndex
+            });
+        } else {
+            // If trust not found, redirect back to search
+            return res.redirect('incoming-trust-progressive-enhancement-search');
+        }
+    });
+
+    // POST handler for incoming trust progressive enhancement confirmation
+    router.post('/' + version + '/incoming-trust-progressive-enhancement-confirmation-handler', function (req, res) {
+        const trustConfirmed = req.body['trust-confirmed'];
+        const editIndex = req.body['edit'];
+        
+        if (trustConfirmed === 'Yes') {
+            // Store the selected trust in session
+            req.session.data['progressive-enhancement-selected-trust'] = {
+                name: req.session.data['selected-progressive-enhancement-trust-name'],
+                ukprn: req.session.data['selected-progressive-enhancement-trust-ukprn'],
+                companyHouseNumber: req.session.data['selected-progressive-enhancement-trust-company-house']
+            };
+            
+            // Clear the temporary selection data
+            delete req.session.data['selected-progressive-enhancement-trust-name'];
+            delete req.session.data['selected-progressive-enhancement-trust-ukprn'];
+            delete req.session.data['selected-progressive-enhancement-trust-company-house'];
+            
+            // Redirect back to summary page
+            return res.redirect('incoming-trust-progressive-enhancement-summary');
+        } else {
+            // If not confirmed, go back to search
+            return res.redirect('incoming-trust-progressive-enhancement-search');
+        }
+    });
+
+    // ACADEMIES PROGRESSIVE ENHANCEMENT ROUTES
+    
+    // GET handler for academies progressive enhancement search
+    router.get('/' + version + '/academies-to-transfer-search-progressive', function (req, res) {
+        console.log('Academies search route - academies data:', data.academies);
+        
+        res.render(version + '/academies-to-transfer-search-progressive', {
+            data: req.session.data,
+            academies: data.academies
+        });
+    });
+
+    // GET handler for academies progressive enhancement confirmation
+    router.get('/' + version + '/academies-to-transfer-confirmation-progressive', function (req, res) {
+        const selectedAcademyName = req.query['academies-to-transfer-progressive-enhancement-search'];
+        
+        console.log('Academies confirmation route - query params:', req.query);
+        console.log('Selected academy name:', selectedAcademyName);
+        
+        if (!selectedAcademyName) {
+            console.log('No academy name found, redirecting to search');
+            return res.redirect('academies-to-transfer-search-progressive');
+        }
+        
+        // Find the selected academy details from the data
+        const selectedAcademy = data.academies.find(academy => academy.name === selectedAcademyName);
+        
+        if (selectedAcademy) {
+            // Store the selected academy details in session for the confirmation page
+            req.session.data['selected-progressive-enhancement-academy-name'] = selectedAcademy.name;
+            req.session.data['selected-progressive-enhancement-academy-urn'] = selectedAcademy.urn;
+            req.session.data['selected-progressive-enhancement-academy-postcode'] = selectedAcademy.postcode;
+            req.session.data['selected-progressive-enhancement-academy-trust'] = selectedAcademy.academyTrust;
+            
+            res.render(version + '/academies-to-transfer-confirmation-progressive', {
+                data: req.session.data,
+                academyName: selectedAcademy.name,
+                academyUrn: selectedAcademy.urn,
+                academyPostcode: selectedAcademy.postcode,
+                academyTrust: selectedAcademy.academyTrust
+            });
+        } else {
+            // If academy not found, redirect back to search
+            return res.redirect('academies-to-transfer-search-progressive');
+        }
+    });
+
+    // GET handler for academies progressive enhancement summary
+    router.get('/' + version + '/academies-to-transfer-summary-progressive', function (req, res) {
+        res.render(version + '/academies-to-transfer-summary-progressive', {
+            data: req.session.data
+        });
+    });
+
+    // POST handler for academies progressive enhancement confirmation
+    router.post('/' + version + '/academies-to-transfer-confirmation-progressive-handler', function (req, res) {
+        const academyConfirmed = req.body['confirm-academy'];
+        
+        if (academyConfirmed === 'yes') {
+            // Store the selected academy in session
+            req.session.data['progressive-enhancement-selected-academy'] = {
+                name: req.session.data['selected-progressive-enhancement-academy-name'],
+                urn: req.session.data['selected-progressive-enhancement-academy-urn'],
+                postcode: req.session.data['selected-progressive-enhancement-academy-postcode'],
+                academyTrust: req.session.data['selected-progressive-enhancement-academy-trust']
+            };
+            
+            // Clear the temporary selection data
+            delete req.session.data['selected-progressive-enhancement-academy-name'];
+            delete req.session.data['selected-progressive-enhancement-academy-urn'];
+            delete req.session.data['selected-progressive-enhancement-academy-postcode'];
+            delete req.session.data['selected-progressive-enhancement-academy-trust'];
+            
+            // Store the academy details temporarily for the flow
+            req.session.data['temp-academy-details'] = {
+                name: req.session.data['progressive-enhancement-selected-academy'].name,
+                urn: req.session.data['progressive-enhancement-selected-academy'].urn,
+                postcode: req.session.data['progressive-enhancement-selected-academy'].postcode,
+                academyTrust: req.session.data['progressive-enhancement-selected-academy'].academyTrust
+            };
+
+            // Redirect to proposed transfer date page
+            return res.redirect('proposed-transfer-date-progressive');
+        } else {
+            // If not confirmed, go back to search
+            return res.redirect('academies-to-transfer-search-progressive');
+        }
+    });
+
+    // PROGRESSIVE ENHANCEMENT FLOW ROUTES
+    
+    // GET handler for proposed transfer date progressive
+    router.get('/' + version + '/proposed-transfer-date-progressive', function (req, res) {
+        res.render(version + '/proposed-transfer-date-progressive', {
+            data: req.session.data
+        });
+    });
+
+    // POST handler for proposed transfer date progressive
+    router.post('/' + version + '/proposed-transfer-date-progressive-handler', function (req, res) {
+        // Store the proposed transfer date
+        const day = req.body['proposed-transfer-date-day'];
+        const month = req.body['proposed-transfer-date-month'];
+        const year = req.body['proposed-transfer-date-year'];
+        
+        req.session.data['proposed-transfer-date'] = {
+            day: day,
+            month: month,
+            year: year
+        };
+
+        // Redirect to academy funding agreement page
+        return res.redirect('academy-funding-agreement-progressive');
+    });
+
+    // GET handler for academy funding agreement progressive
+    router.get('/' + version + '/academy-funding-agreement-progressive', function (req, res) {
+        res.render(version + '/academy-funding-agreement-progressive', {
+            data: req.session.data
+        });
+    });
+
+    // POST handler for academy funding agreement progressive
+    router.post('/' + version + '/academy-funding-agreement-progressive-handler', function (req, res) {
+        const fundingAgreement = req.body['academy-funding-agreement'];
+        
+        // Store the funding agreement response
+        req.session.data['academy-funding-agreement'] = fundingAgreement;
+
+        if (fundingAgreement === 'yes') {
+            // If Yes, go to diocesan consent page
+            return res.redirect('diocesan-consent-progressive');
+        } else {
+            // If No, go to academy operating differently page
+            return res.redirect('academy-operating-differently-progressive');
+        }
+    });
+
+    // GET handler for diocesan consent progressive
+    router.get('/' + version + '/diocesan-consent-progressive', function (req, res) {
+        res.render(version + '/diocesan-consent-progressive', {
+            data: req.session.data
+        });
+    });
+
+    // POST handler for diocesan consent progressive
+    router.post('/' + version + '/diocesan-consent-progressive-handler', function (req, res) {
+        const diocesanConsent = req.body['diocesan-consent'];
+        
+        // Store the diocesan consent response
+        req.session.data['diocesan-consent'] = diocesanConsent;
+
+        if (diocesanConsent === 'yes') {
+            // If Yes, go to upload consent page
+            return res.redirect('upload-consent-progressive');
+        } else {
+            // If No, add academy to list and go to summary
+            addAcademyToTransferList(req);
+            return res.redirect('academies-to-transfer-summary-progressive');
+        }
+    });
+
+    // GET handler for academy operating differently progressive
+    router.get('/' + version + '/academy-operating-differently-progressive', function (req, res) {
+        res.render(version + '/academy-operating-differently-progressive', {
+            data: req.session.data
+        });
+    });
+
+    // POST handler for academy operating differently progressive
+    router.post('/' + version + '/academy-operating-differently-progressive-handler', function (req, res) {
+        const operatingDifferently = req.body['academy-operating-differently'];
+        
+        // Store the operating differently response
+        req.session.data['academy-operating-differently'] = operatingDifferently;
+
+        // Add academy to list and go to summary
+        addAcademyToTransferList(req);
+        return res.redirect('academies-to-transfer-summary-progressive');
+    });
+
+    // GET handler for upload consent progressive
+    router.get('/' + version + '/upload-consent-progressive', function (req, res) {
+        res.render(version + '/upload-consent-progressive', {
+            data: req.session.data
+        });
+    });
+
+    // POST handler for upload consent progressive
+    router.post('/' + version + '/upload-consent-progressive-handler', function (req, res) {
+        // Handle file upload for consent
+        if (req.files && req.files['consent-file']) {
+            const uploadedFile = req.files['consent-file'];
+            
+            // Initialize consent files array if it doesn't exist
+            if (!req.session.data['consent-files']) {
+                req.session.data['consent-files'] = [];
+            }
+            
+            // Add the new file to the array
+            req.session.data['consent-files'].push({
+                name: uploadedFile.name,
+                size: uploadedFile.size,
+                type: uploadedFile.mimetype
+            });
+            
+            // Set success flag for banner
+            req.session.data['file-upload-success'] = true;
+            
+            // Clear deletion success flag
+            req.session.data['file-delete-success'] = false;
+            delete req.session.data['deleted-file-name'];
+        }
+        
+        // Redirect back to the upload consent page to show the file table
+        res.redirect('upload-consent-progressive');
+    });
+
+    // POST handler for continuing directly from upload consent progressive (adds academy to list)
+    router.post('/' + version + '/upload-consent-progressive-continue-direct', function (req, res) {
+        // Add academy to list and go to summary
+        addAcademyToTransferList(req);
+        return res.redirect('academies-to-transfer-summary-progressive');
+    });
+
+
+
+    // POST handler for deleting consent files (progressive enhancement)
+    router.post('/' + version + '/delete-consent-file-progressive', function (req, res) {
+        const fileIndex = parseInt(req.body['file-index']);
+        
+        if (req.session.data['consent-files'] && req.session.data['consent-files'][fileIndex]) {
+            // Get the file name before removing it for the success message
+            const deletedFileName = req.session.data['consent-files'][fileIndex].name;
+            
+            // Remove the file at the specified index
+            req.session.data['consent-files'].splice(fileIndex, 1);
+            
+            // Set success flag for deletion banner
+            req.session.data['file-delete-success'] = true;
+            req.session.data['deleted-file-name'] = deletedFileName;
+            
+            // Clear upload success flag
+            req.session.data['file-upload-success'] = false;
+        }
+        
+        // Redirect back to the upload consent page
+        res.redirect('upload-consent-progressive');
+    });
+
+    // GET handler for downloading consent files (progressive enhancement)
+    router.get('/' + version + '/download-consent-file-progressive/:index', function (req, res) {
+        const fileIndex = parseInt(req.params.index);
+        
+        if (req.session.data['consent-files'] && req.session.data['consent-files'][fileIndex]) {
+            const file = req.session.data['consent-files'][fileIndex];
+            
+            // Set headers for file download
+            res.setHeader('Content-Type', file.type || 'application/octet-stream');
+            res.setHeader('Content-Disposition', `attachment; filename="${file.name}"`);
+            
+            // For prototype purposes, create a simple text response
+            // In a real application, this would serve the actual file from storage
+            res.send(`This is a prototype file download for: ${file.name}\n\nFile size: ${(file.size / 1024 / 1024).toFixed(2)} MB\nFile type: ${file.type}\n\nThis is a simulated file download for demonstration purposes.`);
+        } else {
+            res.status(404).send('File not found');
+        }
+    });
+
+    // POST handler for clearing upload success flag (progressive enhancement)
+    router.post('/' + version + '/clear-upload-success-flag-progressive', function (req, res) {
+        delete req.session.data['file-upload-success'];
+        res.status(200).json({ success: true });
+    });
+
+    // POST handler for clearing delete success flag (progressive enhancement)
+    router.post('/' + version + '/clear-delete-success-flag-progressive', function (req, res) {
+        delete req.session.data['file-delete-success'];
+        delete req.session.data['deleted-file-name'];
+        res.status(200).json({ success: true });
+    });
+
+    // POST handler for clearing upload success flag (progressive enhancement)
+    router.post('/' + version + '/clear-upload-success-flag-progressive', function (req, res) {
+        delete req.session.data['file-upload-success'];
+        res.status(200).json({ success: true });
+    });
+
+    // POST handler for clearing delete success flag (progressive enhancement)
+    router.post('/' + version + '/clear-delete-success-flag-progressive', function (req, res) {
+        delete req.session.data['file-delete-success'];
+        delete req.session.data['deleted-file-name'];
+        res.status(200).json({ success: true });
+    });
+    
     // Handle declaration trust search results selection
     router.post('/' + version + '/declaration-trust-confirmation', function (req, res) {
         // Get the selected trust value from the form data

@@ -1,0 +1,112 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Search for an academy (Progressive enhancement)" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<!-- Include accessible autocomplete library -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css">
+<script src="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
+
+<style>
+  /* Fix alignment and styling issues */
+  .autocomplete__wrapper {
+    width: 100%;
+  }
+  
+  .autocomplete__input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .autocomplete__dropdown-arrow-down {
+    right: 8px;
+  }
+  
+  /* Ensure dropdown aligns with input */
+  .autocomplete__menu {
+    width: 100% !important;
+    left: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .autocomplete__option {
+    padding: 8px 12px;
+    border-bottom: 1px solid #b1b4b6;
+  }
+  
+  .autocomplete__option:last-child {
+    border-bottom: none;
+  }
+  
+  /* Hide "No results found" when there are results */
+  .autocomplete__option--no-results {
+    display: none !important;
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form class="form" action="academies-to-transfer-confirmation-progressive" method="get">
+      <div class="govuk-form-group">
+        <h1 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--xl" for="academies-to-transfer-progressive-enhancement-search">
+            <span class="govuk-caption-l">Details of academies (Progressive enhancement)</span>
+            Search for an academy by name or reference number
+          </label>
+        </h1>
+
+        <div class="govuk-hint">
+          Enter at least 3 characters for name or unique reference number (URN)
+        </div>
+        
+        <!-- Hidden select element that will be enhanced -->
+        <select id="academies-to-transfer-progressive-enhancement-search" name="academies-to-transfer-progressive-enhancement-search" style="display: none;">
+          <option value=""></option>
+          {% for academy in academies %}
+          <option value="{{ academy.name }}" data-urn="{{ academy.urn }}" data-postcode="{{ academy.postcode }}" data-trust="{{ academy.academyTrust }}">
+            {{ academy.name }} - URN: {{ academy.urn }} - Postcode: {{ academy.postcode }} - Trust: {{ academy.academyTrust }}
+          </option>
+          {% endfor %}
+        </select>
+        
+      </div>
+
+      {{ govukButton({
+        text: "Search"
+      }) }}
+    </form>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const autocomplete = accessibleAutocomplete.enhanceSelectElement({
+          selectElement: document.querySelector('#academies-to-transfer-progressive-enhancement-search'),
+          showAllValues: true,
+          minLength: 0,
+          autoselect: false,
+          confirmOnBlur: false
+        });
+
+        // Handle form submission to ensure the selected value is properly set
+        document.querySelector('form').addEventListener('submit', function(e) {
+          const selectedValue = document.querySelector('#academies-to-transfer-progressive-enhancement-search').value;
+          if (!selectedValue) {
+            e.preventDefault();
+            alert('Please select an academy before continuing.');
+            return false;
+          }
+        });
+      });
+    </script>
+
+  </div>
+</div>
+{% endblock %}

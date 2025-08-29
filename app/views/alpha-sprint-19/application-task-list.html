@@ -66,6 +66,24 @@
       </li>
       <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="academies-to-transfer-summary-progressive" aria-describedby="details-of-academies-progressive-status">
+            Details of academies (Progressive enhancement)
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="details-of-academies-progressive-status">
+          {% if data['academies-to-transfer-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
           <a class="govuk-link govuk-task-list__link" href="reason-and-benefits-academies" aria-describedby="reason-and-benefits-academies-status">
             Reason and benefits
           </a>

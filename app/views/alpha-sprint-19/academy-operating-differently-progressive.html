@@ -1,0 +1,42 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Academy operating differently (Progressive enhancement)" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form class="form" action="academy-operating-differently-progressive-handler" method="post">
+
+      {{ govukTextarea({
+        name: "academy-operating-differently",
+        id: "academy-operating-differently",
+        label: {
+          text: "How is the academy operating differently to its funding agreement?",
+          classes: "govuk-label--xl",
+          isPageHeading: true
+        },
+        hint: {
+          text: "Tell us if the academy has submitted an application to 'Making a significant change'."
+        },
+        rows: 5,
+        value: data['academy-operating-differently']
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+    
+  </div>
+</div>
+
+{% endblock %}
