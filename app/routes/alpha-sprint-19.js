@@ -469,8 +469,34 @@ module.exports = function (router) {
 
     // Handle the confirm delete page parameters
     router.get('/' + version + '/confirm-delete-academy', function (req, res) {
-        req.session.data['index'] = req.query.index;
-        res.render(version + '/confirm-delete-academy');
+        const academyIndex = req.query.index;
+        req.session.data['index'] = academyIndex;
+        
+        // Get the academy name to display in the question
+        let academyName = 'academy';
+        if (req.session.data['academies-to-transfer'] && req.session.data['academies-to-transfer'][academyIndex]) {
+            academyName = req.session.data['academies-to-transfer'][academyIndex].name;
+        }
+        
+        res.render(version + '/confirm-delete-academy', {
+            academyName: academyName
+        });
+    });
+
+    // Handle the confirm delete page parameters (progressive version)
+    router.get('/' + version + '/confirm-delete-academy-progressive', function (req, res) {
+        const academyIndex = req.query.index;
+        req.session.data['index'] = academyIndex;
+        
+        // Get the academy name to display in the question
+        let academyName = 'academy';
+        if (req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            academyName = req.session.data['academies-to-transfer-progressive'][academyIndex].name;
+        }
+        
+        res.render(version + '/confirm-delete-academy-progressive', {
+            academyName: academyName
+        });
     });
 
     // Handle academy deletion
@@ -3519,9 +3545,8 @@ module.exports = function (router) {
         // Store the operating differently response
         req.session.data['academy-operating-differently'] = operatingDifferently;
 
-        // Add academy to list and go to summary
-        addAcademyToTransferListProgressive(req);
-        return res.redirect('academies-to-transfer-summary-progressive');
+        // Continue to diocesan consent page
+        return res.redirect('diocesan-consent-progressive');
     });
 
     // GET handler for upload consent progressive

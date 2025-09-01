@@ -79,7 +79,9 @@
                   <p class="govuk-body">{{ academy.name }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                  <!-- No change link for academy name as it comes from search -->
+                  <a class="govuk-link" href="academies-to-transfer-search-progressive?academy-index={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> academy name for academy {{ loop.index }}</span>
+                  </a>
                 </dd>
               </div>
               <div class="govuk-summary-list__row">
@@ -90,7 +92,9 @@
                   <p class="govuk-body">{{ academy.urn }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                  <!-- No change link for URN as it comes from search -->
+                  <a class="govuk-link" href="academies-to-transfer-search-progressive?academy-index={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> URN for academy {{ loop.index }}</span>
+                  </a>
                 </dd>
               </div>
               <div class="govuk-summary-list__row">
@@ -101,7 +105,9 @@
                   <p class="govuk-body">{{ academy.postcode }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                  <!-- No change link for postcode as it comes from search -->
+                  <a class="govuk-link" href="academies-to-transfer-search-progressive?academy-index={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> postcode for academy {{ loop.index }}</span>
+                  </a>
                 </dd>
               </div>
               <div class="govuk-summary-list__row">
@@ -112,7 +118,9 @@
                   <p class="govuk-body">{{ academy.academyTrust }}</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                  <!-- No change link for trust as it comes from search -->
+                  <a class="govuk-link" href="academies-to-transfer-search-progressive?academy-index={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> trust for academy {{ loop.index }}</span>
+                  </a>
                 </dd>
               </div>
               
@@ -125,7 +133,9 @@
                     <p class="govuk-body">{{ academy.proposedTransferDate.day }}/{{ academy.proposedTransferDate.month }}/{{ academy.proposedTransferDate.year }}</p>
                   </dd>
                   <dd class="govuk-summary-list__actions">
-                    <!-- No change link for transfer date as it's part of the flow -->
+                    <a class="govuk-link" href="proposed-transfer-date-progressive?academy-index={{ loop.index0 }}">
+                      Change<span class="govuk-visually-hidden"> proposed transfer date for academy {{ loop.index }}</span>
+                    </a>
                   </dd>
                 </div>
               {% endif %}
@@ -139,7 +149,9 @@
                     <p class="govuk-body">{% if academy.fundingAgreement === 'yes' %}Yes{% else %}No{% endif %}</p>
                   </dd>
                   <dd class="govuk-summary-list__actions">
-                    <!-- No change link for funding agreement as it's part of the flow -->
+                    <a class="govuk-link" href="operating-based-on-funding-agreement-progressive?academy-index={{ loop.index0 }}">
+                      Change<span class="govuk-visually-hidden"> operating based on funding agreement for academy {{ loop.index }}</span>
+                    </a>
                   </dd>
                 </div>
               {% endif %}
@@ -153,7 +165,9 @@
                     <p class="govuk-body">{% if academy.diocesanConsent === 'yes' %}Yes{% else %}No{% endif %}</p>
                   </dd>
                   <dd class="govuk-summary-list__actions">
-                    <!-- No change link for diocesan consent as it's part of the flow -->
+                    <a class="govuk-link" href="diocesan-consent-progressive?academy-index={{ loop.index0 }}">
+                      Change<span class="govuk-visually-hidden"> diocesan consent for academy {{ loop.index }}</span>
+                    </a>
                   </dd>
                 </div>
               {% endif %}
@@ -167,7 +181,9 @@
                     <p class="govuk-body">{{ academy.operatingDifferently }}</p>
                   </dd>
                   <dd class="govuk-summary-list__actions">
-                    <!-- No change link for operating differently as it's part of the flow -->
+                    <a class="govuk-link" href="academy-operating-differently-progressive?academy-index={{ loop.index0 }}">
+                      Change<span class="govuk-visually-hidden"> operating differently explanation for academy {{ loop.index }}</span>
+                    </a>
                   </dd>
                 </div>
               {% endif %}
@@ -189,7 +205,9 @@
                     </ul>
                   </dd>
                   <dd class="govuk-summary-list__actions">
-                    <!-- No change link for consent files as they're part of the flow -->
+                    <a class="govuk-link" href="upload-consent-progressive?academy-index={{ loop.index0 }}">
+                      Change<span class="govuk-visually-hidden"> consent files for academy {{ loop.index }}</span>
+                    </a>
                   </dd>
                 </div>
               {% endif %}
