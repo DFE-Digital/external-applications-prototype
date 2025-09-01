@@ -3462,6 +3462,17 @@ module.exports = function (router) {
     
     // GET handler for proposed transfer date progressive
     router.get('/' + version + '/proposed-transfer-date-progressive', function (req, res) {
+        // Check if we're editing an existing academy
+        const academyIndex = req.query['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Pre-populate with existing data
+            const academy = req.session.data['academies-to-transfer-progressive'][academyIndex];
+            if (academy.proposedTransferDate) {
+                req.session.data['proposed-transfer-date'] = academy.proposedTransferDate;
+            }
+            req.session.data['academy-index'] = academyIndex;
+        }
+        
         res.render(version + '/proposed-transfer-date-progressive', {
             data: req.session.data
         });
@@ -3474,18 +3485,38 @@ module.exports = function (router) {
         const month = req.body['proposed-transfer-date-month'];
         const year = req.body['proposed-transfer-date-year'];
         
-        req.session.data['proposed-transfer-date'] = {
+        const transferDate = {
             day: day,
             month: month,
             year: year
         };
-
-        // Redirect to academy funding agreement page
-        return res.redirect('academy-funding-agreement-progressive');
+        
+        // Check if we're editing an existing academy
+        const academyIndex = req.body['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Update existing academy
+            req.session.data['academies-to-transfer-progressive'][academyIndex].proposedTransferDate = transferDate;
+            return res.redirect('academies-to-transfer-summary-progressive');
+        } else {
+            // Store in session for new academy flow
+            req.session.data['proposed-transfer-date'] = transferDate;
+            return res.redirect('academy-funding-agreement-progressive');
+        }
     });
 
     // GET handler for academy funding agreement progressive
     router.get('/' + version + '/academy-funding-agreement-progressive', function (req, res) {
+        // Check if we're editing an existing academy
+        const academyIndex = req.query['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Pre-populate with existing data
+            const academy = req.session.data['academies-to-transfer-progressive'][academyIndex];
+            if (academy.fundingAgreement) {
+                req.session.data['academy-funding-agreement'] = academy.fundingAgreement;
+            }
+            req.session.data['academy-index'] = academyIndex;
+        }
+        
         res.render(version + '/academy-funding-agreement-progressive', {
             data: req.session.data
         });
@@ -3495,20 +3526,39 @@ module.exports = function (router) {
     router.post('/' + version + '/academy-funding-agreement-progressive-handler', function (req, res) {
         const fundingAgreement = req.body['academy-funding-agreement'];
         
-        // Store the funding agreement response
-        req.session.data['academy-funding-agreement'] = fundingAgreement;
-
-        if (fundingAgreement === 'yes') {
-            // If Yes, go to diocesan consent page
-            return res.redirect('diocesan-consent-progressive');
+        // Check if we're editing an existing academy
+        const academyIndex = req.body['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Update existing academy
+            req.session.data['academies-to-transfer-progressive'][academyIndex].fundingAgreement = fundingAgreement;
+            return res.redirect('academies-to-transfer-summary-progressive');
         } else {
-            // If No, go to academy operating differently page
-            return res.redirect('academy-operating-differently-progressive');
+            // Store in session for new academy flow
+            req.session.data['academy-funding-agreement'] = fundingAgreement;
+
+            if (fundingAgreement === 'yes') {
+                // If Yes, go to diocesan consent page
+                return res.redirect('diocesan-consent-progressive');
+            } else {
+                // If No, go to academy operating differently page
+                return res.redirect('academy-operating-differently-progressive');
+            }
         }
     });
 
     // GET handler for diocesan consent progressive
     router.get('/' + version + '/diocesan-consent-progressive', function (req, res) {
+        // Check if we're editing an existing academy
+        const academyIndex = req.query['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Pre-populate with existing data
+            const academy = req.session.data['academies-to-transfer-progressive'][academyIndex];
+            if (academy.diocesanConsent) {
+                req.session.data['diocesan-consent'] = academy.diocesanConsent;
+            }
+            req.session.data['academy-index'] = academyIndex;
+        }
+        
         res.render(version + '/diocesan-consent-progressive', {
             data: req.session.data
         });
@@ -3518,21 +3568,40 @@ module.exports = function (router) {
     router.post('/' + version + '/diocesan-consent-progressive-handler', function (req, res) {
         const diocesanConsent = req.body['diocesan-consent'];
         
-        // Store the diocesan consent response
-        req.session.data['diocesan-consent'] = diocesanConsent;
-
-        if (diocesanConsent === 'yes') {
-            // If Yes, go to upload consent page
-            return res.redirect('upload-consent-progressive');
-        } else {
-            // If No, add academy to list and go to summary
-            addAcademyToTransferListProgressive(req);
+        // Check if we're editing an existing academy
+        const academyIndex = req.body['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Update existing academy
+            req.session.data['academies-to-transfer-progressive'][academyIndex].diocesanConsent = diocesanConsent;
             return res.redirect('academies-to-transfer-summary-progressive');
+        } else {
+            // Store in session for new academy flow
+            req.session.data['diocesan-consent'] = diocesanConsent;
+
+            if (diocesanConsent === 'yes') {
+                // If Yes, go to upload consent page
+                return res.redirect('upload-consent-progressive');
+            } else {
+                // If No, add academy to list and go to summary
+                addAcademyToTransferListProgressive(req);
+                return res.redirect('academies-to-transfer-summary-progressive');
+            }
         }
     });
 
     // GET handler for academy operating differently progressive
     router.get('/' + version + '/academy-operating-differently-progressive', function (req, res) {
+        // Check if we're editing an existing academy
+        const academyIndex = req.query['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Pre-populate with existing data
+            const academy = req.session.data['academies-to-transfer-progressive'][academyIndex];
+            if (academy.operatingDifferently) {
+                req.session.data['academy-operating-differently'] = academy.operatingDifferently;
+            }
+            req.session.data['academy-index'] = academyIndex;
+        }
+        
         res.render(version + '/academy-operating-differently-progressive', {
             data: req.session.data
         });
@@ -3542,15 +3611,34 @@ module.exports = function (router) {
     router.post('/' + version + '/academy-operating-differently-progressive-handler', function (req, res) {
         const operatingDifferently = req.body['academy-operating-differently'];
         
-        // Store the operating differently response
-        req.session.data['academy-operating-differently'] = operatingDifferently;
+        // Check if we're editing an existing academy
+        const academyIndex = req.body['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Update existing academy
+            req.session.data['academies-to-transfer-progressive'][academyIndex].operatingDifferently = operatingDifferently;
+            return res.redirect('academies-to-transfer-summary-progressive');
+        } else {
+            // Store in session for new academy flow
+            req.session.data['academy-operating-differently'] = operatingDifferently;
 
-        // Continue to diocesan consent page
-        return res.redirect('diocesan-consent-progressive');
+            // Continue to diocesan consent page
+            return res.redirect('diocesan-consent-progressive');
+        }
     });
 
     // GET handler for upload consent progressive
     router.get('/' + version + '/upload-consent-progressive', function (req, res) {
+        // Check if we're editing an existing academy
+        const academyIndex = req.query['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Pre-populate with existing data
+            const academy = req.session.data['academies-to-transfer-progressive'][academyIndex];
+            if (academy.consentFiles) {
+                req.session.data['consent-files'] = academy.consentFiles;
+            }
+            req.session.data['academy-index'] = academyIndex;
+        }
+        
         res.render(version + '/upload-consent-progressive', {
             data: req.session.data
         });
@@ -3582,15 +3670,32 @@ module.exports = function (router) {
             delete req.session.data['deleted-file-name'];
         }
         
+        // Check if we're editing an existing academy
+        const academyIndex = req.body['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Update existing academy with new consent files
+            req.session.data['academies-to-transfer-progressive'][academyIndex].consentFiles = req.session.data['consent-files'];
+            // Redirect back to summary page
+            return res.redirect('academies-to-transfer-summary-progressive');
+        }
+        
         // Redirect back to the upload consent page to show the file table
         res.redirect('upload-consent-progressive');
     });
 
     // POST handler for continuing directly from upload consent progressive (adds academy to list)
     router.post('/' + version + '/upload-consent-progressive-continue-direct', function (req, res) {
-        // Add academy to list and go to summary
-        addAcademyToTransferListProgressive(req);
-        return res.redirect('academies-to-transfer-summary-progressive');
+        // Check if we're editing an existing academy
+        const academyIndex = req.body['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Update existing academy with consent files
+            req.session.data['academies-to-transfer-progressive'][academyIndex].consentFiles = req.session.data['consent-files'];
+            return res.redirect('academies-to-transfer-summary-progressive');
+        } else {
+            // Add academy to list and go to summary
+            addAcademyToTransferListProgressive(req);
+            return res.redirect('academies-to-transfer-summary-progressive');
+        }
     });
 
 
@@ -3612,6 +3717,13 @@ module.exports = function (router) {
             
             // Clear upload success flag
             req.session.data['file-upload-success'] = false;
+        }
+        
+        // Check if we're editing an existing academy
+        const academyIndex = req.body['academy-index'];
+        if (academyIndex !== undefined && req.session.data['academies-to-transfer-progressive'] && req.session.data['academies-to-transfer-progressive'][academyIndex]) {
+            // Update existing academy with updated consent files
+            req.session.data['academies-to-transfer-progressive'][academyIndex].consentFiles = req.session.data['consent-files'];
         }
         
         // Redirect back to the upload consent page

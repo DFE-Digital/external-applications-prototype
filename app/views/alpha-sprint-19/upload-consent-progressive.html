@@ -41,6 +41,9 @@
     {% endif %}
 
     <form action="upload-consent-progressive-handler" method="post" enctype="multipart/form-data">
+      {% if data['academy-index'] %}
+        <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+      {% endif %}
       
       {{ govukFileUpload({
         label: {
@@ -92,6 +95,9 @@
               <td class="govuk-table__cell">
                 <form action="delete-consent-file-progressive" method="post" style="display: inline;">
                   <input type="hidden" name="file-index" value="{{ loop.index0 }}">
+                  {% if data['academy-index'] %}
+                    <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+                  {% endif %}
                   {{ govukButton({
                     text: "Delete",
                     classes: "govuk-button--warning govuk-button--small",
@@ -127,6 +133,9 @@
 
     <div class="govuk-button-group govuk-!-margin-top-9">
       <form action="upload-consent-progressive-continue-direct" method="post">
+        {% if data['academy-index'] %}
+          <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+        {% endif %}
         {{ govukButton({
           text: "Continue"
         }) }}

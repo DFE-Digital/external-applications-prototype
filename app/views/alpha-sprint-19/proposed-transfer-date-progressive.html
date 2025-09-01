@@ -15,6 +15,9 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
     <form class="form" action="proposed-transfer-date-progressive-handler" method="post">
+      {% if data['academy-index'] %}
+        <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+      {% endif %}
 
       {{ govukDateInput({
         id: "proposed-transfer-date",
@@ -32,15 +35,18 @@
         items: [
           {
             name: "day",
-            classes: "govuk-input--width-2"
+            classes: "govuk-input--width-2",
+            value: data['proposed-transfer-date'].day if data['proposed-transfer-date'] else ""
           },
           {
             name: "month",
-            classes: "govuk-input--width-2"
+            classes: "govuk-input--width-2",
+            value: data['proposed-transfer-date'].month if data['proposed-transfer-date'] else ""
           },
           {
             name: "year",
-            classes: "govuk-input--width-4"
+            classes: "govuk-input--width-4",
+            value: data['proposed-transfer-date'].year if data['proposed-transfer-date'] else ""
           }
         ]
       }) }}

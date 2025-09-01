@@ -15,6 +15,9 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
     <form class="form" action="academy-funding-agreement-progressive-handler" method="post">
+      {% if data['academy-index'] %}
+        <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+      {% endif %}
 
       {{ govukRadios({
         idPrefix: "academy-funding-agreement",
@@ -29,11 +32,13 @@
         items: [
           {
             value: "yes",
-            text: "Yes"
+            text: "Yes",
+            checked: data['academy-funding-agreement'] === 'yes'
           },
           {
             value: "no",
-            text: "No"
+            text: "No",
+            checked: data['academy-funding-agreement'] === 'no'
           }
         ]
       }) }}
