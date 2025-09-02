@@ -13,7 +13,7 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <span class="govuk-caption-l">Declaration from academy trust chair</span>
+    <span class="govuk-caption-l">Declaration from trust chairs</span>
     <h1 class="govuk-heading-xl">Declaration form</h1>
   </div>
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
@@ -33,19 +33,19 @@
         <p class="govuk-body">When considering their equalities duties, the trust board decided that: </p>
 
         <ul class="govuk-list govuk-list--bullet">
-          <li>The Secretary of State's decision is unlikely to disproportionately affect any particular person or group who share protected characteristics </li>
-          <li>There are some impacts, but on balance the changes will not disproportionately affect any particular person or group who share protected characteristics </li>
+          <li>the Secretary of State's decision is unlikely to disproportionately affect any particular person or group who share protected characteristics </li>
+          <li>there are some impacts, but on balance the changes will not disproportionately affect any particular person or group who share protected characteristics </li>
         </ul>
 
         <p class="govuk-body">I confirm that the trust's adopted policies and practices fulfil their equalities duties under the Equality Act 2010.</p>
 
-        <h2 class="govuk-heading-m govuk-!-margin-top-9 govuk-!-margin-bottom-3">Name of the academy trust</h2>
+        <h2 class="govuk-heading-m govuk-!-margin-top-9 govuk-!-margin-bottom-3">Name of trust</h2>
         <p class="govuk-body-l">{{ existingDeclaration.trust.name if existingDeclaration else trustName }}</p>
 
         <div class="govuk-form-group govuk-!-margin-top-6">
           <h2 class="govuk-label-wrapper">
             <label class="govuk-label govuk-label--m" for="declaration-form-chair-of-trustees">
-              Chair of trustees of which academy trust
+              Name of Chair of trustees
             </label>
           </h2>
           <input class="govuk-input govuk-input--width-20" id="declaration-form-chair-of-trustees" name="declarationFormChairOfTrustees" type="text" value="{{ existingDeclaration.chairOfTrustees if existingDeclaration else '' }}">
@@ -55,7 +55,7 @@
           <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
               <h1 class="govuk-fieldset__heading">
-                Date of declaration
+                Date signed
               </h1>
             </legend>
             <div id="passport-issued-hint" class="govuk-hint">
@@ -100,7 +100,7 @@
           </a>
           {% else %}
           <a href="declaration-summary" class="govuk-button govuk-button--warning" data-module="govuk-button">
-            Discard
+            Cancel
           </a>
           {% endif %}
         </div>
