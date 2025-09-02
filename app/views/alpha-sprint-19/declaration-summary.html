@@ -16,12 +16,19 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
     
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="declaration">
-      Declaration from academy trust chair
+      Declaration from Chairs of trustees
     </h1>
 
-    <p class="govuk-body govuk-!-margin-bottom-9">Each academy trust involved must complete a declaration. You cannot manually add a declaration. You need to complete the <a class="govuk-link" href="incoming-trust-summary">Trust details</a> task and the <a class="govuk-link" href="academies-to-transfer">Academies to transfer</a> task in order to see the declaration forms.</p>
+    <p class="govuk-body govuk-!-margin-bottom-9">The Chair of trustees from each trust involved in the transfer must complete a declaration.</p>
 
-    <h2 class="govuk-heading-m">Declaration form for the incoming trust</h2>
+     <!--<p class="govuk-body">You need to mark these tasks as complete first:</p>
+          <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-9">
+            <li> <a class="govuk-link" href="incoming-trust-summary">Trust details</a> in the 'About the trust that academies are joining' section</li>
+            <li> <a class="govuk-link" href="academies-to-transfer">Details of the academies</a> task</li>
+            <li><a class="govuk-link" href="outgoing-trusts-summary">Trust details</a> in the 'About the trusts that academies are leaving' section </li>
+          </ul>-->
+
+    <h2 class="govuk-heading-m">Declaration form for the trust that academies are joining</h2>
     {% if data.selectedTrust and data.selectedTrust.name %}
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
       <div class="govuk-summary-list__row">
@@ -35,16 +42,16 @@
         </dd>
         <dd class="govuk-summary-list__actions">
           <a class="govuk-link" href="declaration-form?trust={{ data.selectedTrust.name | urlencode }}">
-            View details<span class="govuk-visually-hidden"> declaration for {{ data.selectedTrust.name }}</span>
+            View<span class="govuk-visually-hidden"> declaration for {{ data.selectedTrust.name }}</span>
           </a>
         </dd>
       </div>
     </dl>
     {% else %}
-    <p class="govuk-body">You need to add an incoming trust in the <a class="govuk-link" href="incoming-trust-summary">Trust details</a> task first.</p>
+    <p class="govuk-body">You need to mark the <a class="govuk-link" href="incoming-trust-summary">Trust details</a> task as complete first.</p>
     {% endif %}
 
-    <h2 class="govuk-heading-m">Declaration forms for the outgoing trusts</h2>
+    <h2 class="govuk-heading-m">Declaration forms for trusts that academies are leaving</h2>
     {% if uniqueOutgoingTrusts and uniqueOutgoingTrusts.length > 0 %}
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
       {% for trust in uniqueOutgoingTrusts %}
@@ -59,14 +66,14 @@
         </dd>
         <dd class="govuk-summary-list__actions">
           <a class="govuk-link" href="declaration-form?trust={{ trust | urlencode }}">
-            View details<span class="govuk-visually-hidden"> declaration for {{ trust }}</span>
+            View<span class="govuk-visually-hidden"> declaration for {{ trust }}</span>
           </a>
         </dd>
       </div>
       {% endfor %}
     </dl>
     {% else %}
-    <p class="govuk-body">You need to add academies in the <a class="govuk-link" href="academies-to-transfer">Academies to transfer</a> task first.</p>
+    <p class="govuk-body">You need to mark the <a class="govuk-link" href="outgoing-trusts-summary">Details of trusts </a> task as complete first.</p>
     {% endif %}
 
     <form action="application-task-list" method="post">
