@@ -34,25 +34,25 @@
 
         <h2 class="govuk-heading-m govuk-!-margin-top-9 govuk-!-margin-bottom-3">Name of trust</h2>
         <p class="govuk-body-l">{{ existingDeclaration.trust.name if existingDeclaration else trustName }}</p>
-        
+
         <div class="govuk-form-group govuk-!-margin-top-6">
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
               <h2 class="govuk-fieldset__heading">
-                When considering their equalities duties, the trust board decided that
+                What did the board decide when considering their equalities duties?
               </h2>
             </legend>
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="equalities-impact-unlikely" name="equalitiesImpact" type="radio" value="unlikely" {{ 'checked' if existingDeclaration and existingDeclaration.equalitiesImpact === 'unlikely' else '' }}>
                 <label class="govuk-label govuk-radios__label" for="equalities-impact-unlikely">
-                  the Secretary of State's decision is unlikely to disproportionately affect any particular person or group who share protected characteristics
+                  The Secretary of State's decision is unlikely to disproportionately affect any particular person or group who share protected characteristics
                 </label>
               </div>
               <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="equalities-impact-some" name="equalitiesImpact" type="radio" value="some" {{ 'checked' if existingDeclaration and existingDeclaration.equalitiesImpact === 'some' else '' }}>
                 <label class="govuk-label govuk-radios__label" for="equalities-impact-some">
-                  there are some impacts, but on balance the changes will not disproportionately affect any particular person or group who share protected characteristics
+                  There are some impacts, but on balance the changes will not disproportionately affect any particular person or group who share protected characteristics
                 </label>
               </div>
             </div>
