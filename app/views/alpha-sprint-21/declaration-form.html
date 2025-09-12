@@ -1,0 +1,129 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Declaration form" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <span class="govuk-caption-l">Declaration from trust chairs</span>
+    <h1 class="govuk-heading-xl">Declaration form</h1>
+  </div>
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="declaration-form-handler" method="post">
+
+        {% if declarationIndex !== undefined %}
+        <input type="hidden" name="declaration-index" value="{{ declarationIndex }}">
+        {% endif %}
+
+        <p class="govuk-body">I hereby certify that the information entered in this form is correct.</p> 
+
+        <p class="govuk-body">I understand that any decision made by the Regional Director on the basis of this information may be rendered null and void if the academy trust is found to have supplied inaccurate information.</p> 
+
+        <p class="govuk-body">I understand that no changes should be made to the trust's articles of association or other trust documents until the Regional Director has approved them.</p>
+        
+        <p class="govuk-body">I confirm that the trust's adopted policies and practices fulfil their equalities duties under the Equality Act 2010.</p>
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-9 govuk-!-margin-bottom-3">Name of trust</h2>
+        <p class="govuk-body-l">{{ existingDeclaration.trust.name if existingDeclaration else trustName }}</p>
+        
+        <div class="govuk-form-group govuk-!-margin-top-6">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              <h2 class="govuk-fieldset__heading">
+                When considering their equalities duties, the trust board decided that
+              </h2>
+            </legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="equalities-impact-unlikely" name="equalitiesImpact" type="radio" value="unlikely" {{ 'checked' if existingDeclaration and existingDeclaration.equalitiesImpact === 'unlikely' else '' }}>
+                <label class="govuk-label govuk-radios__label" for="equalities-impact-unlikely">
+                  the Secretary of State's decision is unlikely to disproportionately affect any particular person or group who share protected characteristics
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="equalities-impact-some" name="equalitiesImpact" type="radio" value="some" {{ 'checked' if existingDeclaration and existingDeclaration.equalitiesImpact === 'some' else '' }}>
+                <label class="govuk-label govuk-radios__label" for="equalities-impact-some">
+                  there are some impacts, but on balance the changes will not disproportionately affect any particular person or group who share protected characteristics
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="govuk-form-group govuk-!-margin-top-6">
+          <h2 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--m" for="declaration-form-chair-of-trustees">
+              Name of Chair of trustees
+            </label>
+          </h2>
+          <input class="govuk-input govuk-input--width-20" id="declaration-form-chair-of-trustees" name="declarationFormChairOfTrustees" type="text" value="{{ existingDeclaration.chairOfTrustees if existingDeclaration else '' }}">
+        </div>
+        
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              <h1 class="govuk-fieldset__heading">
+                Date signed
+              </h1>
+            </legend>
+            <div id="passport-issued-hint" class="govuk-hint">
+              For example, 27 3 2007
+            </div>
+            <div class="govuk-date-input" id="passport-issued">
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="passport-issued-day">
+                    Day
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-day" name="passport-issued-day" type="text" inputmode="numeric" value="{{ existingDeclaration.dateOfDeclaration.day if existingDeclaration else '' }}">
+                </div>
+              </div>
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="passport-issued-month">
+                    Month
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-month" name="passport-issued-month" type="text" inputmode="numeric" value="{{ existingDeclaration.dateOfDeclaration.month if existingDeclaration else '' }}">
+                </div>
+              </div>
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+                    Year
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="passport-issued-year" name="passport-issued-year" type="text" inputmode="numeric" value="{{ existingDeclaration.dateOfDeclaration.year if existingDeclaration else '' }}">
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="govuk-button-group govuk-!-margin-top-9">
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            {% if existingDeclaration %}Update{% else %}Sign the declaration{% endif %}
+          </button>
+          {% if existingDeclaration %}
+          <a href="confirm-delete-declaration?index={{ declarationIndex }}" class="govuk-button govuk-button--warning" data-module="govuk-button">
+            Delete the declaration
+          </a>
+          {% else %}
+          <a href="declaration-summary" class="govuk-button govuk-button--warning" data-module="govuk-button">
+            Cancel
+          </a>
+          {% endif %}
+        </div>
+      </form>
+      
+  </div>
+</div>
+
+{% endblock %}

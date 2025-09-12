@@ -1,0 +1,182 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Upload consent" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    {% if data['file-upload-success'] %}
+      <div id="upload-success-banner" class="govuk-notification-banner govuk-notification-banner--success" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Success
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">Your file was uploaded</p>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if data['file-delete-success'] %}
+      <div id="delete-success-banner" class="govuk-notification-banner govuk-notification-banner--success" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Success
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">Your file was deleted</p>
+        </div>
+      </div>
+    {% endif %}
+
+    <form action="upload-consent-progressive-handler" method="post" enctype="multipart/form-data">
+      {% if data['academy-index'] %}
+        <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+      {% endif %}
+      
+      {{ govukFileUpload({
+        label: {
+          html: '<span class="govuk-caption-l">Diocesan consent</span>
+          Upload consent',
+          classes: "govuk-label--l",
+          isPageHeading: true
+        },
+        hint: {
+          html: '<p class="govuk-body">Upload a word document or PDF.</p>
+          <p class="govuk-body">Give the file a clear, descriptive name. Files up to 10MB are accepted.</p>'
+        },
+        id: "consent-file",
+        name: "consent-file"
+      }) }}
+
+      {{ govukButton({
+        text: "Upload file"
+      }) }}
+
+    </form>
+
+    {% if data['consent-files'] and data['consent-files'].length > 0 %}
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">Uploaded files</h2>
+      
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File name</th>
+            <th scope="col" class="govuk-table__header">File size</th>
+            <th scope="col" class="govuk-table__header">File type</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for file in data['consent-files'] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <a href="download-consent-file-progressive/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                  <strong>{{ file.name }}</strong>
+                </a>
+              </td>
+              <td class="govuk-table__cell">
+                {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+              </td>
+              <td class="govuk-table__cell">
+                {{ file.type }}
+              </td>
+              <td class="govuk-table__cell">
+                <form action="delete-consent-file-progressive" method="post" style="display: inline;">
+                  <input type="hidden" name="file-index" value="{{ loop.index0 }}">
+                  {% if data['academy-index'] %}
+                    <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+                  {% endif %}
+                  {{ govukButton({
+                    text: "Delete",
+                    classes: "govuk-button--warning govuk-button--small",
+                    type: "submit"
+                  }) }}
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">Uploaded files</h2>
+      
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File name</th>
+            <th scope="col" class="govuk-table__header">File size</th>
+            <th scope="col" class="govuk-table__header">File type</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td colspan="4" class="govuk-table__cell govuk-body govuk-!-text-align-center">
+              No files uploaded yet
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    {% endif %}
+
+    <div class="govuk-button-group govuk-!-margin-top-9">
+      <form action="upload-consent-progressive-continue-direct" method="post">
+        {% if data['academy-index'] %}
+          <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+        {% endif %}
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+  // Clear banner flags when page loads (for refresh)
+  document.addEventListener('DOMContentLoaded', function() {
+    clearBannerFlags();
+  });
+
+  // Clear banner flags when continue button is clicked (for navigation)
+  document.addEventListener('DOMContentLoaded', function() {
+    const continueForm = document.querySelector('form[action="upload-consent-progressive-continue-direct"]');
+    if (continueForm) {
+      continueForm.addEventListener('submit', function() {
+        clearBannerFlags();
+      });
+    }
+  });
+
+  // Function to clear both upload and delete success flags
+  function clearBannerFlags() {
+    fetch('clear-upload-success-flag-progressive', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    fetch('clear-delete-success-flag-progressive', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+  }
+</script>
+
+{% endblock %}

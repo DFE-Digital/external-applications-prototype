@@ -1,0 +1,62 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Proposed transfer date" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form class="form" action="proposed-transfer-date-progressive-handler" method="post">
+      {% if data['academy-index'] %}
+        <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+      {% endif %}
+
+      {{ govukDateInput({
+        id: "proposed-transfer-date",
+        namePrefix: "proposed-transfer-date",
+        fieldset: {
+          legend: {
+            text: "What is the proposed transfer date?",
+            classes: "govuk-fieldset__legend--xl",
+            isPageHeading: true
+          }
+        },
+        hint: {
+          text: "For example, 27 3 2024"
+        },
+        items: [
+          {
+            name: "day",
+            classes: "govuk-input--width-2",
+            value: data['proposed-transfer-date'].day if data['proposed-transfer-date'] else ""
+          },
+          {
+            name: "month",
+            classes: "govuk-input--width-2",
+            value: data['proposed-transfer-date'].month if data['proposed-transfer-date'] else ""
+          },
+          {
+            name: "year",
+            classes: "govuk-input--width-4",
+            value: data['proposed-transfer-date'].year if data['proposed-transfer-date'] else ""
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+    
+  </div>
+</div>
+
+{% endblock %}

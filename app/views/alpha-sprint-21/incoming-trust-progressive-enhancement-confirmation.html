@@ -1,0 +1,64 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Is this the right trust?" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to search for a trust",
+    href: "incoming-trust-progressive-enhancement-search",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    <form action="incoming-trust-progressive-enhancement-confirmation-handler" method="post">
+      
+      <!-- Hidden input to preserve edit context -->
+      {% if data.editIndex !== undefined %}
+      <input type="hidden" name="edit-index" value="{{ data.editIndex }}">
+      {% endif %}
+      
+      {{ govukRadios({
+        name: "trust-confirmed",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Trust details</span>
+            Is this the right trust?',
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        hint: {
+          html: '<div class="govuk-inset-text">
+            <h2 class="govuk-heading-m">' + trustName + '</h2>
+            <p class="govuk-body">UKPRN: ' + trustUkprn + '</p>
+            <p class="govuk-body">Companies house number: ' + trustCompanyHouse + '</p>
+          </div>'
+        },
+        items: [
+          {
+            value: "Yes",
+            text: "Yes",
+            checked: data["trust-confirmed"] === "Yes"
+          },
+          {
+            value: "No",
+            text: "No",
+            checked: data["trust-confirmed"] === "No"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

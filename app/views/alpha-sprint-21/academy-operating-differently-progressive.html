@@ -1,0 +1,45 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Academy operating differently" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form class="form" action="academy-operating-differently-progressive-handler" method="post">
+      {% if data['academy-index'] %}
+        <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+      {% endif %}
+
+      {{ govukCharacterCount({
+        name: "academy-operating-differently",
+        id: "academy-operating-differently",
+        value: data['academy-operating-differently'] if data['academy-operating-differently'] else "",
+        label: {
+          text: "How is the academy operating differently to its funding agreement?",
+          classes: "govuk-label--xl",
+          isPageHeading: true
+        },
+        hint: {
+          html: "Tell us if the academy has submitted an application to <a href='https://www.gov.uk/government/publications/making-significant-changes-to-an-existing-academy' class='govuk-link' target='_blank' rel='noopener noreferrer'>Making a significant change</a>."
+        },
+        maxlength: 4000
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+    
+  </div>
+</div>
+
+{% endblock %}

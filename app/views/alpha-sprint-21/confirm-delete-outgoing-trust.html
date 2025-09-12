@@ -1,0 +1,54 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Confirm delete outgoing trust" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to Outgoing Trusts",
+    href: "outgoing-trusts-summary",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    <form action="outgoing-trusts-summary" method="post">
+      
+      {{ govukRadios({
+        name: "confirm-delete-outgoing-trust",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Outgoing Trusts</span>
+            Are you sure you want to remove ' + data['outgoing-trusts'][data.index].name + '?',
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes",
+            checked: data["confirm-delete-outgoing-trust"] === "yes"
+          },
+          {
+            value: "no",
+            text: "No",
+            checked: data["confirm-delete-outgoing-trust"] === "no"
+          }
+        ]
+      }) }}
+
+      <input type="hidden" name="delete-outgoing-trust" value="{{ data.index }}">
+      
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

@@ -1,0 +1,52 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Is this the right trustee?" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "trustee-add",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    <form action="trustee-current-responsibilities" method="post">
+      
+      {{ govukRadios({
+        name: "trustee-confirmed",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Trustees</span>
+            Is ' + data['trustee-full-name'] + ' an existing trustee or a new one?',
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        items: [
+          {
+            value: "Yes",
+            text: "Existing",
+            checked: data["trustee-confirmed"] === "Yes"
+          },
+          {
+            value: "No",
+            text: "New",
+            checked: data["trustee-confirmed"] === "No"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %} 
