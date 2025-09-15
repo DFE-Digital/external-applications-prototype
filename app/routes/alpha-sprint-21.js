@@ -2574,6 +2574,9 @@ module.exports = function (router) {
             req.session.data['declarations'].push(declarationData);
         }
         
+        // Set success flag for banner
+        req.session.data['declaration-signed'] = declarationData.trust.name;
+        
         // Redirect to declaration summary
         res.redirect('declaration-summary');
     });
@@ -2614,6 +2617,11 @@ module.exports = function (router) {
 
     // GET handler for declaration summary
     router.get('/' + version + '/declaration-summary', function (req, res) {
+        // Check if we have a success message for signed declaration
+        const declarationSigned = req.session.data['declaration-signed'];
+        // Clear it from session immediately
+        delete req.session.data['declaration-signed'];
+        
         // Initialize application data if not exists
         if (!req.session.data.application) {
             req.session.data.application = {
@@ -2678,6 +2686,8 @@ module.exports = function (router) {
         console.log('Debug - declarations:', req.session.data['declarations']);
         
         res.render(version + '/declaration-summary', {
+            success: !!declarationSigned,
+            declarationSigned: declarationSigned,
             data: req.session.data,
             taskOwnerDisplay: taskOwnerDisplay,
             uniqueOutgoingTrusts: uniqueOutgoingTrusts,
@@ -2695,6 +2705,9 @@ module.exports = function (router) {
             // Remove the declaration at the specified index
             req.session.data['declarations'].splice(declarationIndex, 1);
         }
+        
+        // Set success flag for banner
+        req.session.data['declaration-signed'] = declarationData.trust.name;
         
         // Redirect to declaration summary
         res.redirect('declaration-summary');
@@ -3889,6 +3902,9 @@ module.exports = function (router) {
             req.session.data['declarations'].push(declarationData);
         }
         
+        // Set success flag for banner
+        req.session.data['declaration-signed'] = declarationData.trust.name;
+        
         // Redirect to declaration summary
         res.redirect('declaration-summary');
     });
@@ -3929,6 +3945,11 @@ module.exports = function (router) {
 
     // GET handler for declaration summary
     router.get('/' + version + '/declaration-summary', function (req, res) {
+        // Check if we have a success message for signed declaration
+        const declarationSigned = req.session.data['declaration-signed'];
+        // Clear it from session immediately
+        delete req.session.data['declaration-signed'];
+        
         // Initialize application data if not exists
         if (!req.session.data.application) {
             req.session.data.application = {
@@ -3993,6 +4014,8 @@ module.exports = function (router) {
         console.log('Debug - declarations:', req.session.data['declarations']);
         
         res.render(version + '/declaration-summary', {
+            success: !!declarationSigned,
+            declarationSigned: declarationSigned,
             data: req.session.data,
             taskOwnerDisplay: taskOwnerDisplay,
             uniqueOutgoingTrusts: uniqueOutgoingTrusts,
@@ -4010,6 +4033,9 @@ module.exports = function (router) {
             // Remove the declaration at the specified index
             req.session.data['declarations'].splice(declarationIndex, 1);
         }
+        
+        // Set success flag for banner
+        req.session.data['declaration-signed'] = declarationData.trust.name;
         
         // Redirect to declaration summary
         res.redirect('declaration-summary');
