@@ -898,11 +898,12 @@
         {% if data['trustees-to-add'] and data['trustees-to-add'].length > 0 %}
           <div class="govuk-summary-card__content">
             <h3 class="govuk-heading-s">Who will be the Trustees of the trust after the transfer?</h3>
-            <dl class="govuk-summary-list">
-              {% for trustee in data['trustees-to-add'] %}
+            {% for trustee in data['trustees-to-add'] %}
+              <h3 class="govuk-heading-s govuk-!-margin-top-6">Trustee {{ loop.index }}</h3>
+              <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    Trustee {{ loop.index }}
+                    Name
                   </dt>
                   <dd class="govuk-summary-list__value">
                     <p class="govuk-body">{{ trustee.name }}</p>
@@ -958,8 +959,8 @@
                   </dd>
                 </div>
                 {% endif %}
-              {% endfor %}
-            </dl>
+              </dl>
+            {% endfor %}
           </div>
         {% endif %}
 
