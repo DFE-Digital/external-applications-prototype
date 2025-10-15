@@ -179,11 +179,12 @@
       {% else %}
         <div class="govuk-summary-card__content">
           <h3 class="govuk-heading-s">Academies to be transferred</h3>
-          <dl class="govuk-summary-list">
-            {% for academy in data['academies-to-transfer-progressive'] %}
+          {% for academy in data['academies-to-transfer-progressive'] %}
+            <h3 class="govuk-heading-s govuk-!-margin-top-6">Academy {{ loop.index }}</h3>
+            <dl class="govuk-summary-list">
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  Academy {{ loop.index }}
+                  Name
                 </dt>
                 <dd class="govuk-summary-list__value">
                   <p class="govuk-body">{{ academy.name }}</p>
@@ -279,8 +280,8 @@
                   </dd>
                 </div>
               {% endif %}
-            {% endfor %}
-          </dl>
+            </dl>
+          {% endfor %}
         </div>
       {% endif %}
     </div>
@@ -306,11 +307,12 @@
       {% else %}
         <div class="govuk-summary-card__content">
           <h3 class="govuk-heading-s">Academies to be transferred</h3>
-          <dl class="govuk-summary-list">
-            {% for academy in data['academies-to-transfer'] %}
+          {% for academy in data['academies-to-transfer'] %}
+            <h3 class="govuk-heading-s govuk-!-margin-top-6">Academy {{ loop.index }}</h3>
+            <dl class="govuk-summary-list">
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  Academy {{ loop.index }}
+                  Name
                 </dt>
                 <dd class="govuk-summary-list__value">
                   <p class="govuk-body">{{ academy.name }}</p>
@@ -406,8 +408,8 @@
                   </dd>
                 </div>
               {% endif %}
-            {% endfor %}
-          </dl>
+            </dl>
+          {% endfor %}
         </div>
       {% endif %}
     </div>
