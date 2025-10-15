@@ -800,11 +800,12 @@
         {% if data['members-to-add'] and data['members-to-add'].length > 0 %}
           <div class="govuk-summary-card__content">
             <h3 class="govuk-heading-s">Who will be the Members of the trust after the transfer?</h3>
-            <dl class="govuk-summary-list">
-              {% for member in data['members-to-add'] %}
+            {% for member in data['members-to-add'] %}
+              <h3 class="govuk-heading-s govuk-!-margin-top-6">Member {{ loop.index }}</h3>
+              <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
-                    Member {{ loop.index }}
+                    Name
                   </dt>
                   <dd class="govuk-summary-list__value">
                     <p class="govuk-body">{{ member.name }}</p>
@@ -850,8 +851,8 @@
                   </dd>
                 </div>
                 {% endif %}
-              {% endfor %}
-            </dl>
+              </dl>
+            {% endfor %}
           </div>
         {% endif %}
 
