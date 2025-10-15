@@ -1,0 +1,54 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Diocesan consent" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form class="form" action="diocesan-consent-progressive-handler" method="post">
+      {% if data['academy-index'] %}
+        <input type="hidden" name="academy-index" value="{{ data['academy-index'] }}">
+      {% endif %}
+
+      {{ govukRadios({
+        idPrefix: "diocesan-consent",
+        name: "diocesan-consent",
+        fieldset: {
+          legend: {
+            text: "Does Diocesan consent need to be provided?",
+            classes: "govuk-fieldset__legend--xl",
+            isPageHeading: true
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes",
+            checked: data['diocesan-consent'] === 'yes'
+          },
+          {
+            value: "no",
+            text: "No",
+            checked: data['diocesan-consent'] === 'no'
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+    
+  </div>
+</div>
+
+{% endblock %}

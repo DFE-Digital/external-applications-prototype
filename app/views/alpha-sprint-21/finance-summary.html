@@ -1,0 +1,86 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Finance" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to application task list",
+    href: "application-task-list?ref=" + data.application.reference,
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="finance">
+      Finance
+    </h1>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          How will the trust be financed and how do you intend to finance the growth of the trust over the next 3 years (if applicable)?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['create-new-project-academy-finance-how-to-finance-trust'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="finance-how-to-finance-trust">
+            Change<span class="govuk-visually-hidden"> how will the trust be financed</span>
+          </a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          What is the approach to managing schools you are intending to take on which currently have deficits (if applicable)?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['create-new-project-academy-finance-approach'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="finance-approach">
+            Change<span class="govuk-visually-hidden"> what is the approach</span>
+          </a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          What steps will you take to ensure your financial model is sustainable?
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['create-new-project-academy-finance-steps'] }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="finance-steps">
+            Change<span class="govuk-visually-hidden"> what steps will you take</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+    
+
+    <form action="application-task-list" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="finance-status" name="finance-status" type="checkbox" value="Complete" {% if data['finance-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="finance-status">
+              Mark this section as complete, it's ready for review
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

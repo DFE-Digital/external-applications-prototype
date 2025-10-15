@@ -1,0 +1,347 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Your application" %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <a href="dashboard" class="govuk-back-link govuk-!-margin-bottom-9">Back to dashboard</a>
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+      Your application 
+    </h1>
+  </div>
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <div class="govuk-inset-text govuk-!-margin-bottom-9">
+      <p>
+        Application reference: <strong>{{ data.application.reference }}</strong>
+      </p>
+      <p>
+        Lead applicant: <strong>{{ data.application.leadApplicant }}</strong>
+      </p>
+    </div>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">About the trusts that academies are leaving</h2>
+    <ul class="govuk-task-list">
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="outgoing-trusts-summary" aria-describedby="outgoing-trusts-status">
+            Details of trusts
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="outgoing-trusts-status">
+          {% if data['outgoing-trusts-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+    </ul>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">About transferring academies</h2>
+    <ul class="govuk-task-list">
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="academies-to-transfer-summary" aria-describedby="details-of-academies-  status">
+            Details of academies
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="details-of-academies-  status">
+          {% if data['academies-to-transfer-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="academies-to-transfer-summary-progressive" aria-describedby="details-of-academies-progressive-status">
+            Details of academies (Progressive enhancement)
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="details-of-academies-progressive-status">
+          {% if data['academies-to-transfer-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="reason-and-benefits-academies" aria-describedby="reason-and-benefits-academies-status">
+            Reason and benefits
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="reason-and-benefits-academies-status">
+          {% if data['reason-and-benefits-academies-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="risks-summary" aria-describedby="risks-status">
+            Risks
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="risks-status">
+          {% if data['risks-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      <!--</li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="link-to-maintained-schools-status">
+            Link to maintained schools
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="link-to-maintained-schools-status">
+          {% if data['link-to-maintained-schools-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>-->
+    </ul>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">About the trust that academies are joining</h2>
+    <ul class="govuk-task-list">
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="incoming-trust-progressive-enhancement-summary" aria-describedby="incoming-trust-progressive-enhancement-status">
+            Trust details
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="incoming-trust-status-progressive-enhancement">
+          {% if data['incoming-trust-progressive-enhancement-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="reason-and-benefits-trust" aria-describedby="reason-and-benefits-trust-status">
+            Reason and benefits
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="reason-and-benefits-trust-status">
+          {% if data['reason-and-benefits-trust-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="high-quality-and-inclusive-education" aria-describedby="high-quality-and-inclusive-education-status">
+            High-quality and inclusive education
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="high-quality-and-inclusive-education-status">
+          {% if data['high-quality-and-inclusive-education-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="school-improvement" aria-describedby="school-improvement-status">
+            School improvement 
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="school-improvement-status">
+          {% if data['school-improvement-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="finance-and-operations-status">
+            Finance and operations
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="finance-and-operations-status">
+          {% if data['finance-and-operations-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="leadership-and-work-force-status">
+            Leadership and work force 
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="leadership-and-work-force-status">
+          {% if data['leadership-and-work-force-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="members-summary" aria-describedby="members-status">
+            Members
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="members-status">
+          {% if data['members-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="trustee-summary" aria-describedby="trustee-status">
+            Trustees
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="trustee-status">
+          {% if data['trustee-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="governance-structure" aria-describedby="governance-status">
+            Governance structure
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="governance-status">
+          {% if data['governance-structure-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+    </ul>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">Declaration</h2>
+
+    <ul class="govuk-task-list">
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="declaration-summary" aria-describedby="declaration-status">
+            Declaration from Chair of trustees
+          </a>
+        </div>
+        <div class="govuk-task-list__status" id="declaration-status">
+          {% if data['declaration-status'] %}
+            <strong class="govuk-tag govuk-tag--green">
+              Completed
+            </strong>
+          {% else %}
+            <strong class="govuk-tag govuk-tag--blue">
+              Incomplete
+            </strong>
+          {% endif %}
+        </div>
+      </li>
+    </ul>
+
+    <div class="govuk-button-group govuk-!-margin-top-9">
+      <form action="check-your-answers" method="post">
+        <button class="govuk-button" type="submit">Review application</button>
+      </form>
+    </div>
+    
+  </div>
+  <div class="govuk-grid-column-one-third govuk-!-margin-bottom-6">
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">Contributors</h2>
+
+    <p class="govuk-body">
+      You can invite other people to complete parts of this application.
+    </p>
+    <a href="contributors-home" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Invite contributors</a>
+  </div>
+</div>
+
+{% endblock %}

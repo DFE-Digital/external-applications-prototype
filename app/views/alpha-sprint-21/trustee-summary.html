@@ -1,0 +1,237 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% set pageName="Trustees" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to application task list",
+    href: "application-task-list?ref=" + data.application.reference,
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    {% if trusteeAdded %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ trusteeAdded }}'s details has been added
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+
+    {% if trusteeRemoved %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ trusteeRemoved }}'s details have been removed
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+
+    {% if trusteeToRemoveAdded %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ trusteeToRemoveAdded }} has been added to current trustees who will be leaving
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+
+    {% if trusteeToRemoveRemoved %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ trusteeToRemoveRemoved }} has been removed from current trustees who will be leaving
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="trustees">
+      Trustees
+    </h1>
+
+    <h2 class="govuk-heading-m">Trustees after the transfer</h2>
+    
+    <p class="govuk-body">
+      Trustees must have the right skills, knowledge and experience.
+    </p>
+    
+    <p class="govuk-body">
+      All trusts should have at least 2 places for parents, carers or other individuals with parental responsibilities in their governance structure. These places are either at board level or 2 places on each local governing body.
+    </p>
+    
+    {% if not data['trustees-to-add'] or data['trustees-to-add'].length === 0 %}
+      <div class="govuk-inset-text">
+        No trustees have been added.
+      </div>
+    {% else %}
+      {% for trustee in data['trustees-to-add'] %}
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h3 class="govuk-summary-card__title">Trustee {{ loop.index }}</h3>
+            <div class="govuk-summary-card__actions">
+              <a class="govuk-link" href="confirm-delete-trustee?index={{ loop.index0 }}">
+                Remove<span class="govuk-visually-hidden"> trustee {{ loop.index }}</span>
+              </a>
+            </div>
+          </div>
+          <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ trustee.name }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="trustee-add?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> trustee {{ loop.index }} name</span>
+                  </a>
+                </dd>
+              </div>
+              {% if trustee.isExistingTrustee is defined %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Is {{ trustee.name }} an existing trustee or a new one?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{% if trustee.isExistingTrustee %}Existing{% else %}New{% endif %}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="trustee-confirmation">
+                    Change<span class="govuk-visually-hidden"> trustee confirmation for {{ trustee.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              {% if trustee.currentResponsibilities %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  What roles and responsibilities has {{ trustee.name }} had in the past 5 years?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ trustee.currentResponsibilities }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="trustee-current-responsibilities?trustee={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> current responsibilities for {{ trustee.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              {% if trustee.futureRole %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  What will {{ trustee.name }} role and responsibility be as a trustee?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ trustee.futureRole }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="trustee-future-role?trustee={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> future role for {{ trustee.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              {% if trustee.localGoverningBody %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Will {{ trustee.name }} also be a member of the local governing body?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ trustee.localGoverningBody }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="trustee-local-governing-body?trustee={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> local governing body for {{ trustee.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <a href="trustee-add" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
+      Add a trustee
+    </a>
+
+    <h2 class="govuk-heading-m">Current trustees who will be leaving</h2>
+    
+    {% if not data['trustees-to-remove'] or data['trustees-to-remove'].length === 0 %}
+      <div class="govuk-inset-text">
+        No trustees will be leaving.
+      </div>
+    {% else %}
+      <dl class="govuk-summary-list">
+        {% for trustee in data['trustees-to-remove'] %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Person {{ loop.index }}
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <p class="govuk-body">{{ trustee.name }}</p>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="confirm-delete-trustee-to-remove?index={{ loop.index0 }}">
+                Remove<span class="govuk-visually-hidden"> person to leave {{ loop.index }}</span>
+              </a>
+            </dd>
+          </div>
+        {% endfor %}
+      </dl>
+    {% endif %}
+
+    <a href="trustee-to-remove-add" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
+      Add a person
+    </a>
+
+    <form action="application-task-list" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="trustee-status" name="trustee-status" type="checkbox" value="Complete" {% if data['trustee-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="trustee-status">
+              Mark this section as complete, it's ready for review
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

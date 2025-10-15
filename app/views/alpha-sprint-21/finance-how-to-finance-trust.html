@@ -1,0 +1,41 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="How will the trust be financed" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="finance-summary" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">Finance</span>
+            How will the trust be financed and how do you intend to finance the growth of the trust over the next 3 years (if applicable)?',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          maxlength: 4000,
+          id: "create-new-project-academy-finance-how-to-finance-trust",
+          name: "create-new-project-academy-finance-how-to-finance-trust",
+          value: data["create-new-project-academy-finance-how-to-finance-trust"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %}

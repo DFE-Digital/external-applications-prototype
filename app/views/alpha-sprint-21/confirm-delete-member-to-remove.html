@@ -1,0 +1,54 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Confirm delete member to remove" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to Members",
+    href: "members-summary",
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    <form action="confirm-delete-member-to-remove" method="post">
+      
+      {{ govukRadios({
+        name: "confirm-delete-member-to-remove",
+        fieldset: {
+          legend: {
+            html: '<span class="govuk-caption-l">Members</span>
+            Are you sure you want to remove ' + data['members-to-remove'][data.index].name + '?',
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes",
+            checked: data["confirm-delete-member-to-remove"] === "yes"
+          },
+          {
+            value: "no",
+            text: "No",
+            checked: data["confirm-delete-member-to-remove"] === "no"
+          }
+        ]
+      }) }}
+
+      <input type="hidden" name="delete-member-to-remove" value="{{ data.index }}">
+      
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+      
+    </form>
+  </div>
+</div>
+
+{% endblock %} 

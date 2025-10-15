@@ -1,0 +1,182 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="What will be the trust's governance structure and how will it be implemented?" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    {% if data['file-upload-success'] %}
+      <div id="upload-success-banner" class="govuk-notification-banner govuk-notification-banner--success" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Success
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">Your file was uploaded</p>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if data['file-delete-success'] %}
+      <div id="delete-success-banner" class="govuk-notification-banner govuk-notification-banner--success" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Success
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">Your file was deleted</p>
+        </div>
+      </div>
+    {% endif %}
+
+    <form action="governance-structure-model-handler" method="post" enctype="multipart/form-data">
+
+        {{ govukFileUpload({
+          label: {
+            html: '<span class="govuk-caption-l">Governance structure</span>
+            Governance structure after the transfer',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            html: '<p class="govuk-body">Upload a PDF of an A4 diagram and other information.</p>
+            <p class="govuk-body">The diagram should provide the structure and role of:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>members</li>
+              <li>trustees</li>
+              <li>committees and any sub committees</li>
+              <li>any local governing bodies</li>
+            </ul>
+            <p class="govuk-body">Also include any formal scheme of delegation and any information about how a proposed multi-academy trust structure will work in practice. In particular, how it will hold the chief executive officer or executive principals to account.</p>
+            <p class="govuk-body">Give the file a clear, descriptive name. Files up to 10MB are accepted.</p>'
+          },
+          id: "governance-structure-file",
+          name: "governance-structure-file",
+          value: data["governance-structure-file"]
+        }) }}
+
+        {{ govukButton({
+          text: "Upload file"
+        }) }}
+
+      </form>
+
+    {% if data['governance-structure-files'] and data['governance-structure-files'].length > 0 %}
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">Uploaded files</h2>
+      
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File name</th>
+            <th scope="col" class="govuk-table__header">File size</th>
+            <th scope="col" class="govuk-table__header">File type</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for file in data['governance-structure-files'] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <a href="download-governance-file/{{ loop.index0 }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
+                  <strong>{{ file.name }}</strong>
+                </a>
+              </td>
+              <td class="govuk-table__cell">
+                {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+              </td>
+              <td class="govuk-table__cell">
+                {{ file.type }}
+              </td>
+              <td class="govuk-table__cell">
+                <form action="delete-governance-file" method="post" style="display: inline;">
+                  <input type="hidden" name="file-index" value="{{ loop.index0 }}">
+                  {{ govukButton({
+                    text: "Delete",
+                    classes: "govuk-button--warning govuk-button--small",
+                    type: "submit"
+                  }) }}
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">Uploaded files</h2>
+      
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">File name</th>
+            <th scope="col" class="govuk-table__header">File size</th>
+            <th scope="col" class="govuk-table__header">File type</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td colspan="4" class="govuk-table__cell govuk-body govuk-!-text-align-center">
+              No files uploaded yet
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    {% endif %}
+
+    <div class="govuk-button-group govuk-!-margin-top-9">
+      <form action="governance-structure" method="post">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+  // Clear banner flags when page loads (for refresh)
+  document.addEventListener('DOMContentLoaded', function() {
+    clearBannerFlags();
+  });
+
+  // Clear banner flags when continue button is clicked (for navigation)
+  document.addEventListener('DOMContentLoaded', function() {
+    const continueForm = document.querySelector('form[action="governance-structure"]');
+    if (continueForm) {
+      continueForm.addEventListener('submit', function() {
+        clearBannerFlags();
+      });
+    }
+  });
+
+  // Function to clear both upload and delete success flags
+  function clearBannerFlags() {
+    fetch('clear-upload-success-flag', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    fetch('clear-delete-success-flag', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+  }
+</script>
+
+{% endblock %} 

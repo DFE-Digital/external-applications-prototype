@@ -1,0 +1,50 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Academy funding agreement" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form class="form" action="academy-funding-agreement-handler" method="post">
+      
+      {{ govukRadios({
+        idPrefix: "academy-funding-agreement",
+        name: "academy-funding-agreement",
+        fieldset: {
+          legend: {
+            text: "Is the academy operating based on its funding agreement?",
+            classes: "govuk-fieldset__legend--xl",
+            isPageHeading: true
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+    </form>
+    
+  </div>
+</div>
+
+{% endblock %}
+

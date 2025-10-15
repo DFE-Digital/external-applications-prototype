@@ -1,0 +1,38 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Search for incoming trust" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form class="form" action="incoming-trust-search-results" method="post">
+      {{ govukInput({
+        label: {
+          html: '<span class="govuk-caption-l">Trust details</span>
+          Search for the trust by name or reference number',
+          classes: "govuk-label--xl",
+          isPageHeading: true
+        },
+        hint: {
+          text: "Enter at least 3 characters for name or UK provider reference number (UKPRN)"
+        },
+        id: "incoming-trust-search",
+        name: "incoming-trust-search"
+      }) }}
+
+      {{ govukButton({
+        text: "Search"
+      }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %} 

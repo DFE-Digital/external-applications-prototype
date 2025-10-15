@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Provide a 3 year financial forecast" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+    <form action="risks-summary" method="post">
+
+        {{ govukCharacterCount({
+          label: {
+            html: '<span class="govuk-caption-l">Risks</span>
+            Provide a 3 year financial forecast for the academy and your plans to bring the academy into surplus',
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            text: "Include your financial forecast and plans to achieve surplus"
+          },
+          maxlength: 4000,
+          id: "risks-financial-forecast",
+          name: "risks-financial-forecast",
+          value: data["risks-financial-forecast"]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    
+  </div>
+</div>
+
+{% endblock %} 

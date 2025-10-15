@@ -1,0 +1,229 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% set pageName="Members" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to application task list",
+    href: "application-task-list?ref=" + data.application.reference,
+    classes: "govuk-!-margin-top-6"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    
+    {% if memberAdded %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ memberAdded }}'s details has been added
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+
+    {% if memberRemoved %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ memberRemoved }}'s details have been removed
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+
+    {% if memberToRemoveAdded %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ memberToRemoveAdded }} has been added to current members who will be leaving
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+
+    {% if memberToRemoveRemoved %}
+      {% set html %}
+        <h3 class="govuk-notification-banner__heading">
+          {{ memberToRemoveRemoved }} has been removed from current members who will be leaving
+        </h3>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        type: "success",
+        html: html
+      }) }}
+    {% endif %}
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6" id="members">
+      Members
+    </h1>
+
+    <h2 class="govuk-heading-m">Members after the transfer</h2>
+    
+    <p class="govuk-body">
+      The trust must have 3 or more members and should have 5 or more.
+      Members must not be employees of the trust.
+    </p>
+    
+    {% if not data['members-to-add'] or data['members-to-add'].length === 0 %}
+      <div class="govuk-inset-text">
+        No members have been added.
+      </div>
+    {% else %}
+      {% for member in data['members-to-add'] %}
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h3 class="govuk-summary-card__title">Member {{ loop.index }}</h3>
+            <div class="govuk-summary-card__actions">
+              <a class="govuk-link" href="confirm-delete-member?index={{ loop.index0 }}">
+                Remove<span class="govuk-visually-hidden"> member {{ loop.index }}</span>
+              </a>
+            </div>
+          </div>
+          <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ member.name }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="member-add?edit={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> member {{ loop.index }} name</span>
+                  </a>
+                </dd>
+              </div>
+              {% if member.isExistingMember is defined %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Is {{ member.name }} an existing member or a new one?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{% if member.isExistingMember %}Existing{% else %}New{% endif %}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="member-confirmation">
+                    Change<span class="govuk-visually-hidden"> member confirmation for {{ member.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              {% if member.currentResponsibilities %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  What roles and responsibilities has {{ member.name }} had in the past 5 years?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <p class="govuk-body">{{ member.currentResponsibilities }}</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="member-current-responsibilities?member={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> current responsibilities for {{ member.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+              {% if member.futureRole %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Will {{ member.name }} also have any of these roles?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {% if member.futureRole is string %}
+                    <p class="govuk-body">{{ member.futureRole }}</p>
+                  {% else %}
+                    <ul class="govuk-list govuk-list--bullet">
+                      {% for role in member.futureRole %}
+                        {% if role and role !== '_unchecked' %}
+                          <li>{{ role }}</li>
+                        {% endif %}
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                  <a class="govuk-link" href="member-future-role?member={{ loop.index0 }}">
+                    Change<span class="govuk-visually-hidden"> future role for {{ member.name }}</span>
+                  </a>
+                </dd>
+              </div>
+              {% endif %}
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <a href="member-add" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
+      Add a member
+    </a>
+
+    <h2 class="govuk-heading-m">Current members who will be leaving</h2>
+    
+    {% if not data['members-to-remove'] or data['members-to-remove'].length === 0 %}
+      <div class="govuk-inset-text">
+        No members will be leaving.
+      </div>
+    {% else %}
+      <dl class="govuk-summary-list">
+        {% for member in data['members-to-remove'] %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Person {{ loop.index }}
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <p class="govuk-body">{{ member.name }}</p>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="confirm-delete-member-to-remove?index={{ loop.index0 }}">
+                Remove<span class="govuk-visually-hidden"> person to leave {{ loop.index }}</span>
+              </a>
+            </dd>
+          </div>
+        {% endfor %}
+      </dl>
+    {% endif %}
+
+    <a href="member-to-remove-add" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-9" data-module="govuk-button">
+      Add a person
+    </a>
+
+    <form action="application-task-list" method="post">
+      <input type="hidden" name="from-check-answers" value="{{ 'true' if data['from-check-answers'] else 'false' }}">
+      <div class="govuk-form-group">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="members-status" name="members-status" type="checkbox" value="Complete" {% if data['members-status'] %}checked{% endif %}>
+            <label class="govuk-label govuk-checkboxes__label" for="members-status">
+              Mark this section as complete, it's ready for review
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} 
